@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookItMalta — Charter Booking Platform Demo</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --navy:#0b1d3a;--ocean:#1a73e8;--ocean-light:#e8f0fe;
+    --teal:#00897b;--teal-light:#e0f2f1;
+    --orange:#ef6c00;--orange-light:#fff3e0;
+    --red:#d32f2f;--red-light:#ffebee;
+    --green:#2e7d32;--green-light:#e8f5e9;
+    --gold:#f9a825;
+    --bg:#f5f7fa;--card:#fff;--text:#1a1a2e;--muted:#6b7280;
+    --radius:12px;--shadow:0 2px 12px rgba(0,0,0,.08);
+  }
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+  /* ─── TOP NAV ─── */
+  .topbar{background:var(--navy);color:#fff;padding:0 24px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:100}
+  .topbar .logo{font-size:20px;font-weight:700;letter-spacing:-.5px}
+  .topbar .logo span{color:var(--gold)}
+  .topbar nav{margin-left:auto;display:flex;gap:4px}
+  .topbar nav button{background:none;border:none;color:rgba(255,255,255,.7);padding:10px 16px;cursor:pointer;font-size:14px;border-radius:8px;transition:.2s}
+  .topbar nav button:hover,
+  .topbar nav button.active{background:rgba(255,255,255,.12);color:#fff}
+
+  /* ─── HERO ─── */
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,#163a6e 100%);color:#fff;padding:64px 24px 48px;text-align:center}
+  .hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;margin-bottom:12px}
+  .hero h1 span{color:var(--gold)}
+  .hero p{font-size:18px;opacity:.85;max-width:640px;margin:0 auto 28px}
+  .hero .badges{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .hero .badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500}
+
+  /* ─── SECTIONS ─── */
+  .section{max-width:1120px;margin:0 auto;padding:48px 24px}
+  .section-title{font-size:28px;font-weight:700;margin-bottom:8px}
+  .section-sub{color:var(--muted);font-size:16px;margin-bottom:32px}
+  .hidden{display:none!important}
+
+  /* ─── PERSONA CARDS ─── */
+  .persona-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-bottom:40px}
+  .persona-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;border:2px solid transparent}
+  .persona-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.12)}
+  .persona-card.selected{border-color:var(--ocean)}
+  .persona-header{padding:24px;display:flex;align-items:center;gap:16px}
+  .persona-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
+  .persona-icon.customer{background:var(--ocean-light);color:var(--ocean)}
+  .persona-icon.captain{background:var(--teal-light);color:var(--teal)}
+  .persona-header h3{font-size:20px;font-weight:700}
+  .persona-header p{font-size:13px;color:var(--muted)}
+  .persona-body{padding:0 24px 24px}
+  .persona-body ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .persona-body li{display:flex;align-items:center;gap:10px;font-size:14px;color:#444}
+  .persona-body li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .customer-flow li::before{background:var(--ocean)}
+  .captain-flow li::before{background:var(--teal)}
+
+  /* ─── FLOW TIMELINE ─── */
+  .flow-section{margin-bottom:48px}
+  .flow-label{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:20px}
+  .flow-label.customer{background:var(--ocean-light);color:var(--ocean)}
+  .flow-label.captain{background:var(--teal-light);color:var(--teal)}
+  .flow-label.system{background:#f3e5f5;color:#7b1fa2}
+
+  .timeline{position:relative;padding-left:32px}
+  .timeline::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:#ddd}
+  .tl-step{position:relative;margin-bottom:24px}
+  .tl-dot{position:absolute;left:-32px;top:4px;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #ddd;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff}
+  .tl-dot.blue{background:var(--ocean);box-shadow:0 0 0 2px var(--ocean)}
+  .tl-dot.teal{background:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+  .tl-dot.orange{background:var(--orange);box-shadow:0 0 0 2px var(--orange)}
+  .tl-dot.green{background:var(--green);box-shadow:0 0 0 2px var(--green)}
+  .tl-dot.red{background:var(--red);box-shadow:0 0 0 2px var(--red)}
+  .tl-dot.purple{background:#7b1fa2;box-shadow:0 0 0 2px #7b1fa2}
+
+  .tl-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .tl-card-head{padding:16px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+  .tl-card-head h4{font-size:16px;font-weight:600;flex:1}
+  .tl-card-head .arrow{font-size:12px;color:var(--muted);transition:transform .2s}
+  .tl-card-head .arrow.open{transform:rotate(90deg)}
+  .tl-card-body{padding:0 20px 20px;display:none}
+  .tl-card-body.open{display:block}
+
+  /* ─── MOCKUP SCREENS ─── */
+  .mockup{border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;margin-top:12px}
+  .mockup-bar{background:#f1f3f5;padding:8px 12px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .mockup-bar .dots{display:flex;gap:4px}
+  .mockup-bar .dot{width:8px;height:8px;border-radius:50%}
+  .mockup-bar .dot.r{background:#ff5f56}
+  .mockup-bar .dot.y{background:#ffbd2e}
+  .mockup-bar .dot.g{background:#27c93f}
+  .mockup-bar .url{flex:1;text-align:center;font-size:11px;color:#999}
+  .mockup-body{background:#fff;padding:20px}
+
+  /* ─── PHONE FRAME ─── */
+  .phone-frame{width:320px;margin:0 auto;border:3px solid #333;border-radius:28px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.15)}
+  .phone-notch{background:#333;height:28px;display:flex;align-items:center;justify-content:center}
+  .phone-notch .notch{width:80px;height:6px;background:#1a1a1a;border-radius:3px}
+  .phone-screen{background:#fff;min-height:480px;overflow:hidden}
+
+  /* ─── MINI UI COMPONENTS ─── */
+  .mini-form{display:flex;flex-direction:column;gap:10px}
+  .mini-field{display:flex;flex-direction:column;gap:3px}
+  .mini-field label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .mini-field .field-box{border:1px solid #ddd;border-radius:6px;padding:8px 10px;font-size:13px;color:#333;background:#fafafa}
+  .mini-field .field-box.selected{border-color:var(--ocean);background:var(--ocean-light)}
+  .mini-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:default}
+  .mini-btn.primary{background:#25D366;color:#fff}
+  .mini-btn.blue{background:var(--ocean);color:#fff}
+  .mini-btn.outline{background:transparent;border:1.5px solid #ddd;color:#555}
+
+  .email-preview{background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-top:12px}
+  .email-preview .email-from{font-size:12px;color:var(--muted);margin-bottom:2px}
+  .email-preview .email-subject{font-size:14px;font-weight:600;margin-bottom:8px}
+  .email-preview .email-body{font-size:13px;color:#444;line-height:1.6}
+  .email-preview .email-body .highlight{background:var(--gold);padding:1px 4px;border-radius:3px;font-weight:600;font-size:12px}
+  .email-preview table{width:100%;border-collapse:collapse;margin:8px 0}
+  .email-preview td{padding:4px 8px;font-size:12px;border-bottom:1px solid #eee}
+  .email-preview td:first-child{font-weight:600;color:var(--muted);width:100px}
+
+  .booking-card-mini{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:12px;border-left:4px solid var(--orange)}
+  .booking-card-mini.confirmed{border-left-color:var(--green)}
+  .booking-card-mini .bc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .booking-card-mini .bc-ref{font-size:12px;font-weight:700;color:var(--muted)}
+  .booking-card-mini .bc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase}
+  .booking-card-mini .bc-badge.enquiry{background:var(--orange-light);color:var(--orange)}
+  .booking-card-mini .bc-badge.confirmed-badge{background:var(--green-light);color:var(--green)}
+  .booking-card-mini .bc-date{font-size:18px;font-weight:700;margin-bottom:6px}
+  .booking-card-mini .bc-details{font-size:12px;color:#666;display:flex;flex-direction:column;gap:2px}
+  .booking-card-mini .bc-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+  .action-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:none;cursor:default}
+  .action-circle.cancel{background:var(--red-light);color:var(--red)}
+  .action-circle.confirm{background:var(--green-light);color:var(--green)}
+
+  .stat-row{display:flex;gap:12px;margin:12px 0}
+  .stat-box{flex:1;background:#fafafa;border-radius:8px;padding:10px;text-align:center}
+  .stat-box .stat-num{font-size:22px;font-weight:700}
+  .stat-box .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+  .stat-box.pending .stat-num{color:var(--orange)}
+  .stat-box.confirmed .stat-num{color:var(--green)}
+  .stat-box.revenue .stat-num{color:var(--teal)}
+
+  /* ─── NOTIFICATION POPUP MOCKUP ─── */
+  .notif-popup{background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:14px 16px;display:flex;gap:10px;align-items:flex-start;max-width:340px;margin:8px auto;border:1px solid #eee}
+  .notif-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .notif-icon.success{background:var(--green-light);color:var(--green)}
+  .notif-icon.warning{background:var(--orange-light);color:var(--orange)}
+  .notif-icon.info{background:var(--ocean-light);color:var(--ocean)}
+  .notif-text .notif-title{font-size:13px;font-weight:600}
+  .notif-text .notif-desc{font-size:12px;color:var(--muted)}
+
+  /* ─── CALENDAR MINI ─── */
+  .cal-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px}
+  .cal-mini .cal-head{font-size:10px;font-weight:600;color:var(--muted);text-align:center;padding:4px}
+  .cal-mini .cal-day{text-align:center;padding:6px 2px;font-size:12px;border-radius:4px;cursor:default}
+  .cal-mini .cal-day.avail{background:var(--green-light);color:var(--green);font-weight:600}
+  .cal-mini .cal-day.waitlist{background:var(--red-light);color:var(--red);font-weight:600}
+  .cal-mini .cal-day.partial{background:var(--orange-light);color:var(--orange);font-weight:600}
+  .cal-mini .cal-day.past{color:#ccc}
+  .cal-mini .cal-day.selected{background:var(--ocean);color:#fff;font-weight:700}
+
+  .cal-legend{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+  .cal-legend span{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+  .cal-legend .dot-sm{width:8px;height:8px;border-radius:50%}
+
+  /* ─── TABS MOCKUP ─── */
+  .tabs-bar{display:flex;gap:0;border-bottom:2px solid #eee;margin-bottom:16px}
+  .tab-item{padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;cursor:default}
+  .tab-item.active{color:var(--teal);border-bottom-color:var(--teal)}
+  .tab-item.owner-tag{position:relative}
+  .tab-item.owner-tag::after{content:'OWNER';position:absolute;top:-4px;right:-8px;font-size:8px;background:var(--gold);color:var(--navy);padding:1px 4px;border-radius:3px;font-weight:700}
+
+  /* ─── ARCHITECTURE SECTION ─── */
+  .arch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0}
+  .arch-box{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center}
+  .arch-box .arch-icon{font-size:28px;margin-bottom:8px}
+  .arch-box h5{font-size:14px;font-weight:700;margin-bottom:4px}
+  .arch-box p{font-size:12px;color:var(--muted)}
+
+  .arrow-down{text-align:center;font-size:20px;color:#ccc;padding:8px 0}
+
+  /* ─── WAITLIST MOCKUP ─── */
+  .wl-card{background:#fff;border:1px solid #eee;border-radius:8px;padding:12px;margin-top:8px}
+  .wl-card .wl-date{font-size:14px;font-weight:700}
+  .wl-card .wl-boat{font-size:12px;color:var(--muted)}
+  .wl-entry{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f5f5f5}
+  .wl-entry:last-child{border:none}
+  .wl-entry .wl-email{font-size:12px;color:#333}
+  .wl-entry .wl-time{font-size:11px;color:var(--muted)}
+  .wl-entry .wl-notified{font-size:10px;background:var(--green-light);color:var(--green);padding:2px 6px;border-radius:4px;font-weight:600}
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width:768px){
+    .section{padding:32px 16px}
+    .persona-grid{grid-template-columns:1fr}
+    .phone-frame{width:280px}
+    .stat-row{flex-wrap:wrap}
+    .stat-box{min-width:calc(50% - 8px)}
+  }
+
+  /* ─── FLOW CONNECTOR ─── */
+  .flow-connector{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 0;color:var(--muted)}
+  .flow-connector .connector-line{width:40px;height:2px;background:#ddd}
+  .flow-connector .connector-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;background:#f1f3f5;padding:2px 10px;border-radius:10px}
+
+  /* ─── COMMISSION TABLE ─── */
+  .commission-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px}
+  .commission-table th{background:#f8f9fa;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid #eee}
+  .commission-table td{padding:8px;border-bottom:1px solid #f0f0f0}
+  .commission-table tr:last-child td{border-bottom:none;font-weight:700}
+  .commission-table .money{color:var(--green);font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ TOP NAV ═══════════════════ -->
+<div class="topbar">
+  <div class="logo">BookIt<span>Malta</span></div>
+  <nav>
+    <button class="active" onclick="showSection('overview')">Overview</button>
+    <button onclick="showSection('customer')">Customer Journey</button>
+    <button onclick="showSection('captain')">Captain Portal</button>
+    <button onclick="showSection('emails')">Emails & Automation</button>
+  </nav>
+</div>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<div class="hero">
+  <h1>All-In-One <span>Charter Booking</span> Platform</h1>
+  <p>From customer enquiry to captain confirmation — fully automated booking management for charter boat operators.</p>
+  <div class="badges">
+    <div class="badge">📱 Mobile-First</div>
+    <div class="badge">⚡ Real-Time Availability</div>
+    <div class="badge">📧 Automated Emails</div>
+    <div class="badge">💬 WhatsApp Integration</div>
+    <div class="badge">📊 Revenue Analytics</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ OVERVIEW SECTION ═══════════════════ -->
+<div id="sec-overview" class="section">
+  <h2 class="section-title">Two Personas, One Platform</h2>
+  <p class="section-sub">Every touchpoint is designed to drive conversions and simplify operations.</p>
+
+  <div class="persona-grid">
+    <!-- Customer Persona -->
+    <div class="persona-card" onclick="showSection('customer')">
+      <div class="persona-header">
+        <div class="persona-icon customer">🏖️</div>
+        <div>
+          <h3>Customer</h3>
+          <p>Booking a charter experience</p>
+        </div>
+      </div>
+      <div class="persona-body customer-flow">
+        <ul>
+          <li>Browse experiences & live availability</li>
+          <li>Pick date from interactive calendar</li>
+          <li>Enquire via WhatsApp with one tap</li>
+          <li>Receive email confirmation (booking ref)</li>
+          <li>Get notified when captain confirms</li>
+          <li>Join waitlist if date is full</li>
+          <li>Auto-notified when spots open up</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Captain Persona -->
+    <div class="persona-card" onclick="showSection('captain')">
+      <div class="persona-header">
+        <div class="persona-icon captain">⚓</div>
+        <div>
+          <h3>Captain / Owner</h3>
+          <p>Managing bookings & revenue</p>
+        </div>
+      </div>
+      <div class="persona-body captain-flow">
+        <ul>
+          <li>PIN-protected admin portal</li>
+          <li>View all enquiries & confirmed bookings</li>
+          <li>One-tap confirm or cancel</li>
+          <li>Auto-emails sent to customers</li>
+          <li>Revenue & commission analytics</li>
+          <li>Waitlist management</li>
+          <li>Multi-channel tracking (website, OTAs, direct)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-top:16px">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center">Platform Capabilities</h3>
+    <div class="arch-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+      <div class="arch-box"><div class="arch-icon">📅</div><h5>Live Availability</h5><p>Real-time calendar synced to Supabase</p></div>
+      <div class="arch-box"><div class="arch-icon">💬</div><h5>WhatsApp CTA</h5><p>Pre-filled enquiry sent to captain</p></div>
+      <div class="arch-box"><div class="arch-icon">📧</div><h5>5 Auto-Emails</h5><p>Enquiry, confirm, cancel, waitlist, admin</p></div>
+      <div class="arch-box"><div class="arch-icon">🔔</div><h5>Waitlist</h5><p>Auto-notify when spots open</p></div>
+      <div class="arch-box"><div class="arch-icon">📊</div><h5>Analytics</h5><p>Revenue, channels, commissions</p></div>
+      <div class="arch-box"><div class="arch-icon">🔐</div><h5>2-Tier Access</h5><p>Owner vs Partner portal roles</p></div>
+      <div class="arch-box"><div class="arch-icon">🛡️</div><h5>Rate Limiting</h5><p>Edge middleware, anti-spam</p></div>
+      <div class="arch-box"><div class="arch-icon">📱</div><h5>Mobile-First</h5><p>Touch-optimised card UI</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CUSTOMER JOURNEY ═══════════════════ -->
+<div id="sec-customer" class="section hidden">
+  <h2 class="section-title">Customer Journey</h2>
+  <p class="section-sub">From first visit to confirmed booking — every screen, notification, and email the customer experiences.</p>
+
+  <div class="timeline">
+    <!-- Step 1: Landing & Browsing -->
+    <div class="tl-step">
+      <div class="tl-dot blue">1</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label customer">Customer</span>
+          <h4>Browse Experiences & Select Date</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:16px">Customer visits the booking page, selects an experience type, and picks a date from the live availability calendar.</p>
+
+          <div class="phone-frame">
+            <div class="phone-notch"><div class="notch"></div></div>
+            <div class="phone-screen" style="padding:16px">
+              <div style="font-size:16px;font-weight:700;margin-bottom:12px">Book Your Charter</div>
+              <div class="mini-form">
+                <div class="mini-field">
+                  <label>Experience</label>
+                  <div class="field-box selected">🚢 Day Charter — Blue Lagoon</div>
+                </div>
+                <div class="mini-field">
+                  <label>Select Date — June 2026</label>
+                  <div class="cal-mini">
+                    <div class="cal-head">Mo</div><div class="cal-head">Tu</div><div class="cal-head">We</div><div class="cal-head">Th</div><div class="cal-head">Fr</div><div class="cal-head">Sa</div><div class="cal-head">Su</div>
+                    <div class="cal-day past">1</div><div class="cal-day past">2</div><div class="cal-day past">3</div><div class="cal-day past">4</div><div class="cal-day past">5</div><div class="cal-day past">6</div><div class="cal-day past">7</div>
+                    <div class="cal-day avail">8</div><div class="cal-day avail">9</div><div class="cal-day waitlist">10</div><div class="cal-day avail">11</div><div class="cal-day avail">12</div><div class="cal-day selected">13</div><div class="cal-day avail">14</div>
+                    <div class="cal-day avail">15</div><div class="cal-day partial">16</div><div class="cal-day avail">17</div><div class="cal-day avail">18</div><div class="cal-day waitlist">19</div><div class="cal-day avail">20</div><div class="cal-day avail">21</div>
+                    <div class="cal-day avail">22</div><div class="cal-day avail">23</div><div class="cal-day avail">24</div><div class="cal-day avail">25</div><div class="cal-day avail">26</div><div class="cal-day avail">27</div><div class="cal-day avail">28</div>
+                    <div class="cal-day avail">29</div><div class="cal-day avail">30</div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div>
+                  </div>
+                  <div class="cal-legend">
+                    <span><div class="dot-sm" style="background:var(--green)"></div> Available</span>
+                    <span><div class="dot-sm" style="background:var(--red)"></div> Waitlist</span>
+                    <span><div class="dot-sm" style="background:var(--orange)"></div> Partial</span>
+                  </div>
+                </div>
+                <div class="mini-field">
+                  <label>Guests</label>
+                  <div class="field-box selected">20 guests</div>
+                </div>
+                <div class="mini-field">
+                  <label>Your Email</label>
+                  <div class="field-box selected">tourist@gmail.com</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px">
+            <strong style="font-size:13px">Calendar states:</strong>
+            <ul style="font-size:13px;color:#555;margin-top:6px;padding-left:20px">
+              <li><span style="color:var(--green);font-weight:600">Green</span> — Available, can book</li>
+              <li><span style="color:var(--red);font-weight:600">Red / 🔔</span> — Fully booked, tappable to join waitlist</li>
+              <li><span style="color:var(--orange);font-weight:600">Amber</span> — Selected experience full, alternatives available</li>
+              <li>Auto-refreshes every 90 seconds + on tab visibility</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: WhatsApp CTA -->
+    <div class="tl-step">
+      <div class="tl-dot green">2</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label customer">Customer</span>
+          <h4>Tap "Send to WhatsApp" — Enquiry Created</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:16px">Customer taps the CTA. In the background, the system records the enquiry, generates a booking reference, and fires off emails — all before WhatsApp opens.</p>
+
+          <div class="phone-frame">
+            <div class="phone-notch"><div class="notch"></div></div>
+            <div class="phone-screen" style="padding:16px">
+              <div style="background:var(--ocean-light);border-radius:8px;padding:14px;margin-bottom:12px">
+                <div style="font-size:12px;font-weight:600;color:var(--ocean);margin-bottom:6px">BOOKING SUMMARY</div>
+                <div style="font-size:13px;color:#333;line-height:1.8">
+                  📅 Saturday, 13 June 2026<br>
+                  🚢 Day Charter — Blue Lagoon<br>
+                  👥 20 guests<br>
+                  📧 tourist@gmail.com
+                </div>
+              </div>
+              <div class="mini-btn primary" style="width:100%;justify-content:center;border-radius:10px;padding:14px">
+                💬 Send to WhatsApp
+              </div>
+              <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px">Opens WhatsApp with your booking details pre-filled</div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;padding:12px;background:#f8f9fa;border-radius:8px">
+            <strong style="font-size:13px">What happens behind the scenes:</strong>
+            <ol style="font-size:13px;color:#555;margin-top:6px;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+              <li>Form validates all fields (email regex check)</li>
+              <li>POST <code>/api/track-enquiry</code> fires in background</li>
+              <li>Booking code generated (TND-XXXXX)</li>
+              <li>Reservation saved to database (status: <em>enquiry</em>)</li>
+              <li>UTM / referrer attribution captured</li>
+              <li>Customer confirmation email sent</li>
+              <li>Admin notification email sent</li>
+              <li>WhatsApp opens with pre-filled message</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Customer receives email -->
+    <div class="tl-step">
+      <div class="tl-dot purple">3</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label system">Auto-Email</span>
+          <h4>Enquiry Confirmation Email → Customer</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">Customer immediately receives an email confirming their enquiry was logged.</p>
+          <div class="email-preview">
+            <div class="email-from">From: Your Fleet &lt;noreply@yourdomain.com&gt;</div>
+            <div class="email-subject">We've received your enquiry — <span class="highlight">TND-48291</span></div>
+            <div class="email-body">
+              <p><strong>Enquiry received 🎉</strong></p>
+              <p>Thanks for reaching out! We've received your enquiry and will confirm availability within 24 hours.</p>
+              <table>
+                <tr><td>Reference</td><td><strong>TND-48291</strong></td></tr>
+                <tr><td>Boat</td><td>Sun Dancer</td></tr>
+                <tr><td>Date</td><td>Saturday, 13 June 2026</td></tr>
+                <tr><td>Guests</td><td>20</td></tr>
+              </table>
+              <p>No payment has been taken. Once we confirm the date is available, we'll be in touch to arrange the €100 deposit to secure your booking.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3b: Admin notification -->
+    <div class="tl-step">
+      <div class="tl-dot purple">⚡</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label system">Auto-Email</span>
+          <h4>New Enquiry Alert → Captain / Admin</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">Captain receives an email alert that a new enquiry came in, with a link to the admin portal.</p>
+          <div class="email-preview">
+            <div class="email-from">From: Your Fleet &lt;noreply@yourdomain.com&gt;</div>
+            <div class="email-subject">New enquiry TND-48291 — Sun Dancer on 13 Jun 2026</div>
+            <div class="email-body">
+              <p><strong>New booking enquiry</strong></p>
+              <table>
+                <tr><td>Reference</td><td><strong>TND-48291</strong></td></tr>
+                <tr><td>Boat</td><td>Sun Dancer</td></tr>
+                <tr><td>Date</td><td>13 June 2026</td></tr>
+                <tr><td>Guests</td><td>20</td></tr>
+                <tr><td>Email</td><td>tourist@gmail.com</td></tr>
+              </table>
+              <p>Log in to the admin portal to confirm or cancel.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Captain confirms -->
+    <div class="tl-step">
+      <div class="tl-dot teal">4</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label captain">Captain</span>
+          <h4>Captain Confirms Booking in Portal</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">Captain logs into the portal, sees the new enquiry card with a countdown timer, and taps the green ✅ button to confirm.</p>
+
+          <div style="max-width:340px;margin:0 auto">
+            <div class="booking-card-mini" style="margin-bottom:8px">
+              <div class="bc-top">
+                <span class="bc-ref">TND-48291</span>
+                <span class="bc-badge enquiry">⏳ Enquiry</span>
+              </div>
+              <div class="bc-date">Sat, 13 Jun 2026</div>
+              <div class="bc-details">
+                <span>🚢 Sun Dancer — Day Charter</span>
+                <span>👥 20 guests</span>
+                <span style="color:var(--green);font-weight:600">💰 €2,200</span>
+                <span>📱 Website WhatsApp</span>
+              </div>
+              <div style="font-size:11px;color:var(--orange);font-weight:600;margin-top:6px">⏱ 22 hrs to respond</div>
+              <div class="bc-actions">
+                <div class="action-circle cancel">✕</div>
+                <div class="action-circle confirm">✓</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;padding:12px;background:#f8f9fa;border-radius:8px">
+            <strong style="font-size:13px">On confirm, the system automatically:</strong>
+            <ol style="font-size:13px;color:#555;margin-top:6px;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+              <li>Updates reservation status → <em>confirmed</em></li>
+              <li>Sends confirmation email to customer</li>
+              <li>Auto-cancels any competing enquiries for same date</li>
+              <li>Sends cancellation emails to those other customers</li>
+              <li>Updates revenue analytics in real-time</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Confirmation email -->
+    <div class="tl-step">
+      <div class="tl-dot green">5</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label system">Auto-Email</span>
+          <h4>Booking Confirmed Email → Customer</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <div class="email-preview">
+            <div class="email-from">From: Your Fleet &lt;noreply@yourdomain.com&gt;</div>
+            <div class="email-subject">✅ Booking confirmed — TND-48291</div>
+            <div class="email-body">
+              <p><strong>You're booked! 🎉</strong></p>
+              <p>Great news — the captain has confirmed your charter.</p>
+              <table>
+                <tr><td>Reference</td><td><strong>TND-48291</strong></td></tr>
+                <tr><td>Boat</td><td>Sun Dancer</td></tr>
+                <tr><td>Date</td><td>Saturday, 13 June 2026</td></tr>
+                <tr><td>Guests</td><td>20</td></tr>
+              </table>
+              <p>We'll be in touch closer to the date with final details.</p>
+              <p><strong>📍 Dock:</strong> Your Marina</p>
+              <p>See you on the water! 🌊</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6: Waitlist flow -->
+    <div class="tl-step">
+      <div class="tl-dot orange">🔔</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label customer">Alternate Flow</span>
+          <h4>Waitlist — Date Fully Booked</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">If the customer picks a fully booked date (red on calendar), they can join the waitlist. If a cancellation opens a spot, the system auto-notifies them and creates an enquiry.</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0">
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;text-align:center">Waitlist Modal</div>
+              <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:16px;text-align:center">
+                <div style="font-size:28px;margin-bottom:8px">🔔</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:4px">This date is fully booked</div>
+                <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Join the waitlist and we'll notify you if it opens up.</div>
+                <div class="field-box" style="margin-bottom:8px;text-align:left;font-size:12px">tourist@gmail.com</div>
+                <div class="mini-btn blue" style="width:100%;justify-content:center;font-size:13px">Notify me</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;text-align:center">Auto-notification Email</div>
+              <div class="email-preview" style="margin:0;font-size:12px">
+                <div class="email-subject" style="font-size:12px">Good news — Sun Dancer on 13 Jun has a spot!</div>
+                <div class="email-body" style="font-size:11px">
+                  <p><strong>A date just opened up! 🎉</strong></p>
+                  <p>We've created an enquiry for you (ref: TND-48302). the captain will be in touch shortly.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:12px;background:#f8f9fa;border-radius:8px">
+            <strong style="font-size:13px">Waitlist automation chain:</strong>
+            <ol style="font-size:13px;color:#555;margin-top:6px;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+              <li>Captain cancels a confirmed booking</li>
+              <li>System checks waitlist for that sailing date</li>
+              <li>Auto-creates enquiry reservations for each waitlisted customer</li>
+              <li>Sends "spot opened up" email to each customer</li>
+              <li>Marks waitlist entries as notified</li>
+              <li>Captain sees new enquiries to confirm</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 7: Cancellation -->
+    <div class="tl-step">
+      <div class="tl-dot red">✕</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label system">Auto-Email</span>
+          <h4>Cancellation Email → Customer</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">If an enquiry is cancelled (manually or auto-cancelled when a competing enquiry is confirmed):</p>
+          <div class="email-preview">
+            <div class="email-from">From: Your Fleet &lt;noreply@yourdomain.com&gt;</div>
+            <div class="email-subject">Update on your enquiry — TND-48291</div>
+            <div class="email-body">
+              <p><strong>Update on your enquiry</strong></p>
+              <p>Unfortunately we're not able to accommodate your request for Sun Dancer on 13 June 2026.</p>
+              <p>This could be due to that date now being fully booked. We'd love to find you an alternative — please reach out and the captain will do his best to help.</p>
+              <p style="margin-top:8px">
+                <span style="background:var(--ocean);color:#fff;padding:4px 12px;border-radius:4px;font-size:11px;font-weight:600">Check other dates</span>
+                <span style="background:#25D366;color:#fff;padding:4px 12px;border-radius:4px;font-size:11px;font-weight:600;margin-left:4px">Message on WhatsApp</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="tl-step">
+      <div class="tl-dot blue">📋</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label customer">Alternate Flow</span>
+          <h4>Contact Form — General Enquiry</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">Customers can also submit a general enquiry through the contact form. Honeypot spam protection, optional phone/date fields.</p>
+          <div style="max-width:300px">
+            <div class="mini-form">
+              <div class="mini-field"><label>Name</label><div class="field-box">Jane Smith</div></div>
+              <div class="mini-field"><label>Email</label><div class="field-box">jane@example.com</div></div>
+              <div class="mini-field"><label>Phone (optional)</label><div class="field-box" style="color:#aaa">+356 99 123456</div></div>
+              <div class="mini-field"><label>Preferred Date</label><div class="field-box" style="color:#aaa">Not specified</div></div>
+              <div class="mini-field"><label>Boat Preference</label><div class="field-box">Either catamaran</div></div>
+              <div class="mini-field"><label>Message</label><div class="field-box">We're a group of 24 looking for a sunset cruise...</div></div>
+              <div class="mini-btn blue" style="width:100%;justify-content:center">Send Message</div>
+            </div>
+          </div>
+          <div class="notif-popup" style="margin-top:16px">
+            <div class="notif-icon success">✓</div>
+            <div class="notif-text">
+              <div class="notif-title">Message sent!</div>
+              <div class="notif-desc">We'll reply within a few hours.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</div>
+
+<!-- ═══════════════════ CAPTAIN PORTAL ═══════════════════ -->
+<div id="sec-captain" class="section hidden">
+  <h2 class="section-title">Captain / Owner Portal</h2>
+  <p class="section-sub">PIN-protected admin dashboard — two access tiers with granular permissions.</p>
+
+  <div class="timeline">
+    <!-- Login -->
+    <div class="tl-step">
+      <div class="tl-dot teal">1</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label captain">Captain</span>
+          <h4>PIN Login — Two Access Tiers</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:16px">Simple PIN-based authentication — no username needed. Two tiers control what's visible.</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:16px;text-align:center">
+              <div style="font-size:28px;margin-bottom:8px">⚓</div>
+              <div style="font-size:14px;font-weight:700;margin-bottom:4px">Partner Access</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Captain / partner PIN</div>
+              <div style="font-size:12px;text-align:left">
+                <div style="padding:3px 0">✅ View all bookings</div>
+                <div style="padding:3px 0">✅ Confirm / cancel</div>
+                <div style="padding:3px 0">✅ Add manual bookings</div>
+                <div style="padding:3px 0">✅ Manage waitlist</div>
+                <div style="padding:3px 0;color:#ccc">❌ Analytics</div>
+                <div style="padding:3px 0;color:#ccc">❌ Commission settings</div>
+                <div style="padding:3px 0;color:#ccc">❌ SEO tools</div>
+              </div>
+            </div>
+            <div style="background:#fff;border:2px solid var(--gold);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-size:28px;margin-bottom:8px">👑</div>
+              <div style="font-size:14px;font-weight:700;margin-bottom:4px">Owner Access</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Owner PIN (separate)</div>
+              <div style="font-size:12px;text-align:left">
+                <div style="padding:3px 0">✅ Everything in Partner</div>
+                <div style="padding:3px 0;font-weight:600;color:var(--teal)">✅ Revenue analytics</div>
+                <div style="padding:3px 0;font-weight:600;color:var(--teal)">✅ Commission tracking</div>
+                <div style="padding:3px 0;font-weight:600;color:var(--teal)">✅ Commission settings</div>
+                <div style="padding:3px 0;font-weight:600;color:var(--teal)">✅ SEO recommendations</div>
+                <div style="padding:3px 0;font-weight:600;color:var(--teal)">✅ Channel breakdown</div>
+                <div style="padding:3px 0;font-weight:600;color:var(--teal)">✅ Data reset (testing)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div class="tl-step">
+      <div class="tl-dot teal">2</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label captain">Captain</span>
+          <h4>Bookings Dashboard — Mobile Card UI</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:16px">All bookings displayed as touch-friendly cards with colour-coded status borders. Enquiries show countdown timers and action buttons.</p>
+
+          <div class="mockup">
+            <div class="mockup-bar">
+              <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+              <div class="url">yourdomain.com/captain-portal</div>
+            </div>
+            <div class="mockup-body" style="background:#f5f7fa">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="font-size:16px;font-weight:700">Fleet Admin Portal</div>
+                <div style="font-size:11px;color:var(--teal);font-weight:600">Owner access</div>
+              </div>
+
+              <div class="tabs-bar">
+                <div class="tab-item active">📋 Bookings</div>
+                <div class="tab-item owner-tag">📊 Analytics</div>
+                <div class="tab-item">🔔 Waitlist</div>
+                <div class="tab-item owner-tag">⚙️ Settings</div>
+              </div>
+
+              <div class="stat-row">
+                <div class="stat-box pending"><div class="stat-num">3</div><div class="stat-label">Pending</div></div>
+                <div class="stat-box confirmed"><div class="stat-num">12</div><div class="stat-label">Confirmed</div></div>
+                <div class="stat-box revenue"><div class="stat-num">€26.4k</div><div class="stat-label">Revenue</div></div>
+              </div>
+
+              <div style="display:flex;gap:8px;margin-bottom:12px">
+                <div class="field-box" style="flex:1;font-size:12px;color:#999;padding:6px 10px">🔍 Search bookings...</div>
+                <div class="mini-btn outline" style="padding:6px 12px;font-size:12px">Filters</div>
+                <div class="mini-btn blue" style="padding:6px 12px;font-size:12px">+ Add</div>
+              </div>
+
+              <div class="booking-card-mini" style="margin-bottom:8px">
+                <div class="bc-top">
+                  <span class="bc-ref">TND-48291</span>
+                  <span class="bc-badge enquiry">⏳ Enquiry</span>
+                </div>
+                <div class="bc-date">Sat, 13 Jun 2026</div>
+                <div class="bc-details">
+                  <span>🚢 Sun Dancer — Day Charter</span>
+                  <span>👥 20 guests · 📱 Website WA</span>
+                  <span style="color:var(--green);font-weight:600">💰 €2,200</span>
+                </div>
+                <div style="font-size:11px;color:var(--orange);font-weight:600;margin-top:4px">⏱ 22 hrs to respond</div>
+                <div class="bc-actions">
+                  <div class="action-circle cancel">✕</div>
+                  <div class="action-circle confirm">✓</div>
+                </div>
+              </div>
+
+              <div class="booking-card-mini confirmed" style="margin-bottom:8px">
+                <div class="bc-top">
+                  <span class="bc-ref">TND-48103</span>
+                  <span class="bc-badge confirmed-badge">✅ Confirmed</span>
+                </div>
+                <div class="bc-date">Sun, 7 Jun 2026</div>
+                <div class="bc-details">
+                  <span>🚢 Sea Breeze — Sunset Cruise</span>
+                  <span>👥 16 guests · 🌐 BoatBooker</span>
+                  <span style="color:var(--green);font-weight:600">💰 €1,800</span>
+                </div>
+                <div class="bc-actions">
+                  <div class="action-circle cancel" style="opacity:.5">✕</div>
+                </div>
+              </div>
+
+              <div class="booking-card-mini confirmed">
+                <div class="bc-top">
+                  <span class="bc-ref">TND-47988</span>
+                  <span class="bc-badge confirmed-badge">✅ Confirmed</span>
+                </div>
+                <div class="bc-date">Fri, 5 Jun 2026</div>
+                <div class="bc-details">
+                  <span>🚢 Sun Dancer — Gozo & Comino</span>
+                  <span>👥 28 guests · 📞 Direct</span>
+                  <span style="color:var(--green);font-weight:600">💰 €3,200</span>
+                </div>
+                <div class="bc-actions">
+                  <div class="action-circle cancel" style="opacity:.5">✕</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px">
+            <strong style="font-size:13px">Filters available:</strong>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+              <span style="background:#f1f3f5;padding:4px 10px;border-radius:4px;font-size:12px">Year</span>
+              <span style="background:#f1f3f5;padding:4px 10px;border-radius:4px;font-size:12px">Month</span>
+              <span style="background:#f1f3f5;padding:4px 10px;border-radius:4px;font-size:12px">Status</span>
+              <span style="background:#f1f3f5;padding:4px 10px;border-radius:4px;font-size:12px">Boat</span>
+              <span style="background:#f1f3f5;padding:4px 10px;border-radius:4px;font-size:12px">Experience</span>
+              <span style="background:#f1f3f5;padding:4px 10px;border-radius:4px;font-size:12px">Channel</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Manual Booking -->
+    <div class="tl-step">
+      <div class="tl-dot teal">3</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label captain">Captain</span>
+          <h4>Add Manual Booking (OTAs, Phone, Direct)</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">Captain can manually add bookings from external channels (BoatBooker, ClickBoat, phone calls) to keep everything in one place.</p>
+          <div style="max-width:320px">
+            <div class="mini-form">
+              <div class="mini-field"><label>Boat</label><div class="field-box">Sun Dancer</div></div>
+              <div class="mini-field"><label>Date</label><div class="field-box">2026-06-20</div></div>
+              <div class="mini-field"><label>Experience</label><div class="field-box">Day Charter — Blue Lagoon</div></div>
+              <div class="mini-field"><label>Guests</label><div class="field-box">18</div></div>
+              <div class="mini-field"><label>Customer Name</label><div class="field-box">Marco Rossi</div></div>
+              <div class="mini-field"><label>Customer Email</label><div class="field-box">marco@example.it</div></div>
+              <div class="mini-field"><label>Amount (€)</label><div class="field-box">2,000</div></div>
+              <div class="mini-field"><label>Channel</label><div class="field-box">BoatBooker</div></div>
+              <div class="mini-field"><label>Notes</label><div class="field-box" style="color:#999">Birthday group, needs cake</div></div>
+              <div class="mini-btn blue" style="width:100%;justify-content:center">Add Booking</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-top:8px">Added as confirmed. Confirmation email auto-sent to customer.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics -->
+    <div class="tl-step">
+      <div class="tl-dot teal">4</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label captain">Owner Only</span>
+          <h4>Analytics — Revenue & Commission Tracking</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:16px">Owner-only tab with channel breakdown, source attribution, and automated commission calculations.</p>
+
+          <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:16px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px">Commission by Source</div>
+            <table class="commission-table">
+              <thead>
+                <tr><th>Source</th><th>Bookings</th><th>Revenue</th><th>Rate</th><th>Commission</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>BookItMalta</td><td>6</td><td class="money">€13,200</td><td>10%</td><td class="money">€1,320</td></tr>
+                <tr><td>Direct</td><td>4</td><td class="money">€8,800</td><td>10%</td><td class="money">€880</td></tr>
+                <tr><td>Google Organic</td><td>3</td><td class="money">€6,600</td><td>0%</td><td>€0</td></tr>
+                <tr><td>Social</td><td>2</td><td class="money">€4,400</td><td>0%</td><td>€0</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>15</strong></td><td class="money"><strong>€33,000</strong></td><td></td><td class="money"><strong>€2,200</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:14px">
+              <div style="font-size:13px;font-weight:700;margin-bottom:8px">Channel Mix</div>
+              <div style="font-size:12px;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between"><span>📱 Website WA</span><span style="font-weight:600">45%</span></div>
+                <div style="background:var(--ocean);height:6px;border-radius:3px;width:45%"></div>
+                <div style="display:flex;justify-content:space-between"><span>🌐 BoatBooker</span><span style="font-weight:600">30%</span></div>
+                <div style="background:var(--teal);height:6px;border-radius:3px;width:30%"></div>
+                <div style="display:flex;justify-content:space-between"><span>📞 Direct</span><span style="font-weight:600">20%</span></div>
+                <div style="background:var(--orange);height:6px;border-radius:3px;width:20%"></div>
+                <div style="display:flex;justify-content:space-between"><span>⛵ ClickBoat</span><span style="font-weight:600">5%</span></div>
+                <div style="background:var(--muted);height:6px;border-radius:3px;width:5%"></div>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:14px">
+              <div style="font-size:13px;font-weight:700;margin-bottom:8px">Commission Settings</div>
+              <div style="font-size:12px;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between"><span>BookItMalta</span><span style="font-weight:600">10%</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Direct</span><span style="font-weight:600">10%</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Google / Social</span><span style="font-weight:600">0%</span></div>
+              </div>
+              <div style="margin-top:8px;font-size:11px;color:var(--muted)">Editable in Settings tab (Owner only)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Waitlist Management -->
+    <div class="tl-step">
+      <div class="tl-dot teal">5</div>
+      <div class="tl-card">
+        <div class="tl-card-head" onclick="toggleCard(this)">
+          <span class="flow-label captain">Captain</span>
+          <h4>Waitlist Management</h4>
+          <span class="arrow">▶</span>
+        </div>
+        <div class="tl-card-body">
+          <p style="font-size:14px;color:#555;margin-bottom:12px">View all waitlist entries grouped by sailing date. See who's been notified and manage the list.</p>
+
+          <div class="wl-card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div class="wl-date">Sat, 10 Jun 2026</div>
+                <div class="wl-boat">Sun Dancer — Day Charter</div>
+              </div>
+              <div style="background:var(--orange-light);color:var(--orange);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600">3 waiting</div>
+            </div>
+            <div style="margin-top:10px">
+              <div class="wl-entry">
+                <div><div class="wl-email">sarah@gmail.com</div><div class="wl-time">Joined 3 days ago</div></div>
+              </div>
+              <div class="wl-entry">
+                <div><div class="wl-email">tom.jones@outlook.com</div><div class="wl-time">Joined 2 days ago</div></div>
+              </div>
+              <div class="wl-entry">
+                <div><div class="wl-email">maria.v@yahoo.com</div><div class="wl-time">Joined 1 day ago</div></div>
+                <div class="wl-notified">Notified ✓</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wl-card" style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div class="wl-date">Sat, 19 Jun 2026</div>
+                <div class="wl-boat">Sea Breeze — Sunset Cruise</div>
+              </div>
+              <div style="background:var(--orange-light);color:var(--orange);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600">1 waiting</div>
+            </div>
+            <div style="margin-top:10px">
+              <div class="wl-entry">
+                <div><div class="wl-email">alex.p@gmail.com</div><div class="wl-time">Joined 5 hours ago</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</div>
+
+<!-- ═══════════════════ EMAILS SECTION ═══════════════════ -->
+<div id="sec-emails" class="section hidden">
+  <h2 class="section-title">Automated Emails & Notifications</h2>
+  <p class="section-sub">5 automated email templates triggered at key moments in the booking lifecycle. All sent via Resend API.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+
+    <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+      <div style="background:var(--ocean);padding:12px 16px;color:#fff;font-size:13px;font-weight:600">① Enquiry Confirmation → Customer</div>
+      <div style="padding:16px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Trigger: Customer submits booking form</div>
+        <div class="email-preview" style="margin:0">
+          <div class="email-subject">We've received your enquiry — TND-XXXXX</div>
+          <div class="email-body">
+            <p><strong>Enquiry received 🎉</strong></p>
+            <p>Confirms date, boat, guests. Mentions €100 deposit next step.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+      <div style="background:var(--teal);padding:12px 16px;color:#fff;font-size:13px;font-weight:600">② Admin Alert → Captain</div>
+      <div style="padding:16px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Trigger: Same as above (fire-and-forget)</div>
+        <div class="email-preview" style="margin:0">
+          <div class="email-subject">New enquiry TND-XXXXX — Sun Dancer on 13 Jun</div>
+          <div class="email-body">
+            <p><strong>New booking enquiry</strong></p>
+            <p>Shows all details. Links to admin portal to confirm/cancel.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+      <div style="background:var(--green);padding:12px 16px;color:#fff;font-size:13px;font-weight:600">③ Booking Confirmed → Customer</div>
+      <div style="padding:16px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Trigger: Captain taps ✅ Confirm</div>
+        <div class="email-preview" style="margin:0">
+          <div class="email-subject">✅ Booking confirmed — TND-XXXXX</div>
+          <div class="email-body">
+            <p><strong>You're booked! 🎉</strong></p>
+            <p>Confirms charter. Shows dock (Your Marina). WhatsApp CTA to captain.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+      <div style="background:var(--red);padding:12px 16px;color:#fff;font-size:13px;font-weight:600">④ Cancellation → Customer</div>
+      <div style="padding:16px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Trigger: Captain cancels, or auto-cancel on competing confirm</div>
+        <div class="email-preview" style="margin:0">
+          <div class="email-subject">Update on your enquiry — TND-XXXXX</div>
+          <div class="email-body">
+            <p><strong>Update on your enquiry</strong></p>
+            <p>Apologises, suggests alternatives. CTAs: check dates, WhatsApp.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+      <div style="background:var(--gold);padding:12px 16px;color:var(--navy);font-size:13px;font-weight:600">⑤ Waitlist Notification → Customer</div>
+      <div style="padding:16px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Trigger: Confirmed booking cancelled, spot opens</div>
+        <div class="email-preview" style="margin:0">
+          <div class="email-subject">Good news — Sun Dancer on 13 Jun has a spot!</div>
+          <div class="email-body">
+            <p><strong>A date just opened up! 🎉</strong></p>
+            <p>Auto-creates enquiry. Captain will confirm. WhatsApp CTA.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Email Flow Diagram -->
+  <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-top:32px">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center">Email Trigger Map</h3>
+    <div style="max-width:720px;margin:0 auto;font-size:13px">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--ocean-light);border-radius:8px;margin-bottom:4px">
+        <span style="font-size:18px">📱</span>
+        <span style="flex:1"><strong>Customer submits form</strong></span>
+        <span style="font-size:11px;color:var(--ocean)">→ Emails ① + ②</span>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--green-light);border-radius:8px;margin-bottom:4px">
+        <span style="font-size:18px">✅</span>
+        <span style="flex:1"><strong>Captain confirms</strong></span>
+        <span style="font-size:11px;color:var(--green)">→ Email ③ + auto-cancel competitors → Email ④</span>
+      </div>
+      <div class="arrow-down">or</div>
+      <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--red-light);border-radius:8px;margin-bottom:4px">
+        <span style="font-size:18px">❌</span>
+        <span style="flex:1"><strong>Captain cancels</strong></span>
+        <span style="font-size:11px;color:var(--red)">→ Email ④ + check waitlist → Email ⑤</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="text-align:center;padding:40px 24px;color:var(--muted);font-size:13px">
+  BookItMalta Platform Demo · Built by <strong>True North Digital</strong>
+</div>
+
+<script>
+function showSection(name) {
+  document.querySelectorAll('[id^="sec-"]').forEach(s => s.classList.add('hidden'));
+  const target = document.getElementById('sec-' + name);
+  if (target) target.classList.remove('hidden');
+  document.querySelectorAll('.topbar nav button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  window.scrollTo({top: document.querySelector('.hero').offsetHeight, behavior: 'smooth'});
+}
+
+function toggleCard(head) {
+  const body = head.nextElementSibling;
+  const arrow = head.querySelector('.arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// Auto-expand first card in visible section
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tl-card-body').forEach(b => b.classList.remove('open'));
+});
+</script>
+
+</body>
+</html>
