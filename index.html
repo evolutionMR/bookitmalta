@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============================================================
+     SEO — primary
+============================================================ -->
+<title>BookItMalta — Malta Boat Tours & Charters, Direct from Local Operators</title>
+<meta name="description" content="Malta's direct-booking platform for boat charters, Blue Lagoon trips, Comino tours and sunset cruises. Lower commission, weekly payouts for operators. Launching Summer 2026." />
+<meta name="keywords" content="Malta boat tours, Malta boat charter, Blue Lagoon Malta, Comino boat trip, Gozo boat trip, Malta sunset cruise, catamaran Malta, RIB Malta, direct booking Malta" />
+<link rel="canonical" href="https://bookitmalta.com/" />
+<meta name="robots" content="index, follow" />
+<meta name="author" content="TrueNorthDigital" />
+
+<!-- Google Search Console verification placeholder — REPLACE with your code -->
+<meta name="google-site-verification" content="REPLACE_WITH_GSC_TOKEN" />
+
+<!-- ============================================================
+     Open Graph / Social
+============================================================ -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bookitmalta.com/" />
+<meta property="og:title" content="BookItMalta — Malta Boat Tours, Direct from Local Operators" />
+<meta property="og:description" content="The direct-booking platform for Malta boat charters. 12% flat commission — a fraction of what GetYourGuide and Viator charge. Launching Summer 2026." />
+<meta property="og:image" content="https://bookitmalta.com/og-image.jpg" />
+<meta property="og:locale" content="en_MT" />
+<meta property="og:site_name" content="BookItMalta" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="BookItMalta — Malta Boat Tours, Direct from Local Operators" />
+<meta name="twitter:description" content="The direct-booking platform for Malta boat charters. Launching Summer 2026." />
+<meta name="twitter:image" content="https://bookitmalta.com/og-image.jpg" />
+
+<!-- ============================================================
+     Schema.org — Organization + WebSite
+============================================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "BookItMalta",
+  "url": "https://bookitmalta.com",
+  "description": "Malta's direct-booking platform for boat charters and sea experiences.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Rabat",
+    "addressCountry": "MT"
+  },
+  "sameAs": [
+    "https://www.facebook.com/profile.php?id=61572009367594"
+  ],
+  "parentOrganization": {
+    "@type": "Organization",
+    "name": "TrueNorthDigital"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "BookItMalta",
+  "url": "https://bookitmalta.com",
+  "inLanguage": "en"
+}
+</script>
+
+<!-- ============================================================
+     Fonts — Fraunces (display serif) + Manrope (body sans)
+============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..700&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   Design tokens — Mediterranean editorial
+============================================================ */
+:root {
+  --ink: #0B2545;           /* deep Mediterranean ink */
+  --ink-soft: #1C3558;
+  --paper: #F4EBD9;         /* Maltese limestone cream */
+  --paper-deep: #EBDFC6;
+  --terracotta: #C85C2E;    /* Maltese balcony terracotta */
+  --terracotta-deep: #A64620;
+  --sea: #3D6B6F;           /* sea-glass teal */
+  --char: #1C1E26;
+  --mute: rgba(11, 37, 69, 0.55);
+  --rule: rgba(11, 37, 69, 0.15);
+  --rule-strong: rgba(11, 37, 69, 0.35);
+
+  --serif: "Fraunces", Georgia, serif;
+  --sans:  "Manrope", -apple-system, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, monospace;
+
+  --maxw: 1240px;
+  --gut: clamp(1.25rem, 4vw, 3rem);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* Subtle paper grain on the whole page */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(rgba(11,37,69,0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 0;
+}
+main, nav, footer { position: relative; z-index: 1; }
+
+/* ============================================================
+   Typography
+============================================================ */
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); font-weight: 400; letter-spacing: -0.015em; }
+h1 {
+  font-size: clamp(2.6rem, 6.2vw, 5.8rem);
+  line-height: 0.98;
+  font-weight: 340;
+  font-variation-settings: "SOFT" 30, "WONK" 1;
+}
+h1 em { font-style: italic; color: var(--terracotta); font-variation-settings: "SOFT" 80, "WONK" 1; }
+h2 {
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  font-weight: 360;
+}
+h3 {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.2;
+  font-weight: 420;
+}
+.lead {
+  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 34em;
+}
+p { max-width: 38em; }
+
+/* ============================================================
+   Layout
+============================================================ */
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gut);
+}
+section { padding: clamp(4rem, 9vw, 8rem) 0; }
+.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+/* ============================================================
+   Nav
+============================================================ */
+nav.top {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+nav.top .wrap {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+}
+.wordmark {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  font-variation-settings: "SOFT" 50, "WONK" 1;
+  letter-spacing: -0.015em;
+}
+.wordmark span { color: var(--terracotta); font-style: italic; }
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--mute); letter-spacing: 0.08em; }
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  transition: all .2s ease;
+}
+.nav-cta:hover { background: var(--ink); color: var(--paper); }
+
+/* ============================================================
+   Hero
+============================================================ */
+.hero { padding: clamp(3.5rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem); position: relative; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+}
+.hero-kicker {
+  display: flex; align-items: center; gap: 0.9rem; margin-bottom: 2rem;
+}
+.hero-kicker .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: .55; transform: scale(0.8); }
+}
+.hero h1 { margin-bottom: 2rem; max-width: 16ch; }
+.hero .lead { margin-bottom: 2.5rem; }
+
+.hero-side {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+  padding-top: 0.5rem;
+}
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.btn {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1rem 1.6rem;
+  border-radius: 999px;
+  transition: all .22s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+}
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--terracotta); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--rule-strong); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn .arrow { transition: transform .22s ease; }
+.btn:hover .arrow { transform: translateX(4px); }
+
+.hero-meta {
+  margin-top: 4rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 2rem 3rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+.hero-meta strong { color: var(--ink); font-weight: 500; }
+
+/* ============================================================
+   Editorial body — The situation
+============================================================ */
+.situation {
+  background: var(--paper-deep);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.situation-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+.situation .eyebrow { margin-bottom: 1.2rem; }
+.situation h2 { margin-bottom: 0; }
+.situation-body p { font-size: 1.15rem; line-height: 1.55; color: var(--ink-soft); }
+.situation-body p + p { margin-top: 1.2rem; }
+.drop { font-family: var(--serif); font-size: 3.6rem; line-height: 0.8; float: left; padding: 0.35rem 0.5rem 0 0; color: var(--terracotta); font-style: italic; }
+
+/* ============================================================
+   What changes — three bold propositions
+============================================================ */
+.changes .head { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 2rem; margin-bottom: 4rem; }
+.changes .head h2 { max-width: 18ch; }
+.changes .head .aside { font-family: var(--mono); font-size: 0.78rem; color: var(--mute); max-width: 24ch; text-align: right; line-height: 1.5; }
+.changes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule-strong);
+}
+.change {
+  padding: 2.4rem 1.8rem 2.4rem 0;
+  border-right: 1px solid var(--rule);
+  position: relative;
+}
+.change:last-child { border-right: 0; }
+.change:not(:first-child) { padding-left: 1.8rem; }
+.change-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--terracotta);
+  margin-bottom: 2rem;
+  display: block;
+}
+.change h3 { margin-bottom: 0.8rem; font-size: 1.75rem; font-weight: 380; line-height: 1.1; }
+.change h3 em { font-style: italic; color: var(--terracotta); }
+.change p { font-size: 0.97rem; color: var(--ink-soft); }
+
+/* ============================================================
+   Comparison table
+============================================================ */
+.compare { background: var(--ink); color: var(--paper); }
+.compare .eyebrow { color: rgba(244,235,217,0.55); }
+.compare h2 { color: var(--paper); }
+.compare .head { margin-bottom: 3rem; }
+.compare-table {
+  width: 100%; border-collapse: collapse; margin-top: 1.5rem;
+  font-family: var(--sans);
+}
+.compare-table th, .compare-table td {
+  text-align: left;
+  padding: 1.4rem 1.2rem;
+  border-bottom: 1px solid rgba(244,235,217,0.12);
+  vertical-align: top;
+}
+.compare-table th {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: rgba(244,235,217,0.6);
+  padding-bottom: 1rem;
+}
+.compare-table th:first-child { color: transparent; }
+.compare-table th.them { color: rgba(244,235,217,0.6); }
+.compare-table th.us {
+  color: var(--terracotta);
+  background: linear-gradient(to bottom, transparent 0%, rgba(200,92,46,0.06) 100%);
+}
+.compare-table td { font-size: 0.96rem; }
+.compare-table td.label { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(244,235,217,0.55); width: 24%; }
+.compare-table td.us { color: var(--paper); font-weight: 500; background: rgba(200,92,46,0.05); }
+.compare-table td.them { color: rgba(244,235,217,0.72); }
+
+/* ============================================================
+   How it works
+============================================================ */
+.how h2 { max-width: 14ch; margin-bottom: 3.5rem; }
+.how-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.step { background: var(--paper); padding: 2.5rem 2rem; }
+.step-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--terracotta);
+  line-height: 1;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+.step h3 { margin-bottom: 0.7rem; font-size: 1.4rem; }
+.step p { font-size: 0.95rem; color: var(--ink-soft); }
+
+/* ============================================================
+   Founding partner offer — the big ask
+============================================================ */
+.offer {
+  background: var(--terracotta);
+  color: var(--paper);
+  border-top: 1px solid rgba(11,37,69,0.15);
+}
+.offer .eyebrow { color: rgba(244,235,217,0.7); }
+.offer h2 { color: var(--paper); max-width: 14ch; font-size: clamp(2.2rem, 5vw, 4rem); }
+.offer h2 em { font-style: italic; color: var(--ink); }
+.offer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+.offer-points {
+  list-style: none;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(244,235,217,0.25);
+}
+.offer-points li {
+  padding: 1.2rem 0;
+  border-bottom: 1px solid rgba(244,235,217,0.25);
+  display: flex; gap: 1.2rem; align-items: baseline;
+  font-size: 1rem;
+}
+.offer-points .n {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: rgba(244,235,217,0.7);
+  min-width: 2.2rem;
+}
+.offer-points strong { font-family: var(--serif); font-weight: 500; font-size: 1.08rem; font-style: italic; }
+
+/* Operator form card */
+.form-card {
+  background: var(--paper);
+  color: var(--ink);
+  padding: clamp(1.8rem, 3vw, 2.6rem);
+  border-radius: 4px;
+}
+.form-card .kicker { color: var(--terracotta); margin-bottom: 0.7rem; }
+.form-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.form-card p.sub { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 1.8rem; }
+.form-card form { display: grid; gap: 0.9rem; }
+.field { display: grid; gap: 0.4rem; }
+.field label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.field input, .field select, .field textarea {
+  font-family: var(--sans);
+  font-size: 0.97rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 3px;
+  transition: border-color .15s ease;
+}
+.field input:focus, .field select:focus, .field textarea:focus { outline: 0; border-color: var(--ink); }
+.field textarea { resize: vertical; min-height: 80px; font-family: var(--sans); }
+.form-card .btn-primary { justify-content: center; margin-top: 0.4rem; }
+.form-card .disclaimer { font-size: 0.78rem; color: var(--mute); margin-top: 0.6rem; line-height: 1.4; }
+.form-success {
+  display: none;
+  padding: 1.2rem; background: rgba(61,107,111,0.12);
+  border-left: 3px solid var(--sea);
+  font-size: 0.95rem; color: var(--ink);
+}
+.form-success.visible { display: block; }
+
+/* ============================================================
+   Traveler waitlist
+============================================================ */
+.travellers {
+  background: var(--paper-deep);
+  padding: clamp(3rem, 6vw, 5rem) 0;
+}
+.travellers .wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+.travellers h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.1; margin-bottom: 0.8rem; }
+.travellers h3 em { font-style: italic; color: var(--terracotta); }
+.travellers p { color: var(--ink-soft); font-size: 1.02rem; }
+.inline-form { display: flex; gap: 0.6rem; align-items: center; }
+.inline-form input {
+  flex: 1; font-family: var(--sans); font-size: 0.97rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--rule-strong); background: var(--paper); border-radius: 3px; color: var(--ink);
+}
+.inline-form input:focus { outline: 0; border-color: var(--ink); }
+.inline-form button { white-space: nowrap; }
+
+/* ============================================================
+   FAQ
+============================================================ */
+.faq h2 { margin-bottom: 3rem; max-width: 16ch; }
+.faq-list { border-top: 1px solid var(--rule-strong); }
+.faq-item { border-bottom: 1px solid var(--rule); padding: 1.6rem 0; }
+.faq-item summary {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 2rem;
+  cursor: pointer; list-style: none;
+  font-family: var(--serif); font-size: 1.3rem; font-weight: 400; color: var(--ink);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+"; font-family: var(--mono); color: var(--terracotta); font-size: 1.4rem;
+  transition: transform .2s ease;
+}
+.faq-item[open] summary::after { content: "−"; }
+.faq-item p { padding-top: 1rem; color: var(--ink-soft); font-size: 1rem; max-width: 48em; }
+
+/* ============================================================
+   Footer
+============================================================ */
+footer {
+  background: var(--ink);
+  color: rgba(244,235,217,0.7);
+  padding: 4rem 0 2rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(244,235,217,0.12);
+}
+footer .wordmark { color: var(--paper); margin-bottom: 1rem; font-size: 1.7rem; }
+footer .wordmark span { color: var(--terracotta); }
+.footer-intro p { font-size: 0.95rem; color: rgba(244,235,217,0.65); max-width: 32em; line-height: 1.55; }
+.footer-col h4 {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(244,235,217,0.45);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.footer-col ul { list-style: none; display: grid; gap: 0.6rem; font-size: 0.95rem; }
+.footer-col a:hover { color: var(--terracotta); }
+.footer-bottom {
+  padding-top: 2rem;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  font-family: var(--mono); font-size: 0.72rem; color: rgba(244,235,217,0.45); letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+/* ============================================================
+   Partnership tiers — pricing cards
+============================================================ */
+.tiers {
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.tiers .head { margin-bottom: 3.5rem; max-width: 52rem; }
+.tiers .head h2 { margin-bottom: 1.2rem; max-width: 14ch; }
+.tiers .head h2 em { font-style: italic; color: var(--terracotta); }
+.tiers .head .lead { margin-bottom: 0; }
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+.tier {
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: 2.2rem 1.8rem;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.tier:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(11,37,69,0.08); }
+
+.tier-featured {
+  border: 1px solid var(--terracotta);
+  background: linear-gradient(180deg, rgba(200,92,46,0.04) 0%, var(--paper) 40%);
+  box-shadow: 0 2px 24px rgba(200,92,46,0.08);
+}
+.tier-ribbon {
+  position: absolute;
+  top: -0.8rem; left: 50%;
+  transform: translateX(-50%);
+  background: var(--terracotta);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.tier-name {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: var(--ink);
+  font-weight: 420;
+  margin-bottom: 0.4rem;
+}
+.tier-tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 1.8rem;
+  min-height: 1.4em;
+}
+.tier-price {
+  display: flex; align-items: baseline; gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.tier-price-big {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-weight: 320;
+  color: var(--ink);
+  line-height: 1;
+  font-variation-settings: "SOFT" 50, "WONK" 0;
+}
+.tier-featured .tier-price-big { color: var(--terracotta); }
+.tier-price-unit {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+.tier-retainer {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+.tier-retainer strong { color: var(--ink); font-weight: 500; }
+
+.tier-features {
+  list-style: none;
+  margin: 0 0 2rem 0;
+  padding: 0;
+  flex: 1;
+}
+.tier-features li {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  padding: 0.5rem 0 0.5rem 1.6rem;
+  position: relative;
+  color: var(--ink-soft);
+}
+.tier-features li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.95rem;
+  width: 10px; height: 2px;
+  background: var(--terracotta);
+}
+.tier-features li.tier-plus {
+  font-style: italic;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.8rem;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+}
+.tier-features li.tier-plus::before {
+  content: "+";
+  background: transparent;
+  color: var(--terracotta);
+  width: auto; height: auto;
+  top: 0.4rem;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.tier .btn {
+  justify-content: center;
+  width: 100%;
+}
+
+/* ============================================================
+   Founding partner — La Zingara feature
+============================================================ */
+.partner {
+  background: var(--paper-deep);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.partner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+.partner-visual { position: relative; }
+.partner-visual img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 2px 30px rgba(11, 37, 69, 0.12);
+}
+.partner-caption {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-top: 1rem;
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.partner-caption::before {
+  content: ""; width: 22px; height: 1px; background: var(--terracotta);
+}
+.partner-body .eyebrow { margin-bottom: 1.1rem; }
+.partner-body h2 { margin-bottom: 1.3rem; max-width: 16ch; }
+.partner-body h2 em { font-style: italic; color: var(--terracotta); }
+.partner-body .lead { margin-bottom: 1.2rem; }
+.partner-body p { margin-bottom: 1.8rem; color: var(--ink-soft); }
+.partner-tags {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.partner-tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   Motion — staggered reveal
+============================================================ */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   Responsive
+============================================================ */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-side { display: none; }
+  .situation-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .changes-grid { grid-template-columns: 1fr; }
+  .change { border-right: 0; border-bottom: 1px solid var(--rule); padding: 2rem 0 !important; }
+  .change:last-child { border-bottom: 0; }
+  .how-grid { grid-template-columns: 1fr; }
+  .offer-grid, .travellers .wrap, .footer-grid { grid-template-columns: 1fr; }
+  .partner-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .tier-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .tier-featured { order: -1; }
+  .tier-ribbon { top: -0.7rem; }
+  .compare-table td.label { width: 40%; }
+  .inline-form { flex-direction: column; align-items: stretch; }
+  .hero-meta { gap: 1rem 1.5rem; }
+  .changes .head { flex-direction: column; align-items: flex-start; }
+  .changes .head .aside { text-align: left; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav class="top">
+  <div class="wrap">
+    <a href="/" class="wordmark">BookIt<span>Malta</span></a>
+    <div class="nav-right">
+      <span class="nav-meta">Launching Summer 2026</span>
+      <a href="#operators" class="nav-cta">For Operators</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-kicker reveal">
+          <span class="dot"></span>
+          <span class="kicker">A Malta-made booking platform · Est. 2026</span>
+        </div>
+
+        <h1 class="reveal">
+          Malta's direct-booking platform for boat <em>charters</em> and sea experiences.
+        </h1>
+
+        <p class="lead reveal">
+          Built for local operators first. A flat 12% commission — well below the big platforms. Paid every Monday. Every booking comes with the customer's details.
+        </p>
+
+        <div class="cta-row reveal">
+          <a href="#operators" class="btn btn-primary">
+            Become a founding partner
+            <span class="arrow">→</span>
+          </a>
+          <a href="#travellers" class="btn btn-ghost">
+            Travellers — join waitlist
+          </a>
+        </div>
+
+        <div class="hero-meta reveal">
+          <span><strong>12%</strong> flat commission</span>
+          <span><strong>Weekly</strong> payouts</span>
+          <span><strong>20</strong> founding operators</span>
+          <span>By <strong>TrueNorthDigital</strong></span>
+        </div>
+      </div>
+      <div class="hero-side">bookitmalta.com · 01/01</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== THE SITUATION ==================== -->
+<section class="situation">
+  <div class="wrap">
+    <div class="situation-grid">
+      <div>
+        <div class="eyebrow">§ 01 — The situation</div>
+        <h2>The platforms take a quarter of every booking. And a month to pay.</h2>
+      </div>
+      <div class="situation-body">
+        <p><span class="drop">M</span>alta is on track for roughly 4.5 million visitors in 2026. A huge share of them will book their boat tour, their Blue Lagoon trip, their sunset cruise — not directly with the captain, but through a platform that takes 20 to 30 percent and settles at the end of the month.</p>
+        <p>That model works for the platforms. It works less well for the people who actually run the boats. BookItMalta exists because the operators of Malta deserve a booking channel that pays them more, pays them sooner, and gives them back the one thing the big platforms never return: the relationship with the customer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== WHAT CHANGES ==================== -->
+<section class="changes">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow">§ 02 — What changes</div>
+        <h2>Three things the incumbents won't fix.</h2>
+      </div>
+      <div class="aside">
+        A simpler deal, written in favour of the operator — not the platform.
+      </div>
+    </div>
+    <div class="changes-grid">
+      <div class="change">
+        <span class="change-num">01</span>
+        <h3>12% <em>flat</em>. Not 25%.</h3>
+        <p>A flat 12% on every booking through BookItMalta. GetYourGuide and Viator typically charge 20–30%. The difference — up to €180 on every €1,000 charter — is yours to keep or to pass on.</p>
+      </div>
+      <div class="change">
+        <span class="change-num">02</span>
+        <h3>Paid every <em>Monday</em>.</h3>
+        <p>Weekly settlement of the previous seven days. No more waiting for month-end. Cashflow that matches how you actually run the season.</p>
+      </div>
+      <div class="change">
+        <span class="change-num">03</span>
+        <h3>The customer is <em>yours</em>.</h3>
+        <p>Every booking comes with the full email, phone and preferences. Follow up, upsell, invite them back next summer. You own the relationship.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COMPARISON ==================== -->
+<section class="compare">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">§ 03 — Side by side</div>
+      <h2>BookItMalta versus the incumbent platforms.</h2>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="us">BookItMalta</th>
+          <th class="them">GetYourGuide / Viator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label">Commission</td>
+          <td class="us">12% flat</td>
+          <td class="them">20–30%, negotiated</td>
+        </tr>
+        <tr>
+          <td class="label">Payout schedule</td>
+          <td class="us">Every Monday</td>
+          <td class="them">Monthly, post-travel</td>
+        </tr>
+        <tr>
+          <td class="label">Customer data</td>
+          <td class="us">Email, phone, preferences — yours</td>
+          <td class="them">Platform-owned</td>
+        </tr>
+        <tr>
+          <td class="label">Brand shown</td>
+          <td class="us">Your boat, your name, your story</td>
+          <td class="them">Platform branding</td>
+        </tr>
+        <tr>
+          <td class="label">Listing build</td>
+          <td class="us">Done-for-you — photography, copy, pricing</td>
+          <td class="them">DIY self-service template</td>
+        </tr>
+        <tr>
+          <td class="label">Minimum term</td>
+          <td class="us">12 months</td>
+          <td class="them">Indefinite</td>
+        </tr>
+        <tr>
+          <td class="label">Based in</td>
+          <td class="us">Rabat, Malta</td>
+          <td class="them">Berlin / Boston</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== HOW IT WORKS ==================== -->
+<section class="how">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 1rem;">§ 04 — How it works</div>
+    <h2>Three steps, one season.</h2>
+    <div class="how-grid">
+      <div class="step">
+        <span class="step-num">i.</span>
+        <h3>Onboard</h3>
+        <p>We build your listing — fleet, seasonal pricing, availability, photography. You review and approve. Usually ten days from signature to live.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">ii.</span>
+        <h3>Book</h3>
+        <p>Customers find you through BookItMalta or your own channel and book direct. Real-time availability. Automated confirmation via WhatsApp and email.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">iii.</span>
+        <h3>Paid</h3>
+        <p>Every Monday morning, last week's bookings settle to your account. Full transparency in your operator dashboard — revenue, commission, customer contacts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOUNDING PARTNER · LA ZINGARA ==================== -->
+<section class="partner">
+  <div class="wrap">
+    <div class="partner-grid">
+      <div class="partner-visual">
+        <img src="https://cdn.sanity.io/images/xy4l8931/production/2f2d4067f8eb5b936981c6527ce21bcb4026aa3b-1440x960.jpg?w=1200&q=80&auto=format" alt="La Zingara — Lagoon catamaran out of Sliema, Malta" loading="lazy" />
+        <div class="partner-caption">La Zingara · Lagoon catamaran · Sliema</div>
+      </div>
+      <div class="partner-body">
+        <div class="eyebrow">§ 04a — Our first founding partner</div>
+        <h2>La Zingara is <em>already accepting</em> bookings.</h2>
+        <p class="lead">
+          The full BookItMalta marketplace opens Summer 2026. Our first founding partner — La Zingara Catamaran Charters, a Lagoon catamaran for up to 28 guests out of Sliema — is live today.
+        </p>
+        <p>
+          Blue Lagoon day charters, Gozo &amp; Comino adventures, sunset cruises. Book direct with the captain. Keep the 20–30% that the big platforms normally take.
+        </p>
+        <div class="partner-tags">
+          <span class="partner-tag">Up to 28 guests</span>
+          <span class="partner-tag">Private charter</span>
+          <span class="partner-tag">Sliema departure</span>
+          <span class="partner-tag">From €784</span>
+        </div>
+        <div class="cta-row">
+          <a href="https://catamaranmalta.com/?utm_source=bookitmalta&utm_medium=referral&utm_campaign=founding_partner" class="btn btn-primary" target="_blank" rel="noopener">
+            Book with La Zingara <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PARTNERSHIP TIERS ==================== -->
+<section class="tiers">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">§ 05 — Partnership tiers</div>
+      <h2>Three ways to <em>partner</em>.</h2>
+      <p class="lead">
+        Pick the level of support that fits your business. Commission is what you pay on bookings we drive. The retainer reflects the work we do on your behalf — listing build, SEO, content, support. Both are simple, flat, and yours to choose.
+      </p>
+    </div>
+
+    <div class="tier-grid">
+
+      <!-- TIER 1 — Commission-only -->
+      <article class="tier">
+        <div class="tier-name">Commission-only</div>
+        <div class="tier-tag">For operators with existing traffic</div>
+        <div class="tier-price">
+          <span class="tier-price-big">18%</span>
+          <span class="tier-price-unit">commission</span>
+        </div>
+        <div class="tier-retainer"><strong>No retainer.</strong> Self-serve listing.</div>
+
+        <ul class="tier-features">
+          <li>Listing on bookitmalta.com</li>
+          <li>Automated booking &amp; availability</li>
+          <li>Weekly Monday payouts</li>
+          <li>Full customer contact details</li>
+          <li>Self-service content management</li>
+        </ul>
+
+        <a href="#operators" class="btn btn-ghost">Apply</a>
+      </article>
+
+      <!-- TIER 2 — Standard -->
+      <article class="tier">
+        <div class="tier-name">Standard</div>
+        <div class="tier-tag">The default for new partners</div>
+        <div class="tier-price">
+          <span class="tier-price-big">12%</span>
+          <span class="tier-price-unit">commission</span>
+        </div>
+        <div class="tier-retainer"><strong>€350 / month</strong> retainer</div>
+
+        <ul class="tier-features">
+          <li class="tier-plus">Everything in Commission-only, plus:</li>
+          <li>Done-for-you listing build</li>
+          <li>Professional photography &amp; copy</li>
+          <li>Priority SEO placement</li>
+          <li>Dedicated operator support</li>
+        </ul>
+
+        <a href="#operators" class="btn btn-ghost">Apply</a>
+      </article>
+
+      <!-- TIER 3 — Founding partner (featured) -->
+      <article class="tier tier-featured">
+        <div class="tier-ribbon">First 20 operators</div>
+        <div class="tier-name">Founding partner</div>
+        <div class="tier-tag">While founding slots remain</div>
+        <div class="tier-price">
+          <span class="tier-price-big">12%</span>
+          <span class="tier-price-unit">commission</span>
+        </div>
+        <div class="tier-retainer"><strong>€250 / month</strong> Year 1 · €350 thereafter</div>
+
+        <ul class="tier-features">
+          <li class="tier-plus">Everything in Standard, plus:</li>
+          <li>Rates locked for contract duration</li>
+          <li>Top-of-category SEO placement</li>
+          <li>Direct input on product roadmap</li>
+          <li>€100/month retainer discount in Year 1</li>
+        </ul>
+
+        <a href="#operators" class="btn btn-primary">Apply as founding partner <span class="arrow">→</span></a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== OFFER + OPERATOR FORM ==================== -->
+<section class="offer" id="operators">
+  <div class="wrap">
+    <div class="offer-grid">
+      <div>
+        <div class="eyebrow">§ 06 — Apply</div>
+        <h2>Apply to become a <em>founding partner</em>.</h2>
+        <p style="color: rgba(244,235,217,0.85); font-size: 1.05rem; line-height: 1.55; max-width: 32em; margin-top: 1rem;">
+          Tell us a bit about your business and we&rsquo;ll be in touch within 48 hours to schedule a 20-minute call. No commitment from the call — we&rsquo;ll walk you through how BookItMalta would work for your specific operation, and you decide from there.
+        </p>
+        <p style="color: rgba(244,235,217,0.7); font-size: 0.95rem; line-height: 1.55; max-width: 32em; margin-top: 1.2rem;">
+          Applying for a different tier? Still use this form — just mention which tier fits you best in the notes.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <div class="kicker">Apply to join</div>
+        <h3>Become a founding partner</h3>
+        <p class="sub">We'll be in touch within 48 hours to schedule a 20-minute call.</p>
+
+        <form id="operator-form" action="https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID" method="POST">
+          <div class="field">
+            <label for="op-name">Your name</label>
+            <input id="op-name" name="name" type="text" required autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="op-company">Business / boat name</label>
+            <input id="op-company" name="company" type="text" required />
+          </div>
+          <div class="field">
+            <label for="op-email">Email</label>
+            <input id="op-email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="op-phone">Phone / WhatsApp</label>
+            <input id="op-phone" name="phone" type="tel" required autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="op-type">What do you operate?</label>
+            <select id="op-type" name="type" required>
+              <option value="">Select one…</option>
+              <option>Catamaran charter</option>
+              <option>RIB / speedboat</option>
+              <option>Sunset cruise</option>
+              <option>Fishing charter</option>
+              <option>Yacht charter</option>
+              <option>Dive boat</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="op-notes">Anything else (optional)</label>
+            <textarea id="op-notes" name="notes" placeholder="Fleet size, current channels, peak season…"></textarea>
+          </div>
+          <input type="hidden" name="_source" value="bookitmalta.com operator form" />
+          <input type="text" name="_gotcha" style="display:none" aria-hidden="true" />
+
+          <button type="submit" class="btn btn-primary">
+            Submit application <span class="arrow">→</span>
+          </button>
+          <p class="disclaimer">We reply within 48 hours. No mailing list, no spam — just a real conversation about whether this fits your business.</p>
+        </form>
+
+        <div class="form-success" id="operator-success">
+          <strong>Thank you.</strong> Your application is in. Expect a note from Julian within 48 hours.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TRAVELLER WAITLIST ==================== -->
+<section class="travellers" id="travellers">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow" style="margin-bottom: 0.8rem;">§ 07 — For travellers</div>
+      <h3>Bookings open <em>Summer 2026</em>.</h3>
+      <p>The Blue Lagoon, Comino caves, Gozo by sea, sunsets from the deck. Directly from Malta's best local operators — no middleman markup. Join the list and we'll send one email when bookings open.</p>
+    </div>
+    <div>
+      <form id="traveller-form" action="https://formspree.io/f/REPLACE_WITH_TRAVELLER_FORMSPREE_ID" method="POST" class="inline-form">
+        <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+        <input type="hidden" name="_source" value="bookitmalta.com traveller waitlist" />
+        <input type="text" name="_gotcha" style="display:none" aria-hidden="true" />
+        <button type="submit" class="btn btn-primary">Join waitlist <span class="arrow">→</span></button>
+      </form>
+      <div class="form-success" id="traveller-success" style="margin-top: 1rem;">
+        <strong>Added.</strong> We'll be in touch the moment bookings go live.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section class="faq">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 1rem;">§ 08 — Questions</div>
+    <h2>Answers, before you ask.</h2>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Which categories are you launching with?</summary>
+        <p>At launch: catamaran charters, RIB and speedboat trips, sunset cruises, and fishing charters. Dive boats and yacht charters are in the pipeline for late 2026.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Who's behind BookItMalta?</summary>
+        <p>BookItMalta is built by TrueNorthDigital — a Malta-based technology studio that has already built direct-booking infrastructure for local charter operators, including La Zingara Catamaran Charters. The same team, the same approach, now opened up to the rest of the market.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How does the 12% commission work exactly?</summary>
+        <p>12% flat on every booking confirmed through BookItMalta — website bookings, WhatsApp bookings attributable to the platform, phone bookings from leads we send you. It does not apply to existing customers you already book independently, or to bookings from third-party platforms like GetYourGuide that you still use.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What does the €250/month retainer cover?</summary>
+        <p>Listing management, content updates, technical maintenance, customer-support coverage, analytics, and priority placement in our SEO and content strategy. For founding partners, €250/month is locked for Year 1 (then €350/month from Year 2).</p>
+      </details>
+      <details class="faq-item">
+        <summary>Am I allowed to still use GetYourGuide and Viator?</summary>
+        <p>Yes. BookItMalta is designed to complement your existing channels, not replace them. Over time, most of our founding partners expect direct bookings to become their highest-margin channel — but that's your call, not ours.</p>
+      </details>
+      <details class="faq-item">
+        <summary>When exactly do bookings open for travellers?</summary>
+        <p>Summer 2026. Precise launch date depends on the pace of operator onboarding. Founding partners go live as soon as their listing is ready — the consumer-facing site opens once we have full category coverage.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-intro">
+        <div class="wordmark">BookIt<span>Malta</span></div>
+        <p>Malta's direct-booking platform for boat charters and sea experiences. Built in Rabat, Malta, by TrueNorthDigital. Launching Summer 2026.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#operators">For operators</a></li>
+          <li><a href="#travellers">For travellers</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@bookitmalta.com">hello@bookitmalta.com</a></li>
+          <li><a href="https://www.facebook.com/profile.php?id=61572009367594" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 BookItMalta · A TrueNorthDigital company</span>
+      <span>Rabat · Malta</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =====================================================
+   Staggered reveal on load
+===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), 120 * i);
+  });
+});
+
+/* =====================================================
+   Form submissions — progressive enhancement
+   Forms post to Formspree by default. This JS just gives
+   inline success feedback without a page reload.
+===================================================== */
+function wireForm(formId, successId) {
+  const form = document.getElementById(formId);
+  const success = document.getElementById(successId);
+  if (!form || !success) return;
+
+  form.addEventListener('submit', async (e) => {
+    // Let it submit normally if Formspree isn't configured
+    if (form.action.includes('REPLACE_WITH')) return;
+    e.preventDefault();
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display = 'none';
+        success.classList.add('visible');
+      }
+    } catch (err) {
+      // Fallback: let the form post normally
+      form.submit();
+    }
+  });
+}
+wireForm('operator-form', 'operator-success');
+wireForm('traveller-form', 'traveller-success');
+</script>
+
+</body>
+</html>
