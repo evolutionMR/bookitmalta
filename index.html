@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <title>BookItMalta — Booking infrastructure for Malta's charter operators</title>
-<meta name="description" content="The Malta-built booking engine and captain's portal for boat charter operators. Own your customer relationship. Keep more of every booking. From €79/month." />
+<meta name="description" content="The Malta-built booking engine and captain's portal for boat charter operators. Own your customer relationship. Keep more of every booking. From €250/month." />
 <meta name="keywords" content="Malta boat booking system, charter operator software, catamaran booking engine Malta, captain portal Malta, marketplace alternative Malta" />
 <link rel="canonical" href="https://bookitmalta.com/" />
 <meta name="robots" content="index, follow" />
@@ -16,14 +16,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bookitmalta.com/" />
 <meta property="og:title" content="BookItMalta — Booking infrastructure for Malta charter operators" />
-<meta property="og:description" content="Own your customers. Keep more of every booking. Malta-built booking infrastructure for boat charter operators. From €79/month." />
+<meta property="og:description" content="Own your customers. Keep more of every booking. Malta-built booking infrastructure for boat charter operators. From €250/month." />
 <meta property="og:image" content="https://bookitmalta.com/og-image.jpg" />
 <meta property="og:locale" content="en_MT" />
 <meta property="og:site_name" content="BookItMalta" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="BookItMalta — Booking infrastructure for Malta's charter operators" />
-<meta name="twitter:description" content="Own your customers. Keep more of every booking. From €79/month." />
+<meta name="twitter:description" content="Own your customers. Keep more of every booking. From €250/month." />
 <meta name="twitter:image" content="https://bookitmalta.com/og-image.jpg" />
 
 <script type="application/ld+json">
@@ -38,7 +38,7 @@
   "offers": {
     "@type": "Offer",
     "priceCurrency": "EUR",
-    "price": "79"
+    "price": "250"
   },
   "provider": {
     "@type": "Organization",
@@ -624,6 +624,130 @@ nav.top .wrap {
   width: 100%;
 }
 
+/* Setup fee line under tier name */
+.tier-setup {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--mute);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+.tier-featured .tier-setup { color: rgba(244, 235, 217, 0.7); }
+
+/* ============================================================
+   Markup mode callout — explains how 10% gets recovered
+============================================================ */
+.markup-callout {
+  margin-top: 3.5rem;
+  padding: 2.5rem 2.4rem 2.6rem;
+  background: var(--paper-deep);
+  border-radius: 6px;
+  border-left: 4px solid var(--terracotta);
+}
+.markup-callout h3 {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  margin-bottom: 0.7rem;
+}
+.markup-callout h3 em { font-style: italic; color: var(--terracotta); }
+.markup-callout .lead { margin-bottom: 1.4rem; }
+.markup-pill {
+  display: inline-block;
+  margin-bottom: 0.9rem;
+  background: var(--terracotta);
+  color: white;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.75rem;
+  border-radius: 3px;
+}
+.markup-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+  margin-top: 1.2rem;
+}
+.markup-mode {
+  padding: 1.4rem 1.4rem 1.6rem;
+  background: var(--paper);
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+}
+.markup-mode h4 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.02rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.markup-mode p {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 0.8rem;
+}
+.markup-ex {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  background: rgba(11, 37, 69, 0.05);
+  padding: 0.7rem 0.9rem;
+  border-radius: 3px;
+  line-height: 1.7;
+}
+.markup-ex strong { color: var(--terracotta); font-weight: 600; }
+
+/* ============================================================
+   Add-ons
+============================================================ */
+.addons {
+  background: var(--paper);
+  padding: 5rem 0;
+  border-top: 1px solid var(--rule);
+}
+.addons .head { margin-bottom: 2.5rem; max-width: 56rem; }
+.addons .head h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  margin-bottom: 1rem;
+  max-width: 18ch;
+}
+.addons .head h2 em { font-style: italic; color: var(--terracotta); }
+
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+}
+.addon {
+  padding: 1.6rem 1.5rem 1.4rem;
+  background: var(--paper-deep);
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+}
+.addon h4 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.02rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.addon-price {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--terracotta);
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+}
+.addon p {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
 /* ============================================================
    Example / case study
 ============================================================ */
@@ -763,6 +887,8 @@ footer .wordmark span { color: var(--terracotta); }
   .tier-grid { grid-template-columns: 1fr; gap: 2rem; }
   .tier-featured { order: -1; }
   .tier-ribbon { top: -0.7rem; }
+  .markup-modes { grid-template-columns: 1fr; }
+  .markup-callout { padding: 1.8rem 1.5rem 2rem; }
   .compare-table td.label { width: 40%; }
   .example-math { padding: 1.5rem 1.2rem; }
   .solution .head { flex-direction: column; align-items: flex-start; }
@@ -1043,8 +1169,8 @@ footer .wordmark span { color: var(--terracotta); }
         </div>
 
         <div class="hero-meta reveal">
-          <span>From <strong>€79</strong>/month</span>
-          <span><strong>3–8%</strong> commission</span>
+          <span>From <strong>€250</strong>/month</span>
+          <span><strong>10%</strong> commission</span>
           <span><strong>Weekly</strong> payouts</span>
           <span>You own the <strong>customer</strong></span>
         </div>
@@ -1373,7 +1499,7 @@ footer .wordmark span { color: var(--terracotta); }
       <tbody>
         <tr>
           <td class="label">Commission</td>
-          <td class="us">3–8%</td>
+          <td class="us">10% — or 0% in pass-through mode (see § 07)</td>
           <td class="them">~20%</td>
           <td class="them">20–30%</td>
         </tr>
@@ -1432,24 +1558,29 @@ footer .wordmark span { color: var(--terracotta); }
           <td>−€15,360</td>
         </tr>
         <tr>
-          <td style="color: var(--mute); padding-top: 1.4rem;">BookItMalta — Professional tier</td>
+          <td style="color: var(--mute); padding-top: 1.4rem;">BookItMalta — Founding Partner (year 2 onwards, absorb mode)</td>
           <td style="color: var(--mute); padding-top: 1.4rem;"></td>
         </tr>
         <tr>
-          <td style="padding-left: 1.2rem; color: var(--ink-soft);">Monthly SaaS (€199 × 12)</td>
-          <td>−€2,388</td>
+          <td style="padding-left: 1.2rem; color: var(--ink-soft);">Monthly SaaS (€250 × 12)</td>
+          <td>−€3,000</td>
         </tr>
         <tr>
-          <td style="padding-left: 1.2rem; color: var(--ink-soft);">Commission at 5%</td>
-          <td>−€3,840</td>
+          <td style="padding-left: 1.2rem; color: var(--ink-soft);">Commission at 10%</td>
+          <td>−€7,680</td>
         </tr>
         <tr class="save">
           <td>You save per season</td>
-          <td>€9,132</td>
+          <td>€4,680</td>
         </tr>
         <tr class="total">
           <td>And you keep the customer list</td>
           <td>priceless</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="font-size: 0.88rem; color: var(--mute); padding-top: 1.4rem; line-height: 1.55; font-style: italic;">
+            Switch to pass-through mode (see § 07): commission goes on the customer markup, not your margin. Net to you climbs to <strong style="font-style: normal; color: var(--ink);">−€3,000</strong> total cost / <strong style="font-style: normal; color: var(--ink);">+€12,360 saved</strong> vs OTAs. Year 1 adds a one-time €3,000 setup.
+          </td>
         </tr>
       </table>
     </div>
@@ -1462,78 +1593,150 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap">
     <div class="head">
       <div class="eyebrow">§ 07 — Pricing</div>
-      <h2>Three tiers. <em>No surprises.</em></h2>
+      <h2>Two tiers. <em>One commission rate.</em> No surprises.</h2>
       <p class="lead">
-        Pick the tier that fits your operation. The monthly fee covers infrastructure and support. Commission is what you pay on confirmed bookings through the system. Everything else is yours.
+        Setup gets your engine installed and your operators trained. Monthly covers infrastructure and ongoing support. The 10% commission only applies to bookings the engine processed — manual entries and OTA-sourced bookings stay 0%.
       </p>
     </div>
 
     <div class="tier-grid">
 
-      <article class="tier">
-        <div class="tier-name">Starter</div>
-        <div class="tier-tag">Solo operators · 1 vessel</div>
-        <div class="tier-price">
-          <span class="tier-price-big">€79</span>
-          <span class="tier-price-unit">/ month</span>
-        </div>
-        <div class="tier-commission"><strong>8%</strong> commission on bookings</div>
-
-        <ul class="tier-features">
-          <li>Booking engine embedded in your site</li>
-          <li>Captain portal — calendar, bookings, customers</li>
-          <li>One vessel, one calendar</li>
-          <li>Automated email &amp; WhatsApp confirmations</li>
-          <li>Weekly Monday payouts</li>
-          <li>Full customer data — export anytime</li>
-          <li>Email support (24h response)</li>
-        </ul>
-
-        <a href="#demo" class="btn btn-ghost">Book a demo</a>
-      </article>
-
       <article class="tier tier-featured">
-        <div class="tier-ribbon">Most operators</div>
-        <div class="tier-name">Professional</div>
-        <div class="tier-tag">Growing ops · 40–150 bookings/yr</div>
+        <div class="tier-ribbon">Limited · 5 spots</div>
+        <div class="tier-name">Founding Partner</div>
+        <div class="tier-tag">First 5 Malta operators · helps shape the platform</div>
+
+        <div class="tier-setup">€3,000 one-time setup</div>
         <div class="tier-price">
-          <span class="tier-price-big">€199</span>
+          <span class="tier-price-big">€250</span>
           <span class="tier-price-unit">/ month</span>
         </div>
-        <div class="tier-commission"><strong>5%</strong> commission on bookings</div>
+        <div class="tier-commission"><strong>10%</strong> commission on engine-processed bookings</div>
 
         <ul class="tier-features">
-          <li class="tier-plus">Everything in Starter, plus:</li>
-          <li>Multi-vessel support</li>
-          <li>Seasonal pricing tiers</li>
-          <li>Revenue &amp; booking analytics</li>
-          <li>Content updates within 24h on request</li>
-          <li>Priority support (same-day response)</li>
+          <li>Booking engine installed on your existing site</li>
+          <li>Captain portal — calendar + multi-user logins for crew &amp; office</li>
+          <li>You review every enquiry before it's confirmed — no auto-confirms, no surprises</li>
+          <li>Operational tools — slot-blocking (weather, maintenance), cancellation handling, manual booking entries, capacity per sailing, stale enquiries auto-expire so you don't chase</li>
+          <li>Seasonal pricing rules — peak · shoulder · off-peak applied automatically</li>
+          <li>Waitlist + "notify me" on sold-out dates — capture lost demand automatically</li>
+          <li>Analytics dashboard — revenue, source attribution, commission tracking. Know which channel drove every booking — OTAs won't show you that.</li>
+          <li>Customer comms — WhatsApp + email confirmations from your domain, plus add-to-calendar (Apple · Google · Outlook) on every booking</li>
+          <li>Edit your own copy, photos, and prices — no dev tickets (Sanity CMS, with a written editing guide)</li>
+          <li>Weekly Monday payouts to your account</li>
+          <li>Customer data stays yours — full export anytime</li>
+          <li>Monthly call with founder — your feedback shapes the roadmap</li>
+          <li>Locked rate for 24 months</li>
         </ul>
 
-        <a href="#demo" class="btn btn-primary">Book a demo <span class="arrow">→</span></a>
+        <a href="#demo" class="btn btn-primary">Book a 20-min demo <span class="arrow">→</span></a>
       </article>
 
       <article class="tier">
-        <div class="tier-name">Fleet</div>
-        <div class="tier-tag">Multi-vessel · 150+ bookings/yr</div>
+        <div class="tier-name">Standard</div>
+        <div class="tier-tag">Operators 6+ · same product, founding spots filled</div>
+
+        <div class="tier-setup">€4,500 one-time setup</div>
         <div class="tier-price">
-          <span class="tier-price-big">€349</span>
+          <span class="tier-price-big">€299</span>
           <span class="tier-price-unit">/ month</span>
         </div>
-        <div class="tier-commission"><strong>3%</strong> commission on bookings</div>
+        <div class="tier-commission"><strong>10%</strong> commission on engine-processed bookings</div>
 
         <ul class="tier-features">
-          <li class="tier-plus">Everything in Professional, plus:</li>
-          <li>Multi-user logins for crew &amp; office</li>
-          <li>Custom reporting &amp; data exports</li>
-          <li>Advanced availability rules</li>
-          <li>Priority feature requests</li>
-          <li>Fastest-response support (within 4h)</li>
+          <li class="tier-plus">Same product as Founding Partner</li>
+          <li>Booking engine + captain portal + multi-user logins</li>
+          <li>Review-before-confirm flow + all operational tools (slot-blocking, cancellations, manual entries, capacity, seasonal pricing, stale-enquiry auto-expire)</li>
+          <li>Waitlist + analytics dashboard with source attribution</li>
+          <li>Customer comms — WhatsApp + email + add-to-calendar</li>
+          <li>Self-service CMS for copy, photos, pricing</li>
+          <li>Weekly Monday payouts to your account</li>
+          <li>Standard support (same-day response)</li>
         </ul>
 
         <a href="#demo" class="btn btn-ghost">Book a demo</a>
       </article>
+
+    </div>
+
+    <!-- Markup mode callout — explains how 10% gets recovered -->
+    <div class="markup-callout">
+      <span class="markup-pill">New · how the 10% works</span>
+      <h3>Choose how the 10% gets <em>recovered</em>.</h3>
+      <p class="lead">
+        OTA platforms hide their cost in customer markup — the operator never feels the 20%. We give you the same option, in your settings. Same money, different felt experience.
+      </p>
+      <div class="markup-modes">
+        <div class="markup-mode">
+          <h4>1 — Absorb (default)</h4>
+          <p>Customer pays your base price. The 10% comes out of your margin. Best when you want headline-cheapest pricing and your margins can handle it.</p>
+          <div class="markup-ex">
+            Base €100 → customer pays <strong>€100</strong><br>
+            BookItMalta keeps €10 · you receive €90
+          </div>
+        </div>
+        <div class="markup-mode">
+          <h4>2 — Pass-through (OTA-style)</h4>
+          <p>Customer pays your base + 10%. You receive the full base price, no margin loss per booking. Same economics as a marketplace OTA — but you keep the customer relationship and the repeat bookings.</p>
+          <div class="markup-ex">
+            Base €100 → customer pays <strong>€110</strong><br>
+            BookItMalta keeps €10 · you receive €100
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== ADD-ONS ==================== -->
+<section class="addons" id="addons">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">§ 07b — Add-ons</div>
+      <h2>Optional services. <em>Only if useful.</em></h2>
+      <p class="lead">
+        Things we deliver in addition to the platform. Charged separately so the core stays simple. Mix and match per season.
+      </p>
+    </div>
+
+    <div class="addon-grid">
+
+      <div class="addon">
+        <h4>Owned-list email marketing</h4>
+        <div class="addon-price">€99 / month</div>
+        <p>Seasonal email campaigns to your past customers. Repeat-booking driver. The thing OTAs literally cannot do for you because they hide your customer list.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Google Ads pilot</h4>
+        <div class="addon-price">€299 / month + ad spend</div>
+        <p>We run paid acquisition for you. Direct traffic to your site, your booking engine, your customer relationship. We earn the commission on what converts; aligned incentives.</p>
+      </div>
+
+      <div class="addon">
+        <h4>WhatsApp recapture</h4>
+        <div class="addon-price">€49 / month</div>
+        <p>Automated follow-ups on abandoned bookings. WhatsApp open rates are 90%+ vs email at 22%. Recovers 5–15% of would-be-lost enquiries.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Multilingual</h4>
+        <div class="addon-price">€500 one-time / language</div>
+        <p>Italian, German, French. Malta tourism is heavily mainland-Europe driven. Each language pays for itself within one peak season.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Photography refresh</h4>
+        <div class="addon-price">Price on request</div>
+        <p>Pro shoot of your boat, crew, and key experiences. Two-hour session, 30+ edited images, full commercial usage rights, delivered within 7 days. We coordinate the photographer and quote per-job.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Site refresh</h4>
+        <div class="addon-price">€1,500 flat · 7 business days</div>
+        <p>If your existing site is hurting bookings, we rebuild it on a fast template. Same domain, SEO preserved, booking engine native. Optional — only if your current site has real problems.</p>
+      </div>
 
     </div>
   </div>
