@@ -114,6 +114,51 @@ p { max-width: 38em; }
 .wrap-narrow { max-width: var(--maxw-narrow); margin: 0 auto; padding: 0 var(--gut); }
 section { padding: clamp(3rem, 6vw, 5rem) 0; position: relative; }
 
+/* Post-submit confirmation banner — hidden by default, shown when URL is #enquiry-confirmed */
+.enquiry-confirmed {
+  display: none;
+  background: var(--terracotta);
+  color: var(--paper);
+  padding: 1.4rem 0 1.6rem;
+  border-bottom: 1px solid var(--terracotta-deep);
+}
+.enquiry-confirmed:target { display: block; }
+.ec-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+}
+.ec-kicker {
+  font-family: var(--mono); font-size: 0.7rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(244,235,217,0.7);
+  display: block; margin-bottom: 0.5rem;
+}
+.ec-headline {
+  font-family: var(--serif); font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-weight: 420; line-height: 1.2;
+  color: var(--paper);
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.01em;
+}
+.ec-body {
+  font-size: 0.95rem; line-height: 1.5;
+  color: rgba(244,235,217,0.92);
+  max-width: 56em;
+}
+.ec-body strong { color: var(--paper); font-weight: 500; }
+.ec-close {
+  font-family: var(--mono); font-size: 1.4rem;
+  color: rgba(244,235,217,0.7);
+  line-height: 1; padding: 0.2rem 0.5rem;
+  border: 1px solid rgba(244,235,217,0.25);
+  border-radius: 999px;
+  transition: all .15s ease;
+  flex-shrink: 0;
+}
+.ec-close:hover { color: var(--paper); border-color: var(--paper); }
+
 /* Top breadcrumb nav */
 nav.top {
   padding: 1.2rem 0;
@@ -447,6 +492,19 @@ footer .wordmark span { color: var(--terracotta); }
 
 <main>
 
+<section id="enquiry-confirmed" class="enquiry-confirmed">
+  <div class="wrap">
+    <div class="ec-grid">
+      <div>
+        <span class="ec-kicker">Enquiry received</span>
+        <h2 class="ec-headline">Thank you — your enquiry is on its way to the captain.</h2>
+        <p class="ec-body">Bandama Yacht Charters will be in touch within <strong>24 hours</strong> via email or WhatsApp to confirm availability. Once confirmed, you'll receive a secure Stripe link by email for the €300 deposit. Balance is settled directly with the captain on the day.</p>
+      </div>
+      <a href="#" class="ec-close" aria-label="Dismiss confirmation">×</a>
+    </div>
+  </div>
+</section>
+
 <header class="hero">
   <div class="wrap">
     <div class="hero-grid">
@@ -608,6 +666,7 @@ footer .wordmark span { color: var(--terracotta); }
           <input type="hidden" name="tenant" value="bandama">
           <input type="hidden" name="operator_email" value="info@bandamacharters.com">
           <input type="hidden" name="_format" value="plain">
+          <input type="hidden" name="_next" value="https://bookitmalta.com/charters/bandama#enquiry-confirmed">
 
           <div class="form-row">
             <div class="form-field">
