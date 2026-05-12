@@ -4,16 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>Bandama Yacht Charters — luxury day charter from Ta' Xbiex, Malta | BookItMalta</title>
-<meta name="description" content="Luxury Beneteau Swift Trawler 48ft day charter from Ta' Xbiex Creek, Malta. Up to 8 guests, professional skipper and crew. Comino, Blue Lagoon, Gozo coast. €1,850 incl. VAT — fuel, water, snacks, crew included." />
-<meta name="keywords" content="Bandama yacht charter, Malta luxury day charter, Ta Xbiex charter, Beneteau Swift Trawler charter Malta, Comino blue lagoon yacht" />
-<link rel="canonical" href="https://bookitmalta.com/charters/bandama" />
+<title>Adventure Cruises — powerboat tours of Malta, Comino &amp; Gozo | BookItMalta</title>
+<meta name="description" content="Sliema-based powerboat tour operator running private full-day charters to Comino, Crystal Lagoon, Blue Lagoon and the Gozo coast — plus a signature night harbour cruise through Valletta and the Three Cities." />
+<meta name="keywords" content="Adventure Cruises Malta, Sliema powerboat tour, Comino powerboat charter, Blue Lagoon boat trip, Valletta night cruise, Malta harbour cruise" />
+<link rel="canonical" href="https://bookitmalta.com/charters/adventure-cruises" />
 <meta name="robots" content="index, follow" />
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://bookitmalta.com/charters/bandama" />
-<meta property="og:title" content="Bandama Yacht Charters — luxury day charter from Ta' Xbiex, Malta" />
-<meta property="og:description" content="Beneteau Swift Trawler 48ft · up to 8 guests · professional crew · €1,850 incl. VAT" />
+<meta property="og:url" content="https://bookitmalta.com/charters/adventure-cruises" />
+<meta property="og:title" content="Adventure Cruises — powerboat tours of Malta, Comino &amp; Gozo" />
+<meta property="og:description" content="Powerboat tours from Sliema. Full-day charters, Blue Lagoon trips, night harbour cruises." />
 <meta property="og:locale" content="en_MT" />
 <meta property="og:site_name" content="BookItMalta" />
 
@@ -114,7 +114,6 @@ p { max-width: 38em; }
 .wrap-narrow { max-width: var(--maxw-narrow); margin: 0 auto; padding: 0 var(--gut); }
 section { padding: clamp(3rem, 6vw, 5rem) 0; position: relative; }
 
-/* Top breadcrumb nav */
 nav.top {
   padding: 1.2rem 0;
   border-bottom: 1px solid var(--rule);
@@ -149,7 +148,6 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--rule-strong); }
 .btn-ghost:hover { border-color: var(--ink); }
 
-/* Hero with operator branding */
 .hero { padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(2rem, 4vw, 3rem); }
 .hero-grid {
   display: grid;
@@ -168,50 +166,22 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   aspect-ratio: 4 / 3;
   position: relative;
   overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
 }
-.hero-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  position: relative;
-  z-index: 1;
+.hero-image::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(244,235,217,0.08) 1px, transparent 1px);
+  background-size: 6px 6px;
 }
-
-/* Gallery */
-.gallery { padding: clamp(3rem, 5vw, 4.5rem) 0; background: var(--paper); }
-.gallery-head { margin-bottom: 1.8rem; }
-.gallery-head h2 { margin-top: 0.8rem; max-width: 22ch; }
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.7rem;
-  grid-auto-flow: dense;
-}
-.g-item {
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--paper-deep);
-  position: relative;
-}
-.g-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .35s ease;
-}
-.g-item:hover img { transform: scale(1.03); }
-.g-tall { grid-row: span 2; aspect-ratio: 4 / 6.15; }
-.g-wide { grid-column: span 2; aspect-ratio: 8 / 3; }
-@media (max-width: 720px) {
-  .gallery-grid { grid-template-columns: 1fr; }
-  .g-tall { grid-row: auto; aspect-ratio: 4 / 3; }
-  .g-wide { grid-column: auto; aspect-ratio: 4 / 3; }
+.hero-image-placeholder {
+  font-family: var(--mono); font-size: 0.75rem;
+  color: rgba(244,235,217,0.5);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  position: relative; z-index: 1;
+  text-align: center;
 }
 
-/* Specs strip */
 .specs-strip { background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 1.8rem 0; }
 .specs-grid {
   display: grid;
@@ -226,7 +196,44 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 }
 .spec-value { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); font-weight: 420; line-height: 1.1; }
 
-/* About + route */
+/* Tour cards */
+.tours { background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.tours-head { margin-bottom: 2rem; }
+.tours-head h2 { margin-top: 0.8rem; }
+
+.tour-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+}
+.tour-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1.6rem 1.8rem 1.8rem;
+  display: flex; flex-direction: column;
+}
+.tour-card .tour-tag {
+  font-family: var(--mono); font-size: 0.66rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.tour-card h3 { font-family: var(--serif); font-weight: 440; font-size: 1.2rem; line-height: 1.25; margin-bottom: 0.6rem; }
+.tour-card p { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.55; }
+.tour-card .tour-meta {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-family: var(--mono); font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--mute);
+  border-top: 1px solid var(--rule);
+  margin-top: 1.4rem;
+  padding-top: 0.9rem;
+}
+
+/* About section */
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -235,74 +242,23 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 }
 .about-grid h2 { margin-bottom: 1.2rem; }
 .about-grid p + p { margin-top: 1rem; }
-
-/* Included list */
-.included {
+.about-aside {
   background: var(--paper-deep);
   border: 1px solid var(--rule);
   border-radius: 6px;
   padding: 1.6rem 1.8rem 1.8rem;
 }
-.included h3 { font-size: 1.1rem; margin-bottom: 1rem; }
-.included ul { list-style: none; display: grid; gap: 0.5rem; }
-.included li {
+.about-aside h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+.about-aside ul { list-style: none; display: grid; gap: 0.5rem; }
+.about-aside li {
   display: flex; align-items: baseline; gap: 0.6rem;
   font-size: 0.95rem; color: var(--ink-soft);
-  padding-left: 0;
 }
-.included li::before {
+.about-aside li::before {
   content: "+";
   color: var(--terracotta);
   font-family: var(--mono); font-weight: 600;
   flex-shrink: 0; width: 14px;
-}
-
-/* Pricing breakdown */
-.pricing { background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.pricing-card {
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  padding: 2rem 2.2rem 2.4rem;
-  max-width: 640px;
-}
-.pricing-card h2 { margin-bottom: 0.5rem; }
-.pricing-card .lead { margin-bottom: 1.8rem; }
-
-.pricing-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--rule);
-}
-.pricing-row:last-of-type { border-bottom: 0; }
-.pricing-row .pr-label { font-size: 0.95rem; color: var(--ink-soft); }
-.pricing-row .pr-value { font-family: var(--mono); color: var(--ink); font-weight: 500; }
-.pricing-row.total { padding-top: 1rem; }
-.pricing-row.total .pr-label { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); font-weight: 420; }
-.pricing-row.total .pr-value { font-family: var(--serif); font-size: 1.4rem; color: var(--ink); font-weight: 400; }
-
-.pricing-deposit {
-  margin-top: 1.4rem;
-  padding: 1rem 1.2rem;
-  background: rgba(200,92,46,0.08);
-  border: 1px solid rgba(200,92,46,0.25);
-  border-radius: 4px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.pricing-deposit .pd-label {
-  font-family: var(--mono); font-size: 0.7rem;
-  color: var(--terracotta); letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.pricing-deposit .pd-value {
-  font-family: var(--serif); font-size: 1.3rem;
-  color: var(--terracotta); font-weight: 420;
-}
-.pricing-note {
-  margin-top: 1rem;
-  font-family: var(--mono); font-size: 0.74rem;
-  color: var(--mute); letter-spacing: 0.04em;
-  line-height: 1.55;
 }
 
 /* Enquiry form */
@@ -386,7 +342,6 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   flex-shrink: 0;
 }
 
-/* Powered-by strip */
 .powered { background: var(--ink); color: rgba(244,235,217,0.7); padding: 2rem 0; }
 .powered .wrap { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .powered .powered-text { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -394,7 +349,6 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .powered .powered-text a:hover { color: var(--terracotta); }
 .powered .powered-meta { font-family: var(--mono); font-size: 0.7rem; color: rgba(244,235,217,0.5); letter-spacing: 0.06em; }
 
-/* Footer */
 footer {
   background: var(--ink);
   color: rgba(244,235,217,0.7);
@@ -440,7 +394,7 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap">
     <a href="/" class="wordmark">BookIt<span>Malta</span></a>
     <div class="breadcrumbs">
-      <a href="/charters">All charters</a> · Bandama Yacht Charters
+      <a href="/charters">All charters</a> · Adventure Cruises
     </div>
   </div>
 </nav>
@@ -451,16 +405,19 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-content">
-        <span class="kicker">Luxury day charter · Ta' Xbiex</span>
-        <h1>Bandama Yacht Charters — a <em>full day</em> on the water.</h1>
-        <p class="lead">Beneteau Swift Trawler 47 — a 14.7m luxury motor yacht built in 2019, departing Ta' Xbiex Creek Marina with a professional skipper and crew. Comino, Blue Lagoon, the south coast of Gozo, all within reach of the day.</p>
+        <span class="kicker">Powerboat tours · Sliema</span>
+        <h1>Adventure Cruises — powerboat tours of <em>Malta, Comino &amp; Gozo</em>.</h1>
+        <p class="lead">Sliema-based powerboat operator running private full-day charters, signature Blue Lagoon trips, and night harbour cruises through Valletta and the Three Cities. All tours depart from Sliema Ferries daily.</p>
         <div class="cta-row">
-          <a href="#enquire" class="btn btn-primary">Enquire about a date <span class="arrow">→</span></a>
-          <a href="#pricing" class="btn btn-ghost">See what's included</a>
+          <a href="#enquire" class="btn btn-primary">Enquire about a tour <span class="arrow">→</span></a>
+          <a href="#tours" class="btn btn-ghost">See the three tours</a>
         </div>
       </div>
       <div class="hero-image">
-        <img src="images/hero.jpg" alt="Beneteau Swift Trawler 47 anchored in turquoise water at Comino, Malta" />
+        <div class="hero-image-placeholder">
+          [Hero photo<br>of the boat]<br><br>
+          <span style="font-size: 0.66rem; opacity: 0.6;">awaiting operator content</span>
+        </div>
       </div>
     </div>
   </div>
@@ -470,29 +427,59 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap">
     <div class="specs-grid">
       <div class="spec">
-        <span class="spec-label">Boat</span>
-        <span class="spec-value">Beneteau ST 47</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Length</span>
-        <span class="spec-value">14.70m / 48ft</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Year</span>
-        <span class="spec-value">2019</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Guests</span>
-        <span class="spec-value">Up to 8</span>
+        <span class="spec-label">Type</span>
+        <span class="spec-value">Powerboat</span>
       </div>
       <div class="spec">
         <span class="spec-label">Departure</span>
-        <span class="spec-value">Ta' Xbiex</span>
+        <span class="spec-value">Sliema Ferries</span>
       </div>
       <div class="spec">
-        <span class="spec-label">Duration</span>
-        <span class="spec-value">~8 hours</span>
+        <span class="spec-label">Tours</span>
+        <span class="spec-value">Day + Night</span>
       </div>
+      <div class="spec">
+        <span class="spec-label">Routes</span>
+        <span class="spec-value">Comino · Gozo · Harbours</span>
+      </div>
+      <div class="spec">
+        <span class="spec-label">Operates</span>
+        <span class="spec-value">Daily</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tours" class="tours">
+  <div class="wrap-narrow">
+    <div class="tours-head">
+      <span class="kicker">Three tour options</span>
+      <h2>Pick the <em>tour</em> that fits your day.</h2>
+    </div>
+
+    <div class="tour-grid">
+
+      <article class="tour-card">
+        <span class="tour-tag">Tour 01 · Full Day Private</span>
+        <h3>Private Full Day Charter</h3>
+        <p>Departing from Sliema Ferries, explore the coast of Malta and Gozo with stops at Comino and Cominotto. Private boat — your group only. Itinerary flexes to your day.</p>
+        <div class="tour-meta">Full day · Sliema departure · Private</div>
+      </article>
+
+      <article class="tour-card">
+        <span class="tour-tag">Tour 02 · Day Trip</span>
+        <h3>Crystal Lagoon &amp; Blue Lagoon</h3>
+        <p>Full-day boat trip covering the coastal areas around Sliema with swim stops at Crystal Lagoon, Blue Lagoon, and halfa rock Gozo. Snorkel masks provided free.</p>
+        <div class="tour-meta">Full day · Sliema departure · Shared or private</div>
+      </article>
+
+      <article class="tour-card">
+        <span class="tour-tag">Tour 03 · After Dark</span>
+        <h3>Night Harbour Cruise</h3>
+        <p>Sliema, Msida, Pieta, Valletta (Grand Harbour and the Waterfront), and the Three Cities (Birgu, Senglea, Bormla) by night. Central Malta's harbours and marinas — lit, calm, and unmissable.</p>
+        <div class="tour-meta">Evening · Sliema departure · Harbour route</div>
+      </article>
+
     </div>
   </div>
 </section>
@@ -501,97 +488,23 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap-narrow">
     <div class="about-grid">
       <div>
-        <span class="kicker">The experience</span>
-        <h2 style="margin-top: 0.8rem;">Malta's coastline, <em>in complete privacy</em>.</h2>
-        <p>Experience Malta's coastline in complete privacy aboard <em style="font-style: italic; color: var(--terracotta);">Bandama</em>, your exclusive luxury day charter.</p>
-        <p>Cruise through the breathtaking waters of Comino and Gozo, discovering hidden coves, tranquil bays, and crystal-clear lagoons away from the crowds. Spend the day swimming, snorkelling, sunbathing, and relaxing while enjoying a bespoke charter designed entirely around you.</p>
-        <p>From the iconic Blue Lagoon to secret anchorages known only to locals, every journey aboard <em style="font-style: italic; color: var(--terracotta);">Bandama</em> is crafted to deliver elegance, comfort, and unforgettable memories.</p>
-        <p style="font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; line-height: 1.6; margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
-          Departure <strong style="color: var(--ink); font-weight: 500;">09:30 or 10:00</strong> from Ta' Xbiex Creek · Return <strong style="color: var(--ink); font-weight: 500;">17:30 or 18:00</strong> · 30 NM cruising range covers Comino, Blue Lagoon, and southern Gozo · Route flexes with weather and your group's preferences.
-        </p>
+        <span class="kicker">The operator</span>
+        <h2 style="margin-top: 0.8rem;">Sliema-based, <em>powerboat-first</em>.</h2>
+        <p>Adventure Cruises Sliema Ltd. operates powerboat tours from Sliema Ferries seven days a week, weather permitting. Three distinct tour formats — a private full-day charter that's all yours, a day trip with the signature Comino swim stops, and a night harbour cruise that hits Valletta and the Three Cities from the water.</p>
+        <p>The operator handles the boat, the route, the timing, and the on-water experience. Routes flex with weather and sea conditions on the day — you'll be briefed on departure.</p>
       </div>
-      <div class="included">
-        <h3>What's included in the €1,850</h3>
+      <div class="about-aside">
+        <h3>What you can expect</h3>
         <ul>
-          <li>Professional skipper</li>
-          <li>Crew / hostess</li>
-          <li>Fuel for up to 30 nautical miles</li>
-          <li>Mineral water</li>
-          <li>Soft drinks</li>
-          <li>Snacks for the day</li>
-          <li>VAT at 18%</li>
+          <li>Daily departures from Sliema Ferries</li>
+          <li>Private and shared booking options</li>
+          <li>Free snorkel masks on Blue Lagoon trips</li>
+          <li>Swim stops at Crystal Lagoon, Blue Lagoon, halfa rock Gozo</li>
+          <li>Night harbour route covering Valletta + Three Cities</li>
+          <li>Direct WhatsApp + phone contact with the operator</li>
         </ul>
-        <p style="margin-top: 1.2rem; font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; line-height: 1.55;">Custom food, catered lunch, or restaurant detour to Mgarr Marina (Gozo) — please WhatsApp the captain <strong style="color: var(--ink); font-weight: 500;">at least 2 days before the charter</strong> to arrange. Dietary accommodations also confirmed via WhatsApp in advance.</p>
+        <p style="margin-top: 1.2rem; font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; line-height: 1.55;">Pricing varies by tour type, party size, and season. Confirmed on enquiry.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="gallery">
-  <div class="wrap-narrow">
-    <div class="gallery-head">
-      <span class="kicker">The boat</span>
-      <h2>Inside, outside, and <em>on the water</em>.</h2>
-    </div>
-
-    <div class="gallery-grid">
-      <figure class="g-item g-tall">
-        <img src="images/aft-deck.jpg" alt="Aft deck with cream-upholstered seating on Bandama's Beneteau Swift Trawler 47" loading="lazy" />
-      </figure>
-      <figure class="g-item">
-        <img src="images/saloon.jpg" alt="Interior saloon with grey couch and dining table" loading="lazy" />
-      </figure>
-      <figure class="g-item">
-        <img src="images/galley.jpg" alt="Galley with full kitchen, stove, and refrigerator" loading="lazy" />
-      </figure>
-      <figure class="g-item g-wide">
-        <img src="images/action.jpg" alt="Bandama Swift Trawler 47 underway with bow wave" loading="lazy" />
-      </figure>
-      <figure class="g-item">
-        <img src="images/profile.jpg" alt="Bandama yacht anchored near a rocky cove in Malta" loading="lazy" />
-      </figure>
-      <figure class="g-item">
-        <img src="images/helm-view.jpg" alt="View from the helm of Comino rock formations through the windshield" loading="lazy" />
-      </figure>
-      <figure class="g-item">
-        <img src="images/bow-lifestyle.jpg" alt="Guests relaxing on the bow with drinks, Comino in the background" loading="lazy" />
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section id="pricing" class="pricing">
-  <div class="wrap-narrow">
-    <span class="kicker">Pricing</span>
-    <h2 style="margin: 1rem 0 0.8rem; max-width: 22ch;">€1,850 incl. VAT. <em>Deposit at booking</em>, balance on the day.</h2>
-    <p class="lead" style="margin-bottom: 2rem;">Lower commitment upfront, no surprises. Pay a small deposit when you confirm the date; the rest is settled directly with the operator at the dock.</p>
-
-    <div class="pricing-card">
-      <div class="pricing-row">
-        <span class="pr-label">Charter (full day, up to 8 guests)</span>
-        <span class="pr-value">€1,567.80</span>
-      </div>
-      <div class="pricing-row">
-        <span class="pr-label">VAT at 18%</span>
-        <span class="pr-value">€282.20</span>
-      </div>
-      <div class="pricing-row total">
-        <span class="pr-label">Total charter price</span>
-        <span class="pr-value">€1,850.00</span>
-      </div>
-
-      <div class="pricing-deposit">
-        <span class="pd-label">Deposit due at booking</span>
-        <span class="pd-value">€300</span>
-      </div>
-
-      <p class="pricing-note">
-        <strong style="color: var(--ink); font-weight: 500;">Balance of €1,550 is paid directly to Bandama Yacht Charters on the day of the charter</strong> — cash, bank transfer, or operator's payment link, your choice. BookItMalta handles only the deposit; everything else is between you and the operator.
-      </p>
-
-      <p class="pricing-note" style="margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--rule);">
-        <strong style="color: var(--ink); font-weight: 500;">Cancellation policy:</strong> cancel up to <strong style="color: var(--ink); font-weight: 500;">7 days before</strong> the charter date and the €300 deposit is refunded in full. Cancellations within 7 days of the charter forfeit the deposit.
-      </p>
     </div>
   </div>
 </section>
@@ -600,13 +513,13 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap-narrow">
     <div class="enquiry-grid">
       <div class="enquiry-form">
-        <h3>Enquire about a date</h3>
-        <p class="form-intro">Tell us when, how many guests, and how to reach you. The operator confirms availability within 24 hours and sends you a deposit payment link.</p>
+        <h3>Enquire about a tour</h3>
+        <p class="form-intro">Tell us which tour, your dates, and how to reach you. The operator confirms availability within 24 hours and sends you a payment link to secure the booking.</p>
 
         <form action="https://formspree.io/f/xlgalawe" method="POST">
-          <input type="hidden" name="_subject" value="[Bandama] New enquiry from bookitmalta.com">
-          <input type="hidden" name="tenant" value="bandama">
-          <input type="hidden" name="operator_email" value="info@bandamacharters.com">
+          <input type="hidden" name="_subject" value="[Adventure Cruises] New enquiry from bookitmalta.com">
+          <input type="hidden" name="tenant" value="adventure-cruises">
+          <input type="hidden" name="operator_email" value="info@adventurecruisesmalta.com">
           <input type="hidden" name="_format" value="plain">
 
           <div class="form-row">
@@ -633,27 +546,29 @@ footer .wordmark span { color: var(--terracotta); }
 
           <div class="form-row">
             <div class="form-field">
-              <label for="guests">Number of guests</label>
-              <select id="guests" name="guests" required>
+              <label for="tour">Which tour</label>
+              <select id="tour" name="tour" required>
                 <option value="">Select...</option>
-                <option value="1-2">1–2 guests</option>
-                <option value="3-4">3–4 guests</option>
-                <option value="5-6">5–6 guests</option>
-                <option value="7-8">7–8 guests</option>
+                <option value="private-full-day">Private Full Day Charter</option>
+                <option value="blue-lagoon-day-trip">Crystal &amp; Blue Lagoon day trip</option>
+                <option value="night-harbour">Night Harbour Cruise</option>
+                <option value="not-sure">Not sure yet — recommend</option>
               </select>
             </div>
             <div class="form-field">
-              <label for="time">Departure preference</label>
-              <select id="time" name="time">
-                <option value="09:30">09:30</option>
-                <option value="10:00">10:00</option>
-                <option value="flexible">Flexible</option>
+              <label for="guests">Number of guests</label>
+              <select id="guests" name="guests" required>
+                <option value="">Select...</option>
+                <option value="1-4">1–4 guests</option>
+                <option value="5-8">5–8 guests</option>
+                <option value="9-12">9–12 guests</option>
+                <option value="13+">13+ guests</option>
               </select>
             </div>
           </div>
 
           <div class="form-field">
-            <label for="notes">Anything we should know? (route preferences, dietary, special occasion)</label>
+            <label for="notes">Anything we should know? (route preferences, special occasion, dietary)</label>
             <textarea id="notes" name="notes"></textarea>
           </div>
 
@@ -664,21 +579,20 @@ footer .wordmark span { color: var(--terracotta); }
 
         <div class="enquiry-flow-note">
           <h4>What happens next</h4>
-          <p>Your enquiry goes straight to the captain — no payment taken at this stage. The captain reviews each booking personally and confirms availability within 24 hours via email or WhatsApp. Once confirmed, you'll receive a secure Stripe link by email to pay the <strong style="color: var(--ink); font-weight: 500;">€300 deposit</strong> and lock in your date. Balance of €1,550 is settled directly with the captain on the day of the charter.</p>
+          <p>Adventure Cruises confirms availability within 24 hours via email and phone, sends you a deposit payment link, and confirms your booking the moment the deposit clears. Direct card capture inside the booking flow is launching soon — for now, deposits are handled via the operator's secure payment link (Revolut, PayPal, or bank transfer).</p>
         </div>
       </div>
 
       <div class="enquiry-side">
         <span class="kicker">Booking direct</span>
         <h3 style="margin-top: 1rem;">Why this isn't a marketplace.</h3>
-        <p class="lead">You're booking directly with Bandama Yacht Charters — Malta-based operator, on their own terms.</p>
+        <p class="lead">You're booking directly with Adventure Cruises — Malta-based operator running their own tours, on their own terms.</p>
         <ul class="enquiry-checks">
-          <li>No payment taken at enquiry — captain reviews each booking personally first</li>
-          <li>Stripe deposit link only sent after the captain confirms availability</li>
-          <li>Receipt comes from Bandama, with their VAT number — not from BookItMalta</li>
-          <li>WhatsApp + email goes directly to the captain running your charter</li>
-          <li>Balance paid directly to the operator on the day of the charter</li>
-          <li>Cancel up to 7 days before for a full deposit refund · within 7 days, deposit is forfeit</li>
+          <li>Receipt comes from Adventure Cruises Sliema Ltd. — not from BookItMalta</li>
+          <li>Phone + email goes directly to the operator running your tour</li>
+          <li>Deposit at booking; balance settled directly with the operator</li>
+          <li>Cancellation policy is the operator's, not a global aggregator's</li>
+          <li>BookItMalta handles the booking infrastructure; the operator handles the boat</li>
         </ul>
       </div>
     </div>
@@ -691,7 +605,7 @@ footer .wordmark span { color: var(--terracotta); }
       Booking infrastructure by <a href="/">BookItMalta</a>
     </div>
     <div class="powered-meta">
-      Operator: Bandama Yacht Charters · Malta
+      Operator: Adventure Cruises Sliema Ltd. · Malta
     </div>
   </div>
 </section>
