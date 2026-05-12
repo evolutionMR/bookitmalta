@@ -168,20 +168,47 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   aspect-ratio: 4 / 3;
   position: relative;
   overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
 }
-.hero-image::after {
-  content: "";
-  position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(244,235,217,0.08) 1px, transparent 1px);
-  background-size: 6px 6px;
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: relative;
+  z-index: 1;
 }
-.hero-image-placeholder {
-  font-family: var(--mono); font-size: 0.75rem;
-  color: rgba(244,235,217,0.5);
-  letter-spacing: 0.14em; text-transform: uppercase;
-  position: relative; z-index: 1;
-  text-align: center;
+
+/* Gallery */
+.gallery { padding: clamp(3rem, 5vw, 4.5rem) 0; background: var(--paper); }
+.gallery-head { margin-bottom: 1.8rem; }
+.gallery-head h2 { margin-top: 0.8rem; max-width: 22ch; }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.7rem;
+  grid-auto-flow: dense;
+}
+.g-item {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--paper-deep);
+  position: relative;
+}
+.g-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .35s ease;
+}
+.g-item:hover img { transform: scale(1.03); }
+.g-tall { grid-row: span 2; aspect-ratio: 4 / 6.15; }
+.g-wide { grid-column: span 2; aspect-ratio: 8 / 3; }
+@media (max-width: 720px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  .g-tall { grid-row: auto; aspect-ratio: 4 / 3; }
+  .g-wide { grid-column: auto; aspect-ratio: 4 / 3; }
 }
 
 /* Specs strip */
@@ -433,10 +460,7 @@ footer .wordmark span { color: var(--terracotta); }
         </div>
       </div>
       <div class="hero-image">
-        <div class="hero-image-placeholder">
-          [Hero photo<br>of the boat]<br><br>
-          <span style="font-size: 0.66rem; opacity: 0.6;">awaiting operator content</span>
-        </div>
+        <img src="images/hero.jpg" alt="Beneteau Swift Trawler 47 anchored in turquoise water at Comino, Malta" />
       </div>
     </div>
   </div>
@@ -494,8 +518,41 @@ footer .wordmark span { color: var(--terracotta); }
           <li>Snacks for the day</li>
           <li>VAT at 18%</li>
         </ul>
-        <p style="margin-top: 1.2rem; font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; line-height: 1.55;">Add-ons available on request: catered lunch delivered to the boat, restaurant detour to Mgarr Marina in Gozo, dietary accommodations. Confirmed on enquiry.</p>
+        <p style="margin-top: 1.2rem; font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; line-height: 1.55;">Custom food, catered lunch, or restaurant detour to Mgarr Marina (Gozo) — please WhatsApp the captain <strong style="color: var(--ink); font-weight: 500;">at least 2 days before the charter</strong> to arrange. Dietary accommodations also confirmed via WhatsApp in advance.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="wrap-narrow">
+    <div class="gallery-head">
+      <span class="kicker">The boat</span>
+      <h2>Inside, outside, and <em>on the water</em>.</h2>
+    </div>
+
+    <div class="gallery-grid">
+      <figure class="g-item g-tall">
+        <img src="images/aft-deck.jpg" alt="Aft deck with cream-upholstered seating on Bandama's Beneteau Swift Trawler 47" loading="lazy" />
+      </figure>
+      <figure class="g-item">
+        <img src="images/saloon.jpg" alt="Interior saloon with grey couch and dining table" loading="lazy" />
+      </figure>
+      <figure class="g-item">
+        <img src="images/galley.jpg" alt="Galley with full kitchen, stove, and refrigerator" loading="lazy" />
+      </figure>
+      <figure class="g-item g-wide">
+        <img src="images/action.jpg" alt="Bandama Swift Trawler 47 underway with bow wave" loading="lazy" />
+      </figure>
+      <figure class="g-item">
+        <img src="images/profile.jpg" alt="Bandama yacht anchored near a rocky cove in Malta" loading="lazy" />
+      </figure>
+      <figure class="g-item">
+        <img src="images/helm-view.jpg" alt="View from the helm of Comino rock formations through the windshield" loading="lazy" />
+      </figure>
+      <figure class="g-item">
+        <img src="images/bow-lifestyle.jpg" alt="Guests relaxing on the bow with drinks, Comino in the background" loading="lazy" />
+      </figure>
     </div>
   </div>
 </section>
@@ -527,6 +584,10 @@ footer .wordmark span { color: var(--terracotta); }
 
       <p class="pricing-note">
         <strong style="color: var(--ink); font-weight: 500;">Balance of €1,550 is paid directly to Bandama Yacht Charters on the day of the charter</strong> — cash, bank transfer, or operator's payment link, your choice. BookItMalta handles only the deposit; everything else is between you and the operator.
+      </p>
+
+      <p class="pricing-note" style="margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--rule);">
+        <strong style="color: var(--ink); font-weight: 500;">Cancellation policy:</strong> cancel up to <strong style="color: var(--ink); font-weight: 500;">7 days before</strong> the charter date and the €300 deposit is refunded in full. Cancellations within 7 days of the charter forfeit the deposit.
       </p>
     </div>
   </div>
@@ -595,7 +656,7 @@ footer .wordmark span { color: var(--terracotta); }
 
         <div class="enquiry-flow-note">
           <h4>What happens next</h4>
-          <p>Bandama confirms availability within 24 hours via email + WhatsApp, sends you a €300 deposit payment link, and confirms your booking the moment the deposit clears. Direct card capture inside the booking flow is launching soon — for now, deposits are handled via the operator's secure payment link.</p>
+          <p>Your enquiry goes straight to the captain — no payment taken at this stage. The captain reviews each booking personally and confirms availability within 24 hours via email or WhatsApp. Once confirmed, you'll receive a secure Stripe link by email to pay the <strong style="color: var(--ink); font-weight: 500;">€300 deposit</strong> and lock in your date. Balance of €1,550 is settled directly with the captain on the day of the charter.</p>
         </div>
       </div>
 
@@ -604,11 +665,12 @@ footer .wordmark span { color: var(--terracotta); }
         <h3 style="margin-top: 1rem;">Why this isn't a marketplace.</h3>
         <p class="lead">You're booking directly with Bandama Yacht Charters — Malta-based operator, on their own terms.</p>
         <ul class="enquiry-checks">
+          <li>No payment taken at enquiry — captain reviews each booking personally first</li>
+          <li>Stripe deposit link only sent after the captain confirms availability</li>
           <li>Receipt comes from Bandama, with their VAT number — not from BookItMalta</li>
-          <li>WhatsApp + email goes directly to the operator running your charter</li>
-          <li>Deposit only at booking — balance paid directly to operator on the day</li>
-          <li>Cancellation policy is the operator's, not a global aggregator's</li>
-          <li>BookItMalta handles the booking infrastructure; the operator handles the boat</li>
+          <li>WhatsApp + email goes directly to the captain running your charter</li>
+          <li>Balance paid directly to the operator on the day of the charter</li>
+          <li>Cancel up to 7 days before for a full deposit refund · within 7 days, deposit is forfeit</li>
         </ul>
       </div>
     </div>
