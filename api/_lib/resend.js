@@ -102,7 +102,7 @@ Your enquiry:
 
 What happens next
   1. Captain reviews and confirms availability (within 24h).
-  2. You receive a secure Stripe link to pay the ${fmtEUR(tenantConfig.depositAmountCents)} deposit.
+  2. You receive a secure payment link to pay the ${fmtEUR(tenantConfig.depositAmountCents)} deposit.
   3. The moment payment lands, the date is locked.
   4. Balance of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day.
 
@@ -278,13 +278,22 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo 
   const from = getTenantEnvOptional(tenantSlug, 'RESEND_FROM', 'BookItMalta <noreply@bookitmalta.com>');
   const operatorEmail = getTenantEnvOptional(tenantSlug, 'OPERATOR_EMAIL', null);
 
-  return resend.emails.send({
+  const result = await resend.emails.send({
     from,
     to,
     subject,
     text,
     reply_to: replyTo || operatorEmail || undefined,
   });
+
+  // Resend SDK v3+ returns errors in the response body rather than throwing.
+  // Surface them so the call-site try/catch can log them.
+  if (result && result.error) {
+    const msg = (result.error.message) || JSON.stringify(result.error);
+    throw new Error('Resend send failed: ' + msg);
+  }
+
+  return result;
 }
 
 module.exports = {
