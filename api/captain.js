@@ -173,18 +173,28 @@ async function doConfirm({ supabase, tenant, config, enquiry, note, res }) {
 // DECLINE
 // =============================================================================
 async function doDecline({ supabase, tenant, config, enquiry, note, res }) {
-  const { error: updErr } = await supabase
+  // Gate on status='received' for the same reason the confirm path does —
+  // a confirm+decline race from two tabs could otherwise overwrite a
+  // just-confirmed enquiry (after we've already emailed the deposit link).
+  const { data: updated, error: updErr } = await supabase
     .from('enquiries')
     .update({
       status:            'declined',
       captain_action_at: new Date().toISOString(),
       captain_note:      note,
     })
-    .eq('id', enquiry.id);
+    .eq('id', enquiry.id)
+    .eq('status', 'received')
+    .select();
 
   if (updErr) {
     console.error('[captain] decline update error:', updErr);
     return htmlError(res, 500, 'Could not update enquiry. Please try again.');
+  }
+
+  if (!updated || updated.length === 0) {
+    console.warn('[captain] decline race — enquiry already actioned by another request', enquiry.id);
+    return htmlError(res, 409, 'This enquiry was already actioned. The decline was not applied.');
   }
 
   try {
