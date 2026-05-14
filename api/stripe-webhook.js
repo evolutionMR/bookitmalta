@@ -18,7 +18,7 @@
 
 const { resolveTenant, getTenantEnv } = require('./_lib/tenant.js');
 const { getSupabase } = require('./_lib/supabase.js');
-const { verifyWebhook, deactivatePaymentLink } = require('./_lib/stripe.js');
+const { verifyWebhook, deactivatePaymentLink, getStripe } = require('./_lib/stripe.js');
 const {
   sendEmail,
   customerBookingConfirmedEmail,
@@ -171,6 +171,31 @@ async function markEnquiryPaid({ tenant, config, enquiryId, paymentIntentId, pay
   if (enquiry.status === 'paid') {
     console.log('[stripe-webhook] enquiry already marked paid', enquiryId);
     return;
+  }
+
+  // Late-payment guard: if the customer paid AFTER the captain's deposit-link
+  // expiry window, refund the deposit. The captain may have given the date
+  // away by now — locking it here would create a double-booking risk.
+  if (enquiry.stripe_link_expires_at) {
+    const expiresAt = new Date(enquiry.stripe_link_expires_at);
+    if (Date.now() > expiresAt.getTime()) {
+      console.warn('[stripe-webhook] late payment received after expiry', {
+        enquiryId,
+        expiredAt: expiresAt.toISOString(),
+      });
+      try {
+        const stripe = getStripe(tenant);
+        await stripe.refunds.create({
+          payment_intent: paymentIntentId,
+          reason: 'requested_by_customer',
+          metadata: { reason_internal: 'deposit_link_expired_before_payment' },
+        });
+        console.log('[stripe-webhook] auto-refunded late payment', paymentIntentId);
+      } catch (e) {
+        console.error('[stripe-webhook] auto-refund failed (MANUAL INTERVENTION NEEDED):', e);
+      }
+      return;
+    }
   }
 
   // Insert booking
