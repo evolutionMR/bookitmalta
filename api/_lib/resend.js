@@ -191,8 +191,8 @@ Deposit paid — booking is locked.
   Phone:        ${booking.customer_phone || '—'}
   Date:         ${fmtDate(booking.charter_date)}
   Party size:   ${booking.party_size}
-  Booking fee:  ${fmtEUR(booking.deposit_paid_cents)} (paid to BookItMalta — your commission)
-  Charter:      ${fmtEUR(booking.balance_due_cents)} — collect from customer on the day
+  Booking fee:  ${fmtEUR(booking.deposit_paid_cents)} (BookItMalta booking-service fee — kept by us, separate from your charter)
+  Charter:      ${fmtEUR(booking.balance_due_cents)} — collect from customer directly on the day
 
 Get in touch with the customer to share meeting point + briefing.
 
