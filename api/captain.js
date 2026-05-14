@@ -98,8 +98,10 @@ async function doConfirm({ supabase, tenant, config, enquiry, note, res }) {
     );
   }
 
-  // Update enquiry → confirmed
-  const { error: updErr } = await supabase
+  // Update enquiry → confirmed. Gate on status='received' so concurrent
+  // clicks (or a scanner+captain race) can't both create Payment Links —
+  // only the first request wins; the loser cleans up its Stripe link.
+  const { data: updated, error: updErr } = await supabase
     .from('enquiries')
     .update({
       status:                  'confirmed',
@@ -109,14 +111,21 @@ async function doConfirm({ supabase, tenant, config, enquiry, note, res }) {
       stripe_payment_link_url: paymentLink.url,
       stripe_link_expires_at:  paymentLink.expiresAt.toISOString(),
     })
-    .eq('id', enquiry.id);
+    .eq('id', enquiry.id)
+    .eq('status', 'received')
+    .select();
 
   if (updErr) {
     console.error('[captain] update error:', updErr);
-    // Best-effort: deactivate the Payment Link we just created so we don't leave
-    // a live link that the system doesn't know about.
     try { await deactivatePaymentLink(tenant, paymentLink.id); } catch {}
     return htmlError(res, 500, 'Could not update enquiry. Payment link revoked. Please try again.');
+  }
+
+  if (!updated || updated.length === 0) {
+    // Lost the race — another request confirmed first. Deactivate our orphan link.
+    console.warn('[captain] confirm race — enquiry already actioned by another request', enquiry.id);
+    try { await deactivatePaymentLink(tenant, paymentLink.id); } catch {}
+    return htmlError(res, 409, 'This enquiry was already actioned. The duplicate payment link has been deactivated.');
   }
 
   // Email customer the deposit link
