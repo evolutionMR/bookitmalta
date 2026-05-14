@@ -7,10 +7,17 @@
 // for signature verification).
 //
 // Events handled:
-//   • checkout.session.completed     — Payment Link path: payment succeeded
-//   • payment_intent.succeeded       — fallback for direct PaymentIntents
-//   • charge.refunded                — partial or full refund
-//   • payment_intent.payment_failed  — log + ignore (customer retries)
+//   • checkout.session.completed              — Payment Link sync path (cards)
+//   • checkout.session.async_payment_succeeded — Payment Link async (SEPA, BACS)
+//   • payment_intent.succeeded                — fallback for direct PaymentIntents
+//   • charge.refunded                         — partial or full refund
+//   • payment_intent.payment_failed           — log + ignore (customer retries)
+//
+// Note: checkout.session.completed fires BEFORE async payments clear, so we
+// gate on session.payment_status === 'paid'. The async_payment_succeeded
+// event delivers the actual booking creation for delayed-payment methods.
+// The Stripe webhook destination must subscribe to async_payment_succeeded
+// for this to fire — see fast-follow task #64.
 //
 // Idempotency: we use stripe_payment_intent_id as the booking primary
 // "fingerprint" — re-running the same event is a no-op (booking exists,
@@ -70,6 +77,12 @@ async function handler(req, res) {
       case 'checkout.session.completed':
         await handleCheckoutCompleted({ event, tenant, config });
         break;
+      case 'checkout.session.async_payment_succeeded':
+        // Delayed payment method (SEPA, BACS) finally cleared. Same booking
+        // logic as the sync path — markEnquiryPaid is idempotent so safe to
+        // call even if checkout.session.completed already booked.
+        await handleCheckoutCompleted({ event, tenant, config });
+        break;
       case 'payment_intent.succeeded':
         // Often fires after checkout.session.completed — idempotent.
         await handlePaymentSucceeded({ event, tenant, config });
@@ -105,6 +118,24 @@ async function handleCheckoutCompleted({ event, tenant, config }) {
 
   if (!enquiryId) {
     console.warn('[stripe-webhook] checkout.session.completed missing enquiry_id metadata');
+    return;
+  }
+
+  // Gate on payment_status='paid'. For Stripe Payment Links with delayed
+  // payment methods (SEPA, BACS), checkout.session.completed fires when the
+  // customer submits but BEFORE the payment clears — payment_status is
+  // 'unpaid' or 'no_payment_required' at that point. Booking the charter
+  // date for an as-yet-unpaid customer would let the captain promise it
+  // elsewhere if the async payment later fails.
+  //
+  // The async path is handled by checkout.session.async_payment_succeeded
+  // which fires when the delayed payment actually clears (see switch above).
+  if (session.payment_status !== 'paid') {
+    console.log('[stripe-webhook] checkout.session.completed received but payment_status not paid yet — waiting for async_payment_succeeded', {
+      enquiryId,
+      payment_status: session.payment_status,
+      session_id: session.id,
+    });
     return;
   }
 
