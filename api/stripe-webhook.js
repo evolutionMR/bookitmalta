@@ -218,11 +218,37 @@ async function markEnquiryPaid({ tenant, config, enquiryId, paymentIntentId, pay
     .single();
 
   if (bkErr) {
-    // The most likely failure here is the unique-index violation on
-    // charter_date — meaning ANOTHER booking landed first. The customer
-    // has already been charged via Stripe by the time we get here, so we
-    // MUST refund them; otherwise their money is stuck with no booking.
-    console.error('[stripe-webhook] booking insert error — refunding customer:', bkErr);
+    // Two failure modes converge here:
+    //   (a) duplicate Stripe webhook delivery — both requests passed the
+    //       pre-insert idempotency check before either committed. First
+    //       inserted cleanly; we lost the race but a booking DOES exist
+    //       for this payment_intent_id. Don't refund — the customer's
+    //       payment is correctly associated with the booking the winner
+    //       created.
+    //   (b) genuine charter_date unique-index violation — two deposit
+    //       links existed for the same date and the later customer paid
+    //       after another booking inserted. Customer has been charged
+    //       but has no booking. MUST refund.
+    //
+    // Disambiguate by re-querying bookings for this payment_intent_id.
+    // (Schema-level fix is a UNIQUE constraint on stripe_payment_intent_id —
+    // tracked as fast-follow task #63.)
+    const { data: alreadyBooked } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('stripe_payment_intent_id', paymentIntentId)
+      .maybeSingle();
+
+    if (alreadyBooked) {
+      console.log('[stripe-webhook] duplicate webhook delivery — booking already exists for PI, skipping refund', {
+        paymentIntentId,
+        existingBookingId: alreadyBooked.id,
+      });
+      return;
+    }
+
+    // Genuine race-lost case (b). The customer is charged with no booking.
+    console.error('[stripe-webhook] booking insert error (no existing booking for PI) — refunding customer:', bkErr);
     try {
       const stripe = getStripe(tenant);
       await stripe.refunds.create({
