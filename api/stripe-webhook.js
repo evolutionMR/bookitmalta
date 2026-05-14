@@ -219,11 +219,25 @@ async function markEnquiryPaid({ tenant, config, enquiryId, paymentIntentId, pay
 
   if (bkErr) {
     // The most likely failure here is the unique-index violation on
-    // charter_date — meaning ANOTHER booking landed first. This is a race
-    // condition we shouldn't normally hit because captain only confirms one
-    // enquiry per date, but defend against it.
-    console.error('[stripe-webhook] booking insert error:', bkErr);
-    // Log and continue — we'd want manual intervention here.
+    // charter_date — meaning ANOTHER booking landed first. The customer
+    // has already been charged via Stripe by the time we get here, so we
+    // MUST refund them; otherwise their money is stuck with no booking.
+    console.error('[stripe-webhook] booking insert error — refunding customer:', bkErr);
+    try {
+      const stripe = getStripe(tenant);
+      await stripe.refunds.create({
+        payment_intent: paymentIntentId,
+        reason: 'requested_by_customer',
+        metadata: {
+          reason_internal: 'booking_insert_race_lost',
+          enquiry_id: String(enquiryId),
+          original_error: (bkErr && bkErr.message) ? bkErr.message.slice(0, 200) : 'unknown',
+        },
+      });
+      console.log('[stripe-webhook] auto-refunded after booking insert race', paymentIntentId);
+    } catch (refundErr) {
+      console.error('[stripe-webhook] CRITICAL: auto-refund failed after booking insert race (MANUAL INTERVENTION):', refundErr);
+    }
     return;
   }
 
