@@ -39,9 +39,7 @@ function fmtDate(isoDate) {
 // CAPTAIN: new enquiry notification (with confirm/decline magic links)
 // =============================================================================
 function captainEnquiryEmail({ tenantConfig, enquiry, baseUrl }) {
-  const confirmUrl = `${baseUrl}/api/captain?token=${enquiry.captain_token}&action=confirm&tenant=${tenantConfig.slug}`;
-  const declineUrl = `${baseUrl}/api/captain?token=${enquiry.captain_token}&action=decline&tenant=${tenantConfig.slug}`;
-  const reviewUrl  = `${baseUrl}/api/captain?token=${enquiry.captain_token}&tenant=${tenantConfig.slug}`;
+  const reviewUrl = `${baseUrl}/api/captain?token=${enquiry.captain_token}&tenant=${tenantConfig.slug}`;
 
   const subject = `[${tenantConfig.name}] New enquiry — ${fmtDate(enquiry.preferred_date)} — ${enquiry.party_size} guests`;
 
@@ -63,15 +61,13 @@ ${enquiry.message || '(none)'}
 REVIEW + ACT
 ────────────────────────────────────────
 
-Open the enquiry to confirm, decline, or suggest alternative dates:
+Open the enquiry to review, confirm, or decline:
 ${reviewUrl}
 
-Or use the one-click shortcuts:
-  ✅ CONFIRM — send Stripe deposit link to customer:
-     ${confirmUrl}
-
-  ❌ DECLINE — apologise and close enquiry:
-     ${declineUrl}
+The link takes you to a page where you can review the customer's details
+and choose Confirm (which sends an automated deposit link to the customer)
+or Decline. Both actions require a click on that page — clicking the URL
+above just shows you the details.
 
 ────────────────────────────────────────
 

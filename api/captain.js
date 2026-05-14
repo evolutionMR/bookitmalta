@@ -33,7 +33,11 @@ module.exports = async function handler(req, res) {
   }
 
   const token  = (req.query && req.query.token)  || (req.body && req.body.token);
-  const action = (req.query && req.query.action) || (req.body && req.body.action);
+  // Mutations only on POST. Email security scanners (Outlook ATP Safe Links,
+  // Gmail link-preview) fetch URLs on GET and would otherwise auto-confirm
+  // enquiries before the captain ever reads the email. GET requests fall
+  // through to the review-page render, which has the POST form.
+  const action = (req.method === 'POST') ? (req.body && req.body.action) : null;
   const note   = (req.body && req.body.note)     || null;
 
   if (!token) return htmlError(res, 400, 'Missing token');
