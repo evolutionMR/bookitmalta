@@ -274,12 +274,15 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo 
   const from = getTenantEnvOptional(tenantSlug, 'RESEND_FROM', 'BookItMalta <noreply@bookitmalta.com>');
   const operatorEmail = getTenantEnvOptional(tenantSlug, 'OPERATOR_EMAIL', null);
 
+  // NOTE: Resend Node SDK expects camelCase 'replyTo' — snake_case 'reply_to'
+  // is the REST API field name and is silently ignored by the SDK, which
+  // would leave every email with no Reply-To header (Codex Round 4 finding).
   const result = await resend.emails.send({
     from,
     to,
     subject,
     text,
-    reply_to: replyTo || operatorEmail || undefined,
+    replyTo: replyTo || operatorEmail || undefined,
   });
 
   // Resend SDK v3+ returns errors in the response body rather than throwing.
