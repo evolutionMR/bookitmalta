@@ -29,8 +29,8 @@ const TENANTS = {
     confirmationAnchor: '#enquiry-confirmed',
 
     // Stripe Payment Link config
-    stripeProductName: 'Bandama Charter — Deposit',
-    stripeProductDescription: 'Non-refundable deposit for full-day charter aboard Beneteau Swift Trawler 47. Balance settled directly with captain on the day.',
+    stripeProductName: 'BookItMalta booking fee — Bandama charter',
+    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your date for a full-day charter aboard Beneteau Swift Trawler 47. The charter price is paid directly to Bandama Yacht Charters on the day, as a separate transaction.',
 
     // Email branding
     emailFromName: 'Bandama Yacht Charters (via BookItMalta)',
@@ -57,8 +57,8 @@ const TENANTS = {
     publicPagePath: '/charters/adventure-cruises',
     confirmationAnchor: '#enquiry-confirmed',
 
-    stripeProductName: 'Adventure Cruises — Deposit',
-    stripeProductDescription: 'Non-refundable deposit.',
+    stripeProductName: 'BookItMalta booking fee — Adventure Cruises',
+    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your date. The charter price is paid directly to Adventure Cruises on the day, as a separate transaction.',
 
     emailFromName: 'Adventure Cruises (via BookItMalta)',
     emailReplyTo: null,

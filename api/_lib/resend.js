@@ -65,15 +65,16 @@ Open the enquiry to review, confirm, or decline:
 ${reviewUrl}
 
 The link takes you to a page where you can review the customer's details
-and choose Confirm (which sends an automated deposit link to the customer)
-or Decline. Both actions require a click on that page — clicking the URL
+and choose Confirm (which sends the customer an automated payment link
+for the booking fee) or Decline. Both actions require a click on that page — clicking the URL
 above just shows you the details.
 
 ────────────────────────────────────────
 
 If you confirm, the customer receives an automated email with a secure
-Stripe link for the ${fmtEUR(tenantConfig.depositAmountCents)} deposit. The booking is locked the moment
-they pay. Balance of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with you on the day.
+payment link for the ${fmtEUR(tenantConfig.depositAmountCents)} BookItMalta booking fee. The booking is locked
+the moment they pay. Charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with you on
+the day.
 
 BookItMalta · bookitmalta.com
 `;
@@ -98,11 +99,11 @@ Your enquiry:
 
 What happens next
   1. Captain reviews and confirms availability (within 24h).
-  2. You receive a secure payment link to pay the ${fmtEUR(tenantConfig.depositAmountCents)} deposit.
+  2. You receive a secure payment link for the ${fmtEUR(tenantConfig.depositAmountCents)} BookItMalta booking fee.
   3. The moment payment lands, the date is locked.
-  4. Balance of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day.
+  4. The charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day.
 
-Cancellation: full refund of deposit up to ${tenantConfig.cancellationWindowDays} days before the charter. After that the deposit is forfeit.
+Cancellation: full refund of the booking fee up to ${tenantConfig.cancellationWindowDays} days before the charter. After that the booking fee is forfeit.
 
 If you need to reach us in the meantime, just reply to this email.
 
@@ -116,21 +117,23 @@ via BookItMalta · bookitmalta.com
 // CUSTOMER: deposit link (after captain confirms)
 // =============================================================================
 function customerDepositLinkEmail({ tenantConfig, enquiry, paymentUrl }) {
-  const subject = `Confirmed — pay your deposit to lock in ${fmtDate(enquiry.preferred_date)}`;
+  const subject = `Confirmed — pay your booking fee to lock in ${fmtDate(enquiry.preferred_date)}`;
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
 Good news — ${tenantConfig.operatorFirstName || tenantConfig.name} has confirmed availability for ${fmtDate(enquiry.preferred_date)}.
 
-Pay your ${fmtEUR(tenantConfig.depositAmountCents)} deposit here to lock the date:
+Pay your ${fmtEUR(tenantConfig.depositAmountCents)} BookItMalta booking fee here to lock the date:
 
 ${paymentUrl}
 
 The link is valid for ${tenantConfig.confirmationExpiryHours} hours. Once payment lands, you'll receive a final confirmation by email.
 
-The remaining ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day of the charter.
+The charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day of the charter, as a separate transaction.
 
-Cancellation policy: full refund of the deposit if you cancel up to ${tenantConfig.cancellationWindowDays} days before the charter. After that the deposit is forfeit.
+What you're paying for: the ${fmtEUR(tenantConfig.depositAmountCents)} is a booking fee charged by BookItMalta to secure your date. The charter itself is supplied by ${tenantConfig.name}. BookItMalta is registered as a small undertaking under Article 11 of the Malta VAT Act — no VAT chargeable on the booking fee.
+
+Cancellation policy: full refund of the booking fee if you cancel up to ${tenantConfig.cancellationWindowDays} days before the charter. After that the booking fee is forfeit.
 
 Looking forward to having you aboard.
 
@@ -150,14 +153,22 @@ Hi ${booking.customer_name.split(' ')[0] || 'there'},
 
 Your booking is locked in.
 
-  Date:         ${fmtDate(booking.charter_date)}
-  Party size:   ${booking.party_size}
-  Deposit paid: ${fmtEUR(booking.deposit_paid_cents)}
-  Balance due:  ${fmtEUR(booking.balance_due_cents)} (paid directly to captain on the day)
+  Date:             ${fmtDate(booking.charter_date)}
+  Party size:       ${booking.party_size}
+  Booking fee paid: ${fmtEUR(booking.deposit_paid_cents)} (to BookItMalta)
+  Charter price:    ${fmtEUR(booking.balance_due_cents)} (paid directly to captain on the day)
+
+Receipt — BookItMalta booking fee
+  Amount:        ${fmtEUR(booking.deposit_paid_cents)}
+  VAT (Art. 11): €0.00
+
+Exempt from VAT under Article 11 of the VAT Act, Chapter 406, Laws of Malta. BookItMalta is registered as a small undertaking. No VAT chargeable on this supply and no input VAT recoverable.
+
+The charter itself (${fmtEUR(booking.balance_due_cents)}) is supplied by ${tenantConfig.name} as a separate transaction, settled directly with the captain on the day.
 
 ${tenantConfig.operatorFirstName || tenantConfig.name} will be in touch shortly with meeting point details and a final pre-charter briefing.
 
-Cancellation policy: full refund of deposit if you cancel up to ${tenantConfig.cancellationWindowDays} days before the charter date. After that the deposit is forfeit.
+Cancellation policy: full refund of the booking fee if you cancel up to ${tenantConfig.cancellationWindowDays} days before the charter date. After that the booking fee is forfeit.
 
 Looking forward to your day on the water.
 
@@ -173,15 +184,15 @@ via BookItMalta · bookitmalta.com
 function captainBookingConfirmedEmail({ tenantConfig, booking }) {
   const subject = `[${tenantConfig.name}] BOOKED — ${fmtDate(booking.charter_date)} — ${booking.customer_name}`;
   const text = `
-Deposit paid — booking is locked.
+Booking fee paid — charter date is locked.
 
   Customer:     ${booking.customer_name}
   Email:        ${booking.customer_email}
   Phone:        ${booking.customer_phone || '—'}
   Date:         ${fmtDate(booking.charter_date)}
   Party size:   ${booking.party_size}
-  Deposit paid: ${fmtEUR(booking.deposit_paid_cents)} (this is our commission)
-  Balance:      ${fmtEUR(booking.balance_due_cents)} — collect on the day
+  Booking fee:  ${fmtEUR(booking.deposit_paid_cents)} (BookItMalta booking-service fee — kept by us, separate from your charter)
+  Charter:      ${fmtEUR(booking.balance_due_cents)} — collect from customer directly on the day
 
 Get in touch with the customer to share meeting point + briefing.
 
@@ -258,7 +269,7 @@ function captainActionConfirmedEmail({ tenantConfig, enquiry, action }) {
 You ${action === 'confirm' ? 'confirmed' : 'declined'} the enquiry from ${enquiry.customer_name} for ${fmtDate(enquiry.preferred_date)}.
 
 ${action === 'confirm'
-  ? `An automated email with a secure Stripe deposit link (${fmtEUR(tenantConfig.depositAmountCents)}) has been sent to ${enquiry.customer_email}. You'll receive a "BOOKED" notification the moment they pay.`
+  ? `An automated email with a secure payment link for the ${fmtEUR(tenantConfig.depositAmountCents)} booking fee has been sent to ${enquiry.customer_email}. You'll receive a "BOOKED" notification the moment they pay.`
   : `The customer has been notified that the date isn't available.`}
 
 BookItMalta · bookitmalta.com
