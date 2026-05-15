@@ -164,7 +164,7 @@ async function doConfirm({ supabase, tenant, config, enquiry, note, res }) {
 
   return htmlSuccess(res, {
     title: 'Confirmed',
-    body: `Stripe deposit link sent to <strong>${escapeHtml(enquiry.customer_email)}</strong>.<br><br>You'll receive a "BOOKED" notification the moment the deposit lands.`,
+    body: `Payment link sent to <strong>${escapeHtml(enquiry.customer_email)}</strong>.<br><br>You'll receive a "BOOKED" notification the moment the booking fee lands.`,
     config,
   });
 }
@@ -292,7 +292,7 @@ function htmlReviewPage(res, enquiry, config, tenant) {
   const body = `
     <span class="kicker">New enquiry</span>
     <h1>${escapeHtml(enquiry.customer_name)}</h1>
-    <p>Review the details below and choose an action. Confirming will send a Stripe deposit link to the customer. Declining will email an apology.</p>
+    <p>Review the details below and choose an action. Confirming will send the customer a payment link for the BookItMalta booking fee. Declining will email an apology.</p>
 
     <dl class="meta">
       <dt>Email</dt>      <dd><a href="mailto:${escapeHtml(enquiry.customer_email)}" style="color:var(--terracotta);text-decoration:none">${escapeHtml(enquiry.customer_email)}</a></dd>
@@ -312,7 +312,7 @@ function htmlReviewPage(res, enquiry, config, tenant) {
       <textarea id="note" name="note" placeholder="e.g. weather looks good, prefer Comino route…"></textarea>
 
       <div class="actions">
-        <button class="btn btn-confirm" type="submit" name="action" value="confirm">Confirm & send deposit link</button>
+        <button class="btn btn-confirm" type="submit" name="action" value="confirm">Confirm & send payment link</button>
         <button class="btn btn-decline" type="submit" name="action" value="decline">Decline</button>
       </div>
     </form>

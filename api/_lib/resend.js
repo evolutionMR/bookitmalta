@@ -65,8 +65,8 @@ Open the enquiry to review, confirm, or decline:
 ${reviewUrl}
 
 The link takes you to a page where you can review the customer's details
-and choose Confirm (which sends an automated deposit link to the customer)
-or Decline. Both actions require a click on that page — clicking the URL
+and choose Confirm (which sends the customer an automated payment link
+for the booking fee) or Decline. Both actions require a click on that page — clicking the URL
 above just shows you the details.
 
 ────────────────────────────────────────
@@ -117,7 +117,7 @@ via BookItMalta · bookitmalta.com
 // CUSTOMER: deposit link (after captain confirms)
 // =============================================================================
 function customerDepositLinkEmail({ tenantConfig, enquiry, paymentUrl }) {
-  const subject = `Confirmed — pay your deposit to lock in ${fmtDate(enquiry.preferred_date)}`;
+  const subject = `Confirmed — pay your booking fee to lock in ${fmtDate(enquiry.preferred_date)}`;
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
@@ -184,7 +184,7 @@ via BookItMalta · bookitmalta.com
 function captainBookingConfirmedEmail({ tenantConfig, booking }) {
   const subject = `[${tenantConfig.name}] BOOKED — ${fmtDate(booking.charter_date)} — ${booking.customer_name}`;
   const text = `
-Deposit paid — booking is locked.
+Booking fee paid — charter date is locked.
 
   Customer:     ${booking.customer_name}
   Email:        ${booking.customer_email}
