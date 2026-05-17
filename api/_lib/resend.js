@@ -103,7 +103,7 @@ What happens next
   3. The moment payment lands, the date is locked.
   4. The charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day.
 
-Cancellation: full refund of the booking fee up to ${tenantConfig.cancellationWindowDays} days before the charter. After that the booking fee is forfeit.
+Cancellation: if you cancel ${tenantConfig.cancellationWindowDays} or more days before the charter, we refund the booking fee less a ~2% payment processing fee retained by our payment provider (approximately €5.95 on a €300 fee). Within ${tenantConfig.cancellationWindowDays} days of the charter, the booking fee is forfeit. Full terms at bookitmalta.com/terms.html.
 
 If you need to reach us in the meantime, just reply to this email.
 
@@ -133,7 +133,7 @@ The charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depo
 
 What you're paying for: the ${fmtEUR(tenantConfig.depositAmountCents)} is a booking fee charged by BookItMalta to secure your date. The charter itself is supplied by ${tenantConfig.name}. BookItMalta is registered as a small undertaking under Article 11 of the Malta VAT Act — no VAT chargeable on the booking fee.
 
-Cancellation policy: full refund of the booking fee if you cancel up to ${tenantConfig.cancellationWindowDays} days before the charter. After that the booking fee is forfeit.
+Cancellation policy: if you cancel ${tenantConfig.cancellationWindowDays} or more days before the charter, the booking fee is refunded less a ~2% payment processing fee retained by our payment provider (approximately €5.95 on a €300 fee). Within ${tenantConfig.cancellationWindowDays} days of the charter, the booking fee is forfeit. Full terms at bookitmalta.com/terms.html.
 
 Looking forward to having you aboard.
 
@@ -168,7 +168,7 @@ The charter itself (${fmtEUR(booking.balance_due_cents)}) is supplied by ${tenan
 
 ${tenantConfig.operatorFirstName || tenantConfig.name} will be in touch shortly with meeting point details and a final pre-charter briefing.
 
-Cancellation policy: full refund of the booking fee if you cancel up to ${tenantConfig.cancellationWindowDays} days before the charter date. After that the booking fee is forfeit.
+Cancellation policy: if you cancel ${tenantConfig.cancellationWindowDays} or more days before the charter date, the booking fee is refunded less a ~2% payment processing fee retained by our payment provider (approximately €5.95 on a €300 fee). Within ${tenantConfig.cancellationWindowDays} days of the charter, the booking fee is forfeit. Full terms at bookitmalta.com/terms.html.
 
 Looking forward to your day on the water.
 
