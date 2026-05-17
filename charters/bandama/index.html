@@ -790,7 +790,10 @@ footer .wordmark span { color: var(--terracotta); }
             var err = document.getElementById('enquiry-error');
             if (!form || !submit || !consent) return;
 
+            var submitting = false;
+
             function toggleSubmit() {
+              if (submitting) return;
               submit.disabled = !consent.checked;
             }
             consent.addEventListener('change', toggleSubmit);
@@ -798,6 +801,7 @@ footer .wordmark span { color: var(--terracotta); }
 
             form.addEventListener('submit', async function (e) {
               e.preventDefault();
+              if (submitting) return;
               err.hidden = true;
               err.textContent = '';
               if (!consent.checked) {
@@ -811,6 +815,7 @@ footer .wordmark span { color: var(--terracotta); }
               new FormData(form).forEach(function (v, k) { data[k] = v; });
               data.terms_accepted = true;
 
+              submitting = true;
               submit.disabled = true;
               var originalLabel = submit.innerHTML;
               submit.innerHTML = 'Sending...';
@@ -827,8 +832,9 @@ footer .wordmark span { color: var(--terracotta); }
                 }
                 window.location.href = payload.redirect || '/charters/bandama#enquiry-confirmed';
               } catch (ex) {
-                submit.disabled = false;
+                submitting = false;
                 submit.innerHTML = originalLabel;
+                toggleSubmit();
                 err.textContent = ex.message || 'Sorry — your enquiry could not be sent. Please try again.';
                 err.hidden = false;
               }
