@@ -368,8 +368,50 @@ async function handleChargeRefunded({ event, tenant, config }) {
     return;
   }
 
-  const fullyRefunded = charge.amount_refunded >= charge.amount;
-  const newStatus = fullyRefunded ? 'refunded' : booking.status;
+  // Determine if this refund effectively cancels the booking.
+  //
+  // Option B refund policy advertises "refund less ~2% payment processing fee"
+  // (terms.html section 5). Stripe keeps its fee on every refund, so a
+  // customer-initiated cancellation will be refunded for (charge.amount -
+  // stripe_fee), strictly less than charge.amount. If we only treat refunds
+  // where amount_refunded >= charge.amount as "fully refunded", net-of-fee
+  // refunds leave the booking stuck as 'booked' forever — the date is
+  // never released and the top of the waitlist is never notified.
+  // (Codex R4 finding on PR #8.)
+  //
+  // Fix: fetch the balance_transaction to read the exact Stripe fee, then
+  // treat amount_refunded >= (charge.amount - stripe_fee) as a full
+  // cancellation. Partial refunds below that threshold (e.g. captain-side
+  // operator goodwill refunds of part of the booking fee) still leave the
+  // date booked.
+  let stripeFee = 0;
+  try {
+    if (charge.balance_transaction) {
+      const stripe = getStripe(tenant);
+      const bt = typeof charge.balance_transaction === 'string'
+        ? await stripe.balanceTransactions.retrieve(charge.balance_transaction)
+        : charge.balance_transaction;
+      stripeFee = bt && typeof bt.fee === 'number' ? bt.fee : 0;
+    }
+  } catch (e) {
+    console.error('[stripe-webhook] failed to fetch balance_transaction for refund fee calc:', e);
+    // Conservative fallback: with stripeFee=0 only exact-amount refunds
+    // trigger cancellation. Operator-side full-amount refunds still work.
+  }
+
+  const netRefundable = charge.amount - stripeFee;
+  const treatAsCancelled = charge.amount_refunded >= netRefundable;
+  const newStatus = treatAsCancelled ? 'refunded' : booking.status;
+
+  console.log('[stripe-webhook] refund processed:', {
+    payment_intent:     paymentIntentId,
+    booking_id:         booking.id,
+    charge_amount:      charge.amount,
+    amount_refunded:    charge.amount_refunded,
+    stripe_fee:         stripeFee,
+    net_refundable:     netRefundable,
+    treat_as_cancelled: treatAsCancelled,
+  });
 
   await supabase
     .from('bookings')
@@ -377,13 +419,13 @@ async function handleChargeRefunded({ event, tenant, config }) {
       status:              newStatus,
       refund_amount_cents: charge.amount_refunded,
       refund_processed_at: new Date().toISOString(),
-      cancelled_at:        fullyRefunded ? new Date().toISOString() : booking.cancelled_at,
-      cancelled_reason:    fullyRefunded ? 'refunded_via_stripe' : booking.cancelled_reason,
+      cancelled_at:        treatAsCancelled ? new Date().toISOString() : booking.cancelled_at,
+      cancelled_reason:    treatAsCancelled ? 'refunded_via_stripe' : booking.cancelled_reason,
     })
     .eq('id', booking.id);
 
   // If the date is now free, check waitlist for that date and offer it
-  if (fullyRefunded) {
+  if (treatAsCancelled) {
     await offerSlotToTopOfWaitlist({ tenant, config, date: booking.charter_date });
   }
 }
