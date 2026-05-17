@@ -71,6 +71,21 @@ function validateEnquiry(body) {
     throw new ValidationError('alt_dates: too long');
   }
 
+  // Explicit terms acceptance (Phase 1.5b). Truthy values: true, "true",
+  // "on", "1" — supports both JSON and form-encoded submissions.
+  const ta = body.terms_accepted;
+  const terms_accepted =
+    ta === true || ta === 'true' || ta === 'on' || ta === '1' || ta === 1;
+  if (!terms_accepted) {
+    throw new ValidationError('terms_accepted: you must accept the Terms and Privacy Policy to continue');
+  }
+
+  const terms_version = v(trim(body.terms_version), 'terms_version', (x) =>
+    !x ? 'required' :
+    x.length > 40 ? 'too long' :
+    null
+  );
+
   return {
     customer_name,
     customer_email,
@@ -80,6 +95,7 @@ function validateEnquiry(body) {
     party_size,
     message,
     tour_option,
+    terms_version,
   };
 }
 

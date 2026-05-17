@@ -101,6 +101,7 @@ async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, r
       user_agent:           audit.user_agent,
       referrer:             audit.referrer,
       ip_hash:              audit.ip_hash,
+      terms_accepted_at:    new Date().toISOString(),
     })
     .select()
     .single();
@@ -171,6 +172,7 @@ async function routeToWaitlist({ supabase, tenant, config, input, baseUrl, req, 
       user_agent:           audit.user_agent,
       referrer:             audit.referrer,
       ip_hash:              audit.ip_hash,
+      terms_accepted_at:    new Date().toISOString(),
       captain_note:         'Auto-routed to waitlist — date already booked.',
     })
     .select()

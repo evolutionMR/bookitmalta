@@ -400,6 +400,50 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .form-field textarea { resize: vertical; min-height: 80px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
 .enquiry-form .btn { width: 100%; justify-content: center; margin-top: 0.7rem; }
+.enquiry-form .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.consent {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  padding: 0.85rem 0.9rem;
+  margin-top: 0.4rem;
+  background: rgba(200,92,46,.04);
+  border: 1px solid rgba(200,92,46,.18);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.consent input[type="checkbox"] {
+  margin: 0;
+  margin-top: 0.18rem;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--terracotta);
+  cursor: pointer;
+}
+.consent-text {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.consent-text a { color: var(--terracotta); text-decoration: underline; }
+.consent-summary {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+.enquiry-error {
+  margin-top: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(200,92,46,.08);
+  border: 1px solid rgba(200,92,46,.25);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--terracotta);
+  line-height: 1.45;
+}
 
 .enquiry-flow-note {
   background: rgba(11,37,69,0.04);
@@ -642,7 +686,7 @@ footer .wordmark span { color: var(--terracotta); }
       </p>
 
       <p class="pricing-note" style="margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--rule);">
-        <strong style="color: var(--ink); font-weight: 500;">Cancellation policy:</strong> cancel up to <strong style="color: var(--ink); font-weight: 500;">7 days before</strong> the charter date and the €300 booking fee is refunded in full. Cancellations within 7 days of the charter forfeit the booking fee.
+        <strong style="color: var(--ink); font-weight: 500;">Cancellation policy:</strong> cancel <strong style="color: var(--ink); font-weight: 500;">7 or more days before</strong> the charter date and the €300 booking fee is refunded <strong style="color: var(--ink); font-weight: 500;">less a ~2% payment processing fee</strong> (around €5.95) retained by our payment provider. Cancellations within 7 days of the charter forfeit the booking fee. <a href="/terms.html" style="color: var(--terracotta); text-decoration: underline;">Full terms</a>.
       </p>
     </div>
   </div>
@@ -655,49 +699,46 @@ footer .wordmark span { color: var(--terracotta); }
         <h3>Enquire about a date</h3>
         <p class="form-intro">Tell us when, how many guests, and how to reach you. The operator confirms availability within 24 hours and sends you a booking-fee payment link.</p>
 
-        <form action="https://formspree.io/f/xlgalawe" method="POST">
-          <input type="hidden" name="_subject" value="[Bandama] New enquiry from bookitmalta.com">
+        <form id="enquiry-form" action="/api/enquiry" method="POST" novalidate>
           <input type="hidden" name="tenant" value="bandama">
-          <input type="hidden" name="operator_email" value="info@bandamacharters.com">
-          <input type="hidden" name="_format" value="plain">
-          <input type="hidden" name="_next" value="https://bookitmalta.com/charters/bandama#enquiry-confirmed">
+          <input type="hidden" name="terms_version" value="2026-05-16-v1">
 
           <div class="form-row">
             <div class="form-field">
               <label for="name">Name</label>
-              <input type="text" id="name" name="name" required>
+              <input type="text" id="name" name="customer_name" required>
             </div>
             <div class="form-field">
               <label for="email">Email</label>
-              <input type="email" id="email" name="_replyto" required>
+              <input type="email" id="email" name="customer_email" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-field">
               <label for="phone">Phone (with country code)</label>
-              <input type="tel" id="phone" name="phone" required>
+              <input type="tel" id="phone" name="customer_phone" required>
             </div>
             <div class="form-field">
               <label for="date">Preferred date</label>
-              <input type="date" id="date" name="date" required>
+              <input type="date" id="date" name="preferred_date" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-field">
               <label for="guests">Number of guests</label>
-              <select id="guests" name="guests" required>
+              <select id="guests" name="party_size" required>
                 <option value="">Select...</option>
-                <option value="1-2">1–2 guests</option>
-                <option value="3-4">3–4 guests</option>
-                <option value="5-6">5–6 guests</option>
-                <option value="7-8">7–8 guests</option>
+                <option value="2">1–2 guests</option>
+                <option value="4">3–4 guests</option>
+                <option value="6">5–6 guests</option>
+                <option value="8">7–8 guests</option>
               </select>
             </div>
             <div class="form-field">
               <label for="time">Departure preference</label>
-              <select id="time" name="time">
+              <select id="time" name="tour_option">
                 <option value="09:30">09:30</option>
                 <option value="10:00">10:00</option>
                 <option value="flexible">Flexible</option>
@@ -707,13 +748,76 @@ footer .wordmark span { color: var(--terracotta); }
 
           <div class="form-field">
             <label for="notes">Anything we should know? (route preferences, dietary, special occasion)</label>
-            <textarea id="notes" name="notes"></textarea>
+            <textarea id="notes" name="message"></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary">
+          <label class="consent" for="terms_accepted">
+            <input type="checkbox" id="terms_accepted" name="terms_accepted" required>
+            <span class="consent-text">
+              I accept the <a href="/terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+              <span class="consent-summary">Cancellation: refund of the €300 booking fee less a ~2% payment processing fee if cancelled 7 or more days before the charter. Within 7 days, the booking fee is forfeit.</span>
+            </span>
+          </label>
+
+          <p id="enquiry-error" class="enquiry-error" hidden role="alert"></p>
+
+          <button type="submit" class="btn btn-primary" id="enquiry-submit" disabled>
             Send enquiry <span class="arrow">→</span>
           </button>
         </form>
+        <script>
+          (function () {
+            var form = document.getElementById('enquiry-form');
+            var submit = document.getElementById('enquiry-submit');
+            var consent = document.getElementById('terms_accepted');
+            var err = document.getElementById('enquiry-error');
+            if (!form || !submit || !consent) return;
+
+            function toggleSubmit() {
+              submit.disabled = !consent.checked;
+            }
+            consent.addEventListener('change', toggleSubmit);
+            toggleSubmit();
+
+            form.addEventListener('submit', async function (e) {
+              e.preventDefault();
+              err.hidden = true;
+              err.textContent = '';
+              if (!consent.checked) {
+                err.textContent = 'Please accept the Terms and Privacy Policy to continue.';
+                err.hidden = false;
+                return;
+              }
+              if (!form.reportValidity()) return;
+
+              var data = {};
+              new FormData(form).forEach(function (v, k) { data[k] = v; });
+              data.terms_accepted = true;
+
+              submit.disabled = true;
+              var originalLabel = submit.innerHTML;
+              submit.innerHTML = 'Sending...';
+
+              try {
+                var res = await fetch('/api/enquiry', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                  body: JSON.stringify(data),
+                });
+                var payload = await res.json().catch(function () { return {}; });
+                if (!res.ok) {
+                  throw new Error(payload.error || 'Sorry — your enquiry could not be sent. Please try again or email us directly.');
+                }
+                window.location.href = payload.redirect || '/charters/bandama#enquiry-confirmed';
+              } catch (ex) {
+                submit.disabled = false;
+                submit.innerHTML = originalLabel;
+                err.textContent = ex.message || 'Sorry — your enquiry could not be sent. Please try again.';
+                err.hidden = false;
+              }
+            });
+          })();
+        </script>
 
         <div class="enquiry-flow-note">
           <h4>What happens next</h4>
@@ -731,7 +835,7 @@ footer .wordmark span { color: var(--terracotta); }
           <li>Two separate transactions: BookItMalta charges the €300 booking fee (Article 11 exempt small undertaking); Bandama charges the €1,550 charter price separately and issues their own VAT receipt for it</li>
           <li>WhatsApp + email goes directly to the captain running your charter</li>
           <li>Charter price paid directly to the operator on the day of the charter</li>
-          <li>Cancel up to 7 days before for a full booking-fee refund · within 7 days, booking fee is forfeit</li>
+          <li>Cancel 7 or more days before for a booking-fee refund less a ~2% payment processing fee · within 7 days, booking fee is forfeit</li>
         </ul>
       </div>
     </div>
