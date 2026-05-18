@@ -6,8 +6,13 @@
       "maxDuration": 10
     }
   },
+  "redirects": [
+    { "source": "/charters", "destination": "/", "permanent": true },
+    { "source": "/charters/", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/captain/:path*", "destination": "/api/captain" }
+    { "source": "/captain/:path*", "destination": "/api/captain" },
+    { "source": "/for-operators", "destination": "/for-operators.html" }
   ],
   "headers": [
     {

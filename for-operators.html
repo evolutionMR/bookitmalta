@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>BookItMalta — Booking infrastructure for Malta's charter operators</title>
+<meta name="description" content="The Malta-built booking engine and captain's portal for boat charter operators. Own your customer relationship. Keep more of every booking. From €250/month." />
+<meta name="keywords" content="Malta boat booking system, charter operator software, catamaran booking engine Malta, captain portal Malta, marketplace alternative Malta" />
+<link rel="canonical" href="https://bookitmalta.com/for-operators" />
+<meta name="robots" content="index, follow" />
+<meta name="author" content="TrueNorthDigital" />
+
+<!-- GSC verified via DNS TXT record — no HTML meta tag required. -->
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bookitmalta.com/for-operators" />
+<meta property="og:title" content="BookItMalta — Booking infrastructure for Malta charter operators" />
+<meta property="og:description" content="Own your customers. Keep more of every booking. Malta-built booking infrastructure for boat charter operators. From €250/month." />
+<meta property="og:image" content="https://bookitmalta.com/og-image.jpg" />
+<meta property="og:locale" content="en_MT" />
+<meta property="og:site_name" content="BookItMalta" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="BookItMalta — Booking infrastructure for Malta's charter operators" />
+<meta name="twitter:description" content="Own your customers. Keep more of every booking. From €250/month." />
+<meta name="twitter:image" content="https://bookitmalta.com/og-image.jpg" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "BookItMalta",
+  "url": "https://bookitmalta.com",
+  "description": "Booking infrastructure for Malta boat charter operators. Captain portal, booking engine, and customer management built for local operators.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "EUR",
+    "price": "250"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "TrueNorthDigital",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Malta",
+      "addressCountry": "MT"
+    }
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..700&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   Design tokens
+============================================================ */
+:root {
+  --ink: #0B2545;
+  --ink-soft: #1C3558;
+  --paper: #F4EBD9;
+  --paper-deep: #EBDFC6;
+  --terracotta: #C85C2E;
+  --terracotta-deep: #A64620;
+  --sea: #3D6B6F;
+  --char: #1C1E26;
+  --mute: rgba(11, 37, 69, 0.55);
+  --rule: rgba(11, 37, 69, 0.15);
+  --rule-strong: rgba(11, 37, 69, 0.35);
+
+  --serif: "Fraunces", Georgia, serif;
+  --sans:  "Manrope", -apple-system, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, monospace;
+
+  --maxw: 1240px;
+  --gut: clamp(1.25rem, 4vw, 3rem);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(11,37,69,0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 0;
+}
+main, nav, footer { position: relative; z-index: 1; }
+
+/* ============================================================
+   Typography
+============================================================ */
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+h1, h2, h3 { font-family: var(--serif); color: var(--ink); font-weight: 400; letter-spacing: -0.015em; }
+h1 {
+  font-size: clamp(2.6rem, 6.2vw, 5.8rem);
+  line-height: 0.98;
+  font-weight: 340;
+  font-variation-settings: "SOFT" 30, "WONK" 1;
+}
+h1 em { font-style: italic; color: var(--terracotta); font-variation-settings: "SOFT" 80, "WONK" 1; }
+h2 {
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  font-weight: 360;
+}
+h3 {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.2;
+  font-weight: 420;
+}
+.lead {
+  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 34em;
+}
+p { max-width: 38em; }
+
+/* ============================================================
+   Layout
+============================================================ */
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gut);
+}
+section { padding: clamp(4rem, 9vw, 8rem) 0; }
+.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+/* ============================================================
+   Nav
+============================================================ */
+nav.top {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+nav.top .wrap {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+}
+.wordmark {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  font-variation-settings: "SOFT" 50, "WONK" 1;
+  letter-spacing: -0.015em;
+}
+.wordmark span { color: var(--terracotta); font-style: italic; }
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--mute); letter-spacing: 0.08em; }
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  transition: all .2s ease;
+}
+.nav-cta:hover { background: var(--ink); color: var(--paper); }
+
+/* ============================================================
+   Hero
+============================================================ */
+.hero { padding: clamp(3.5rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem); position: relative; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+}
+.hero-kicker {
+  display: flex; align-items: center; gap: 0.9rem; margin-bottom: 2rem;
+}
+.hero-kicker .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: .55; transform: scale(0.8); }
+}
+.hero h1 { margin-bottom: 2rem; max-width: 16ch; }
+.hero .lead { margin-bottom: 2.5rem; }
+
+.hero-side {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+  padding-top: 0.5rem;
+}
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.btn {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1rem 1.6rem;
+  border-radius: 999px;
+  transition: all .22s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+}
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--terracotta); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--rule-strong); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn .arrow { transition: transform .22s ease; }
+.btn:hover .arrow { transform: translateX(4px); }
+
+.hero-meta {
+  margin-top: 4rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 2rem 3rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+.hero-meta strong { color: var(--ink); font-weight: 500; }
+
+/* ============================================================
+   Problem section
+============================================================ */
+.problem {
+  background: var(--paper-deep);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.problem-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+.problem .eyebrow { margin-bottom: 1.2rem; }
+.problem h2 { margin-bottom: 0; }
+.problem-body p { font-size: 1.15rem; line-height: 1.55; color: var(--ink-soft); }
+.problem-body p + p { margin-top: 1.2rem; }
+.drop { font-family: var(--serif); font-size: 3.6rem; line-height: 0.8; float: left; padding: 0.35rem 0.5rem 0 0; color: var(--terracotta); font-style: italic; }
+
+/* ============================================================
+   Solution — three core features
+============================================================ */
+.solution .head { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 2rem; margin-bottom: 4rem; }
+.solution .head h2 { max-width: 18ch; }
+.solution .head h2 em { font-style: italic; color: var(--terracotta); }
+.solution .head .aside { font-family: var(--mono); font-size: 0.78rem; color: var(--mute); max-width: 24ch; text-align: right; line-height: 1.5; }
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule-strong);
+}
+.feature {
+  padding: 2.4rem 1.8rem 2.4rem 0;
+  border-right: 1px solid var(--rule);
+}
+.feature:last-child { border-right: 0; }
+.feature:not(:first-child) { padding-left: 1.8rem; }
+.feature-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--terracotta);
+  margin-bottom: 2rem;
+  display: block;
+}
+.feature h3 { margin-bottom: 0.8rem; font-size: 1.75rem; font-weight: 380; line-height: 1.1; }
+.feature h3 em { font-style: italic; color: var(--terracotta); }
+.feature p { font-size: 0.97rem; color: var(--ink-soft); }
+
+/* ============================================================
+   Product showcase (screenshots)
+============================================================ */
+.product {
+  background: var(--ink);
+  color: var(--paper);
+  padding: clamp(5rem, 10vw, 9rem) 0;
+}
+.product .eyebrow { color: rgba(244,235,217,0.55); margin-bottom: 1rem; }
+.product h2 { color: var(--paper); margin-bottom: 1.5rem; max-width: 16ch; }
+.product h2 em { font-style: italic; color: var(--terracotta); }
+.product .lead { color: rgba(244,235,217,0.75); margin-bottom: 4rem; max-width: 40em; }
+
+.product-screens {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.screen {
+  background: rgba(244,235,217,0.04);
+  border: 1px solid rgba(244,235,217,0.12);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.screen img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+.screen-caption {
+  padding: 1rem 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244,235,217,0.65);
+  border-top: 1px solid rgba(244,235,217,0.08);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem;
+}
+.screen-caption strong { color: var(--paper); font-weight: 500; }
+.screen-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: rgba(244,235,217,0.04);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: rgba(244,235,217,0.35);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 1rem;
+}
+.product-screens-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* ============================================================
+   Feature depth — specific product capabilities
+============================================================ */
+.depth {
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.depth .head {
+  display: flex; justify-content: space-between; align-items: end;
+  flex-wrap: wrap; gap: 2rem; margin-bottom: 3.5rem;
+}
+.depth .head h2 { max-width: 18ch; }
+.depth .head h2 em { font-style: italic; color: var(--terracotta); }
+.depth .head .aside {
+  font-family: var(--mono); font-size: 0.78rem; color: var(--mute);
+  max-width: 26ch; text-align: right; line-height: 1.5;
+}
+.depth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule-strong);
+  border-left: 1px solid var(--rule);
+}
+.depth-item {
+  padding: 1.8rem 2rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+.depth-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--terracotta);
+  letter-spacing: 0.1em;
+  padding-top: 0.3rem;
+  min-width: 2.2rem;
+}
+.depth-body h4 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 440;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+  line-height: 1.25;
+}
+.depth-body h4 em { font-style: italic; color: var(--terracotta); }
+.depth-body p {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 0;
+}
+.depth-footer {
+  margin-top: 3rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--mute);
+  letter-spacing: 0.04em;
+}
+.depth-footer a {
+  color: var(--terracotta);
+  border-bottom: 1px solid var(--terracotta);
+  padding-bottom: 1px;
+  transition: all .2s ease;
+}
+.depth-footer a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* ============================================================
+   Comparison
+============================================================ */
+.compare { background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.compare .head { margin-bottom: 3rem; }
+.compare h2 { max-width: 18ch; }
+.compare h2 em { font-style: italic; color: var(--terracotta); }
+.compare-table {
+  width: 100%; border-collapse: collapse; margin-top: 1.5rem;
+  font-family: var(--sans);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.compare-table th, .compare-table td {
+  text-align: left;
+  padding: 1.4rem 1.2rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.compare-table th {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--mute);
+  padding-bottom: 1rem;
+  background: var(--paper-deep);
+}
+.compare-table th:first-child { color: transparent; }
+.compare-table th.us { color: var(--terracotta); }
+.compare-table td { font-size: 0.96rem; }
+.compare-table td.label { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); width: 26%; }
+.compare-table td.us { color: var(--ink); font-weight: 500; background: rgba(200,92,46,0.05); }
+.compare-table td.them { color: var(--ink-soft); }
+
+/* ============================================================
+   Pricing tiers
+============================================================ */
+.tiers { background: var(--paper); }
+.tiers .head { margin-bottom: 3.5rem; max-width: 52rem; }
+.tiers .head h2 { margin-bottom: 1.2rem; max-width: 14ch; }
+.tiers .head h2 em { font-style: italic; color: var(--terracotta); }
+.tiers .head .lead { margin-bottom: 0; }
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+.tier {
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: 2.2rem 1.8rem;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.tier:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(11,37,69,0.08); }
+
+.tier-featured {
+  border: 1px solid var(--terracotta);
+  background: linear-gradient(180deg, rgba(200,92,46,0.04) 0%, var(--paper) 40%);
+  box-shadow: 0 2px 24px rgba(200,92,46,0.08);
+}
+.tier-ribbon {
+  position: absolute;
+  top: -0.8rem; left: 50%;
+  transform: translateX(-50%);
+  background: var(--terracotta);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.tier-path {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+.tier-path-hosted { color: var(--sea); }
+.tier-name {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: var(--ink);
+  font-weight: 420;
+  margin-bottom: 0.4rem;
+}
+.tier-tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 1.2rem;
+  min-height: 1.4em;
+}
+.tier-desc {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.tier-pathfinder {
+  margin: 0 0 3rem;
+  padding: 1.6rem 1.8rem 1.8rem;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+.pf-header {
+  display: flex; align-items: baseline; gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+.pf-num {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+.pf-label {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--ink);
+  font-weight: 420;
+  line-height: 1.3;
+}
+.pf-options {
+  display: flex; flex-direction: column; gap: 0.7rem;
+}
+.pf-option {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.4rem 0;
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+}
+.pf-option strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.pf-arrow {
+  color: var(--terracotta);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.pf-target {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--terracotta);
+  text-transform: uppercase;
+  font-weight: 500;
+  min-width: 12ch;
+  text-align: right;
+}
+@media (max-width: 720px) {
+  .pf-option { grid-template-columns: 1fr; gap: 0.2rem; }
+  .pf-option .pf-arrow { display: none; }
+  .pf-target { text-align: left; }
+}
+.tier-price {
+  display: flex; align-items: baseline; gap: 0.4rem;
+  margin-bottom: 0.3rem;
+}
+.tier-price-big {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-weight: 320;
+  color: var(--ink);
+  line-height: 1;
+}
+.tier-featured .tier-price-big { color: var(--terracotta); }
+.tier-price-unit {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+.tier-commission {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+.tier-commission strong { color: var(--ink); font-weight: 500; }
+.tier-features {
+  list-style: none;
+  margin: 0 0 2rem 0;
+  padding: 0;
+  flex: 1;
+}
+.tier-features li {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  padding: 0.5rem 0 0.5rem 1.6rem;
+  position: relative;
+  color: var(--ink-soft);
+}
+.tier-features li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.95rem;
+  width: 10px; height: 2px;
+  background: var(--terracotta);
+}
+.tier-features li.tier-plus {
+  font-style: italic;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.8rem;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+}
+.tier-features li.tier-plus::before {
+  content: "+";
+  background: transparent;
+  color: var(--terracotta);
+  width: auto; height: auto;
+  top: 0.4rem;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+  font-style: normal;
+}
+.tier .btn {
+  justify-content: center;
+  width: 100%;
+}
+
+/* Setup fee line under tier name */
+.tier-setup {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Markup mode callout — explains how 10% gets recovered
+============================================================ */
+.markup-callout {
+  margin-top: 3.5rem;
+  padding: 2.5rem 2.4rem 2.6rem;
+  background: var(--paper-deep);
+  border-radius: 6px;
+  border-left: 4px solid var(--terracotta);
+}
+.markup-callout h3 {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  margin-bottom: 0.7rem;
+}
+.markup-callout h3 em { font-style: italic; color: var(--terracotta); }
+.markup-callout .lead { margin-bottom: 1.4rem; }
+.markup-pill {
+  display: inline-block;
+  margin-bottom: 0.9rem;
+  background: var(--terracotta);
+  color: white;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.75rem;
+  border-radius: 3px;
+}
+.markup-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+  margin-top: 1.2rem;
+}
+.markup-mode {
+  padding: 1.4rem 1.4rem 1.6rem;
+  background: var(--paper);
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+}
+.markup-mode h4 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.02rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.markup-mode p {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 0.8rem;
+}
+.markup-ex {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  background: rgba(11, 37, 69, 0.05);
+  padding: 0.7rem 0.9rem;
+  border-radius: 3px;
+  line-height: 1.7;
+}
+.markup-ex strong { color: var(--terracotta); font-weight: 600; }
+
+/* ============================================================
+   Add-ons
+============================================================ */
+.addons {
+  background: var(--paper);
+  padding: 5rem 0;
+  border-top: 1px solid var(--rule);
+}
+.addons .head { margin-bottom: 2.5rem; max-width: 56rem; }
+.addons .head h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  margin-bottom: 1rem;
+  max-width: 18ch;
+}
+.addons .head h2 em { font-style: italic; color: var(--terracotta); }
+
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+}
+.addon {
+  padding: 1.6rem 1.5rem 1.4rem;
+  background: var(--paper-deep);
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+}
+.addon h4 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.02rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.addon-price {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--terracotta);
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+}
+.addon p {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/* ============================================================
+   Example / case study
+============================================================ */
+.example {
+  background: var(--paper-deep);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.example .wrap { max-width: 900px; }
+.example h2 { max-width: 18ch; margin-bottom: 1.2rem; }
+.example h2 em { font-style: italic; color: var(--terracotta); }
+.example .lead { margin-bottom: 3rem; }
+
+.example-math {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 2rem 2.5rem;
+  font-family: var(--sans);
+}
+.example-math table { width: 100%; border-collapse: collapse; font-size: 0.98rem; }
+.example-math td { padding: 0.8rem 0; border-bottom: 1px solid var(--rule); }
+.example-math tr:last-child td { border-bottom: 0; }
+.example-math td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.example-math .total td { padding-top: 1.2rem; font-weight: 500; color: var(--ink); border-top: 2px solid var(--ink); }
+.example-math .save td { color: var(--terracotta); font-weight: 500; font-size: 1.05rem; }
+.example-caption {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--mute);
+  text-align: center;
+  font-style: italic;
+}
+
+/* ============================================================
+   Demo CTA
+============================================================ */
+.demo {
+  background: var(--terracotta);
+  color: var(--paper);
+}
+.demo .eyebrow { color: rgba(244,235,217,0.7); }
+.demo h2 { color: var(--paper); max-width: 14ch; font-size: clamp(2.2rem, 5vw, 4rem); margin-bottom: 1.5rem; }
+.demo h2 em { font-style: italic; color: var(--ink); }
+.demo .lead { color: rgba(244,235,217,0.9); margin-bottom: 2.5rem; }
+.demo .demo-meta {
+  margin-top: 2rem; padding-top: 1.4rem;
+  border-top: 1px solid rgba(244,235,217,0.25);
+  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em;
+  color: rgba(244,235,217,0.75); text-transform: uppercase;
+  display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem;
+}
+.demo .demo-meta strong { color: var(--paper); font-weight: 500; }
+.demo .btn-primary {
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.9rem;
+  padding: 1.2rem 2rem;
+}
+.demo .btn-primary:hover { background: var(--ink); color: var(--paper); }
+
+/* ============================================================
+   FAQ
+============================================================ */
+.faq h2 { margin-bottom: 3rem; max-width: 16ch; }
+.faq-list { border-top: 1px solid var(--rule-strong); }
+.faq-item { border-bottom: 1px solid var(--rule); padding: 1.6rem 0; }
+.faq-item summary {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 2rem;
+  cursor: pointer; list-style: none;
+  font-family: var(--serif); font-size: 1.3rem; font-weight: 400; color: var(--ink);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+"; font-family: var(--mono); color: var(--terracotta); font-size: 1.4rem;
+  transition: transform .2s ease;
+}
+.faq-item[open] summary::after { content: "−"; }
+.faq-item p { padding-top: 1rem; color: var(--ink-soft); font-size: 1rem; max-width: 48em; }
+
+/* ============================================================
+   Footer
+============================================================ */
+footer {
+  background: var(--ink);
+  color: rgba(244,235,217,0.7);
+  padding: 4rem 0 2rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(244,235,217,0.12);
+}
+footer .wordmark { color: var(--paper); margin-bottom: 1rem; font-size: 1.7rem; }
+footer .wordmark span { color: var(--terracotta); }
+.footer-intro p { font-size: 0.95rem; color: rgba(244,235,217,0.65); max-width: 32em; line-height: 1.55; }
+.footer-col h4 {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(244,235,217,0.45);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.footer-col ul { list-style: none; display: grid; gap: 0.6rem; font-size: 0.95rem; }
+.footer-col a:hover { color: var(--terracotta); }
+.footer-bottom {
+  padding-top: 2rem;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  font-family: var(--mono); font-size: 0.72rem; color: rgba(244,235,217,0.45); letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+/* ============================================================
+   Motion
+============================================================ */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   Responsive
+============================================================ */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-side { display: none; }
+  .problem-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .solution-grid { grid-template-columns: 1fr; }
+  .feature { border-right: 0; border-bottom: 1px solid var(--rule); padding: 2rem 0 !important; }
+  .feature:last-child { border-bottom: 0; }
+  .depth-grid { grid-template-columns: 1fr; border-left: 0; }
+  .depth-item { padding: 1.5rem 0; border-right: 0; }
+  .product-screens { grid-template-columns: 1fr; }
+  .product-screens-row { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .tier-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .tier-featured { order: -1; }
+  .tier-ribbon { top: -0.7rem; }
+  .markup-modes { grid-template-columns: 1fr; }
+  .markup-callout { padding: 1.8rem 1.5rem 2rem; }
+  .compare-table td.label { width: 40%; }
+  .example-math { padding: 1.5rem 1.2rem; }
+  .solution .head { flex-direction: column; align-items: flex-start; }
+  .solution .head .aside { text-align: left; }
+  .demo .demo-meta { gap: 1rem 1.5rem; }
+}
+
+/* ============================================================
+   Inline portal mockups (replace portal-*.jpg placeholders)
+============================================================ */
+.mock {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #0E2A50;
+  color: rgba(244,235,217,0.92);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  padding: 0.9rem 1rem 1rem;
+  display: flex; flex-direction: column; gap: 0.7rem;
+  overflow: hidden;
+  position: relative;
+}
+.mock-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(244,235,217,0.08);
+  flex-shrink: 0;
+}
+.mock-brand {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-family: var(--serif); font-size: 0.82rem; font-weight: 400;
+  letter-spacing: -0.01em; color: rgba(244,235,217,0.95);
+}
+.mock-brand .m-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta);
+  display: inline-block;
+}
+.mock-tabs {
+  display: flex; gap: 0.35rem; font-family: var(--mono);
+  font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(244,235,217,0.5);
+}
+.mock-tab { padding: 0.22rem 0.55rem; border-radius: 3px; }
+.mock-tab.on {
+  background: rgba(200,92,46,0.22);
+  color: var(--terracotta);
+  border: 1px solid rgba(200,92,46,0.45);
+}
+
+.mock-kpi {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem;
+}
+.kpi {
+  background: rgba(244,235,217,0.05);
+  border: 1px solid rgba(244,235,217,0.08);
+  border-radius: 3px;
+  padding: 0.55rem 0.65rem;
+}
+.kpi-label {
+  font-family: var(--mono); font-size: 0.52rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(244,235,217,0.45); margin-bottom: 0.3rem;
+}
+.kpi-val {
+  font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
+  color: var(--paper); letter-spacing: -0.01em; line-height: 1;
+}
+.kpi-val em { font-style: italic; color: var(--terracotta); }
+
+.mock-list {
+  flex: 1; display: flex; flex-direction: column; gap: 0.3rem;
+  overflow: hidden;
+}
+.mock-row {
+  display: grid;
+  grid-template-columns: 0.9fr 1.2fr 0.7fr 0.7fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+  background: rgba(244,235,217,0.03);
+  border-left: 2px solid rgba(200,92,46,0.7);
+  border-radius: 2px;
+  font-size: 0.62rem;
+}
+.mock-row .name { color: var(--paper); }
+.mock-row .meta { color: rgba(244,235,217,0.55); font-family: var(--mono); font-size: 0.58rem; }
+.mock-row .amt  { color: var(--terracotta); font-family: var(--mono); font-size: 0.62rem; text-align: right; }
+.mock-row .pill {
+  display: inline-block;
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.15rem 0.4rem; border-radius: 999px;
+  background: rgba(61,107,111,0.35);
+  color: rgba(244,235,217,0.85);
+  border: 1px solid rgba(61,107,111,0.5);
+  justify-self: start;
+}
+.mock-row .pill.confirmed { background: rgba(200,92,46,0.25); border-color: rgba(200,92,46,0.55); color: var(--terracotta); }
+
+/* Mockup 2 — embedded booking flow */
+.mock.mock-browser { background: rgba(244,235,217,0.04); padding: 0; }
+.browser-chrome {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(244,235,217,0.06);
+  border-bottom: 1px solid rgba(244,235,217,0.08);
+}
+.browser-chrome .dots { display: flex; gap: 0.25rem; }
+.browser-chrome .dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(244,235,217,0.2); display: block; }
+.browser-url {
+  flex: 1;
+  background: rgba(11,37,69,0.5);
+  border-radius: 3px;
+  padding: 0.25rem 0.55rem;
+  font-family: var(--mono); font-size: 0.6rem;
+  color: rgba(244,235,217,0.55);
+  letter-spacing: 0.02em;
+}
+.browser-url em { color: var(--terracotta); font-style: normal; }
+.browser-body {
+  flex: 1; padding: 0.9rem 1rem 1rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(244,235,217,0.08);
+}
+.site-logo { font-family: var(--serif); font-style: italic; font-size: 0.85rem; color: var(--paper); }
+.site-nav { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,235,217,0.4); }
+.embed-widget {
+  background: rgba(244,235,217,0.06);
+  border: 1px dashed rgba(200,92,46,0.45);
+  border-radius: 4px;
+  padding: 0.7rem 0.8rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.embed-label {
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--terracotta);
+}
+.embed-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+.embed-field {
+  background: rgba(11,37,69,0.5);
+  border: 1px solid rgba(244,235,217,0.1);
+  border-radius: 3px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.6rem;
+  color: rgba(244,235,217,0.75);
+}
+.embed-field .lbl { display: block; font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(244,235,217,0.4); margin-bottom: 0.15rem; }
+.embed-cta {
+  align-self: flex-start;
+  font-family: var(--mono); font-size: 0.55rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--terracotta); color: var(--paper);
+  padding: 0.4rem 0.8rem; border-radius: 999px;
+}
+
+/* Mockup 3 — customer records table */
+.mock-table { flex: 1; display: flex; flex-direction: column; }
+.mock-trow {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 0.9fr 0.8fr;
+  gap: 0.6rem; align-items: center;
+  padding: 0.42rem 0.25rem;
+  border-bottom: 1px solid rgba(244,235,217,0.05);
+  font-size: 0.62rem;
+}
+.mock-trow.head {
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(244,235,217,0.42);
+  border-bottom: 1px solid rgba(244,235,217,0.12);
+  padding-bottom: 0.5rem;
+}
+.mock-trow .cname { color: var(--paper); font-weight: 500; }
+.mock-trow .cmail { color: rgba(244,235,217,0.55); font-family: var(--mono); font-size: 0.56rem; }
+.mock-trow .cdate { color: rgba(244,235,217,0.55); font-family: var(--mono); font-size: 0.56rem; }
+.mock-trow .crev  { color: var(--terracotta); font-family: var(--mono); font-size: 0.6rem; text-align: right; }
+
+/* Mockup 4 — content + WhatsApp */
+.mock-split { flex: 1; display: grid; grid-template-columns: 1fr 0.85fr; gap: 0.75rem; }
+.mock-card {
+  background: rgba(244,235,217,0.05);
+  border: 1px solid rgba(244,235,217,0.08);
+  border-radius: 3px;
+  padding: 0.65rem 0.75rem;
+  display: flex; flex-direction: column; gap: 0.45rem;
+}
+.card-title {
+  font-family: var(--mono); font-size: 0.52rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(244,235,217,0.55);
+}
+.card-field {
+  background: rgba(11,37,69,0.5);
+  border: 1px solid rgba(244,235,217,0.08);
+  border-radius: 3px;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.6rem;
+  color: var(--paper);
+}
+.card-field.big { min-height: 2rem; color: rgba(244,235,217,0.7); font-size: 0.55rem; line-height: 1.35; }
+.card-field.price { color: var(--terracotta); font-family: var(--mono); font-weight: 500; }
+.wa-bubble {
+  background: rgba(37, 211, 102, 0.14);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: 6px 6px 6px 1px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.58rem;
+  color: var(--paper);
+  line-height: 1.4;
+}
+.wa-bubble .wa-label {
+  font-family: var(--mono); font-size: 0.48rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #25D366; display: block; margin-bottom: 0.3rem;
+}
+.wa-bubble em { font-style: italic; color: rgba(244,235,217,0.7); }
+.wa-stamp {
+  font-family: var(--mono); font-size: 0.48rem;
+  color: rgba(244,235,217,0.4); margin-top: 0.3rem;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 720px) {
+  .mock { font-size: 0.62rem; padding: 0.7rem 0.75rem 0.8rem; }
+  .mock-kpi { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  .mock-split { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav class="top">
+  <div class="wrap">
+    <a href="/" class="wordmark">BookIt<span>Malta</span></a>
+    <div class="nav-right">
+      <a href="/" class="nav-meta">← Charter directory</a>
+      <a href="#demo" class="nav-cta">Book a demo</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-kicker reveal">
+          <span class="dot"></span>
+          <span class="kicker">Booking infrastructure · Built in Malta</span>
+        </div>
+
+        <h1 class="reveal">
+          The booking system Malta's charter operators <em>actually own</em>.
+        </h1>
+
+        <p class="lead reveal">
+          Escape the marketplace lock-in. Keep your website, your brand, your customer list. Our booking engine runs on your existing site — we handle the install.
+        </p>
+
+        <div class="cta-row reveal">
+          <a href="#demo" class="btn btn-primary">
+            Book a 20-min demo
+            <span class="arrow">→</span>
+          </a>
+          <a href="#how" class="btn btn-ghost">
+            See how it works
+          </a>
+        </div>
+
+        <div class="hero-meta reveal">
+          <span>Three tiers · <strong>from €0</strong>/month</span>
+          <span><strong>Weekly</strong> Stripe payouts</span>
+          <span>You own the <strong>customer</strong></span>
+          <span><strong>Cancel</strong> anytime</span>
+        </div>
+      </div>
+      <div class="hero-side">bookitmalta.com · v2</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROBLEM ==================== -->
+<section class="problem">
+  <div class="wrap">
+    <div class="problem-grid">
+      <div>
+        <div class="eyebrow">§ 01 — The problem</div>
+        <h2>Platforms take 25% and never give you the customer back.</h2>
+      </div>
+      <div class="problem-body">
+        <p><span class="drop">Y</span>ou already know this. The marketplace sends a customer to your boat. They have a great day. You never hear from them again because the marketplace owns the email, the phone number, the preferences. Next year, when they fly back to Malta, they book someone else because there's no way for you to get in front of them.</p>
+        <p>Over ten years, that's thousands of customers who had an unforgettable day on your boat and who your business cannot reach. That invisible cost — not the 25% commission, the lost repeat business — is usually larger than everything else combined. BookItMalta exists to fix it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SOLUTION ==================== -->
+<section class="solution" id="how">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow">§ 02 — What you get</div>
+        <h2>Your booking engine. Your customer list. <em>Your business.</em></h2>
+      </div>
+      <div class="aside">
+        Not a marketplace. A booking system that runs on your own site, under your own brand.
+      </div>
+    </div>
+    <div class="solution-grid">
+      <div class="feature">
+        <span class="feature-num">01</span>
+        <h3>Stays on <em>your site</em>.</h3>
+        <p>Keep your WordPress, Wix, Squarespace, or custom site. We install the booking engine for you — one script tag, styled to match your theme, tested on mobile. You don't touch any code. Your brand, your domain, your traffic — customers never get handed off to a platform.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-num">02</span>
+        <h3>Captain portal <em>built for Malta</em>.</h3>
+        <p>Calendar, availability, bookings, customer records, weekly payouts, WhatsApp confirmations, seasonal pricing. Refined over a year of real Malta charter operations. Not a generic global tool.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-num">03</span>
+        <h3>The customer is <em>yours</em>.</h3>
+        <p>Every booking arrives with full email, phone, group details, preferences. Send a thank-you. Invite them back for sunset. Run a repeat-customer campaign next spring. Build the customer asset marketplace platforms structurally prevent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PRODUCT SHOWCASE ==================== -->
+<section class="product">
+  <div class="wrap">
+    <div class="eyebrow">§ 03 — The product</div>
+    <h2>Built for captains, <em>not for platforms</em>.</h2>
+    <p class="lead">The captain's portal is where the day-to-day actually happens. Availability, bookings, customer details, revenue — everything a charter operation needs, nothing it doesn't.</p>
+
+    <div class="product-screens">
+      <div class="screen">
+        <div class="mock" role="img" aria-label="Captain portal dashboard showing bookings overview, revenue, and availability">
+          <div class="mock-head">
+            <div class="mock-brand"><span class="m-dot"></span>Captain portal</div>
+            <div class="mock-tabs">
+              <span class="mock-tab on">Bookings</span>
+              <span class="mock-tab">Analytics</span>
+              <span class="mock-tab">Waitlist</span>
+              <span class="mock-tab">Settings</span>
+            </div>
+          </div>
+          <div class="mock-kpi">
+            <div class="kpi"><div class="kpi-label">Revenue · week</div><div class="kpi-val"><em>€</em>4,820</div></div>
+            <div class="kpi"><div class="kpi-label">Confirmed</div><div class="kpi-val">12</div></div>
+            <div class="kpi"><div class="kpi-label">Next sail</div><div class="kpi-val">Tue 09:00</div></div>
+          </div>
+          <div class="mock-list">
+            <div class="mock-row">
+              <div class="name">M. Rossi · 8px</div>
+              <div class="meta">Sun 20 Apr · Full day</div>
+              <span class="pill confirmed">Confirmed</span>
+              <div class="amt">€680</div>
+            </div>
+            <div class="mock-row">
+              <div class="name">K. Müller · 6px</div>
+              <div class="meta">Tue 22 Apr · Full day</div>
+              <span class="pill confirmed">Confirmed</span>
+              <div class="amt">€540</div>
+            </div>
+            <div class="mock-row">
+              <div class="name">A. Dupont · 10px</div>
+              <div class="meta">Wed 23 Apr · Sunset</div>
+              <span class="pill">Enquiry</span>
+              <div class="amt">€820</div>
+            </div>
+            <div class="mock-row">
+              <div class="name">S. O'Brien · 4px</div>
+              <div class="meta">Fri 25 Apr · Half day</div>
+              <span class="pill confirmed">Confirmed</span>
+              <div class="amt">€420</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-caption">
+          <strong>Captain's portal</strong>
+          <span>dashboard · bookings · availability</span>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="mock mock-browser" role="img" aria-label="Booking flow embedded in operator's own website">
+          <div class="browser-chrome">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="browser-url">yoursite.com<em>/book</em></div>
+          </div>
+          <div class="browser-body">
+            <div class="site-header">
+              <div class="site-logo">YourCharter</div>
+              <div class="site-nav">Fleet · About · Book</div>
+            </div>
+            <div class="embed-widget">
+              <div class="embed-label">› Booking widget</div>
+              <div class="embed-fields">
+                <div class="embed-field"><span class="lbl">Boat</span>43ft Catamaran</div>
+                <div class="embed-field"><span class="lbl">Date</span>Sun 20 Apr</div>
+                <div class="embed-field"><span class="lbl">Guests</span>8 adults</div>
+                <div class="embed-field"><span class="lbl">Total</span>€680</div>
+              </div>
+              <span class="embed-cta">Continue →</span>
+            </div>
+          </div>
+        </div>
+        <div class="screen-caption">
+          <strong>Booking flow</strong>
+          <span>embedded in your site</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-screens-row">
+      <div class="screen">
+        <div class="mock" role="img" aria-label="Customer records list with full contact details and revenue per customer">
+          <div class="mock-head">
+            <div class="mock-brand"><span class="m-dot"></span>Customers</div>
+            <div class="mock-tabs">
+              <span class="mock-tab">Filters</span>
+              <span class="mock-tab on">Export CSV</span>
+            </div>
+          </div>
+          <div class="mock-table">
+            <div class="mock-trow head">
+              <div>Name</div><div>Email</div><div>Last sail</div><div style="text-align:right;">Total</div>
+            </div>
+            <div class="mock-trow">
+              <div class="cname">Marco Rossi</div>
+              <div class="cmail">marco.r@gmail.com</div>
+              <div class="cdate">20 Apr 2026</div>
+              <div class="crev">€2,140</div>
+            </div>
+            <div class="mock-trow">
+              <div class="cname">Kim Müller</div>
+              <div class="cmail">kim.m@web.de</div>
+              <div class="cdate">22 Apr 2026</div>
+              <div class="crev">€1,620</div>
+            </div>
+            <div class="mock-trow">
+              <div class="cname">Anna Dupont</div>
+              <div class="cmail">a.dupont@free.fr</div>
+              <div class="cdate">18 Oct 2025</div>
+              <div class="crev">€980</div>
+            </div>
+            <div class="mock-trow">
+              <div class="cname">Sean O'Brien</div>
+              <div class="cmail">sean.ob@icloud.com</div>
+              <div class="cdate">25 Apr 2026</div>
+              <div class="crev">€840</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-caption">
+          <strong>Customer records</strong>
+          <span>exportable · yours to keep</span>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="mock" role="img" aria-label="Content editor on the left, WhatsApp auto-confirmation bubble on the right">
+          <div class="mock-head">
+            <div class="mock-brand"><span class="m-dot"></span>Content &amp; messaging</div>
+            <div class="mock-tabs">
+              <span class="mock-tab on">Day charter</span>
+              <span class="mock-tab">Sunset sail</span>
+            </div>
+          </div>
+          <div class="mock-split">
+            <div class="mock-card">
+              <span class="card-title">› Listing editor</span>
+              <div class="card-field">Day charter · 43ft Catamaran</div>
+              <div class="card-field big">Full-day private charter from Sliema. Includes skipper, fuel, snorkelling gear, Blue Lagoon + Comino route.</div>
+              <div class="card-field price">€85 / adult · €45 / child</div>
+            </div>
+            <div class="mock-card">
+              <span class="card-title">› WhatsApp auto-confirm</span>
+              <div class="wa-bubble">
+                <span class="wa-label">To: +356 99 ••• ••</span>
+                Hi Marco — your sail on <em>Sun 20 Apr</em> is confirmed. Meeting Sliema Ferries 08:45. Reply STOP to cancel.
+                <div class="wa-stamp">Delivered · 14:02</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-caption">
+          <strong>Content &amp; WhatsApp</strong>
+          <span>edit pricing · auto-confirm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FEATURE DEPTH ==================== -->
+<section class="depth">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow">§ 04 — Under the hood</div>
+        <h2>The <em>specifics</em> that operators notice.</h2>
+      </div>
+      <div class="aside">
+        Not a feature list for the sake of one — these are the details operators ask about on demo calls, listed up front.
+      </div>
+    </div>
+
+    <div class="depth-grid">
+
+      <div class="depth-item">
+        <div class="depth-num">01</div>
+        <div class="depth-body">
+          <h4>Two-tier <em>access control</em></h4>
+          <p>Captain PIN for day-to-day bookings and availability. Owner PIN for revenue analytics and settings. Crew never see the commercial data.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">02</div>
+        <div class="depth-body">
+          <h4>Live <em>availability calendar</em></h4>
+          <p>Auto-refreshes every 90 seconds and on tab focus. Colour-coded by state — available, waitlist, partial. Customers always see what's really bookable.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">03</div>
+        <div class="depth-body">
+          <h4>Intelligent <em>waitlist</em></h4>
+          <p>Fully-booked dates stay tappable. Customer joins the waitlist automatically and gets notified if a spot opens. One more booking captured per season, every season.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">04</div>
+        <div class="depth-body">
+          <h4>Cross-sell <em>on the fly</em></h4>
+          <p>Full-day charter booked on the date they wanted? The engine offers the sunset cruise on the same day. Converts dead-ends into bookings without a sales pitch.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">05</div>
+        <div class="depth-body">
+          <h4>WhatsApp <em>confirmations</em></h4>
+          <p>Every enquiry generates a pre-filled WhatsApp summary the captain confirms personally. Automated where it should be, human where it matters.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">06</div>
+        <div class="depth-body">
+          <h4>Seasonal <em>pricing tiers</em></h4>
+          <p>Define peak, shoulder, and off-peak rates once. The system applies the right price to every enquiry automatically — no spreadsheet, no forgotten updates.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">07</div>
+        <div class="depth-body">
+          <h4>Automated <em>email lifecycle</em></h4>
+          <p>Enquiry received, booking confirmed, reminder 48h before, post-trip thank-you, review request. Five touchpoints. Operators set it up once.</p>
+        </div>
+      </div>
+
+      <div class="depth-item">
+        <div class="depth-num">08</div>
+        <div class="depth-body">
+          <h4>Full <em>customer records</em></h4>
+          <p>Every booking writes a customer record — email, phone, preferences, trip history, notes. Exportable as CSV any time. Your list, your GDPR basis, your asset.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="depth-footer">
+      Want to see every screen? <a href="/demo.html" target="_blank" rel="noopener">See the full product walkthrough →</a>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ==================== TIERS ==================== -->
+<section class="tiers" id="tiers">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">§ 05 — Pricing</div>
+      <h2>Three tiers. <em>One question</em> decides which one's yours.</h2>
+      <p class="lead">
+        Where will your customers book? Pick the tier that matches the answer — the rest follows. Same back office, same Stripe payouts, same partner portal across all three.
+      </p>
+    </div>
+
+    <div class="tier-pathfinder">
+      <div class="pf-header">
+        <span class="pf-num">Pick by your situation</span>
+        <span class="pf-label">Where will your customers book?</span>
+      </div>
+      <div class="pf-options">
+        <div class="pf-option">
+          <strong>On a brand-new website we build for you</strong>
+          <span class="pf-arrow">→</span>
+          <span class="pf-target">Founding Partner</span>
+        </div>
+        <div class="pf-option">
+          <strong>On your existing website (we install the engine)</strong>
+          <span class="pf-arrow">→</span>
+          <span class="pf-target">Standard</span>
+        </div>
+        <div class="pf-option">
+          <strong>On bookitmalta.com (we host the page)</strong>
+          <span class="pf-arrow">→</span>
+          <span class="pf-target">Hosted Founding</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-grid">
+
+      <article class="tier tier-featured">
+        <div class="tier-ribbon">Limited · 5 spots</div>
+        <div class="tier-path">Full build · brand-new website</div>
+        <div class="tier-name">Founding Partner</div>
+        <div class="tier-tag">First 5 Malta operators · everything built for you</div>
+
+        <p class="tier-desc">For operators ready to invest in their digital presence. We build you a brand-new conversion-optimised website from scratch — your domain, your brand, your photography, your story. The booking engine is integrated end-to-end, content is loaded, your team is trained. You ship a complete digital surface in 4-6 weeks, not a year of freelancer back-and-forth.</p>
+
+        <div class="tier-setup">€3,000 one-time setup</div>
+        <div class="tier-price">
+          <span class="tier-price-big">€250</span>
+          <span class="tier-price-unit">/ month</span>
+        </div>
+        <div class="tier-commission"><strong>10%</strong> commission on engine-processed bookings</div>
+
+        <ul class="tier-features">
+          <li class="tier-plus">Brand-new website built from scratch · the full digital surface</li>
+          <li>Custom domain · design tuned to your brand · photo direction included</li>
+          <li>Booking engine integrated end-to-end (not just bolted on)</li>
+          <li>Sanity CMS for self-service content editing — copy, photos, prices, with a written editing guide</li>
+          <li>Captain portal · calendar · multi-user logins for crew &amp; office</li>
+          <li>Review every enquiry before it confirms — no auto-confirms</li>
+          <li>Operational tools — slot-blocking, cancellations, manual bookings, capacity per sailing, stale enquiries auto-expire</li>
+          <li>Seasonal pricing — peak · shoulder · off-peak applied automatically</li>
+          <li>Waitlist + cross-sell on the fly</li>
+          <li>Analytics — revenue, channel attribution, commission tracking</li>
+          <li>Microsoft Clarity heatmaps + session recordings on your site</li>
+          <li>Customer comms — WhatsApp + email from your domain + add-to-calendar on every booking</li>
+          <li>Weekly Stripe payouts to your account</li>
+          <li>Customer list yours, exportable, GDPR-clean</li>
+          <li>Monthly call with founder — your feedback shapes the roadmap</li>
+          <li>Locked rate for 24 months</li>
+        </ul>
+
+        <a href="#demo" class="btn btn-primary">Book a 20-min demo <span class="arrow">→</span></a>
+      </article>
+
+      <article class="tier">
+        <div class="tier-path">Embedded · your existing website</div>
+        <div class="tier-name">Standard</div>
+        <div class="tier-tag">For operators who already have a real website</div>
+
+        <p class="tier-desc">For operators with an existing website they want to keep. We install the booking engine into your current site — WordPress, Wix, Squarespace, custom — styled to match your theme, tested on mobile. No new website, no migration, no domain change. Same captain portal, same automations, same custom features as Founding Partner.</p>
+
+        <div class="tier-setup">€1,500 one-time setup</div>
+        <div class="tier-price">
+          <span class="tier-price-big">€99</span>
+          <span class="tier-price-unit">/ month</span>
+        </div>
+        <div class="tier-commission"><strong>5%</strong> commission on engine-processed bookings</div>
+
+        <ul class="tier-features">
+          <li class="tier-plus">Same back office as Founding Partner · we don't touch your site beyond the engine</li>
+          <li>Booking engine installed on your existing website (WordPress · Wix · Squarespace · custom)</li>
+          <li>One script tag · styled to match your theme · mobile-tested</li>
+          <li>Captain portal · multi-user logins for crew &amp; office</li>
+          <li>All operational tools — slot-blocking, cancellations, capacity, seasonal pricing, waitlist, cross-sell</li>
+          <li>Analytics + channel attribution + exportable customer list</li>
+          <li>Customer comms — WhatsApp + email + add-to-calendar</li>
+          <li>Self-service CMS for booking content (Sanity)</li>
+          <li>Weekly Stripe payouts to your account</li>
+          <li>Standard support — same-day response</li>
+        </ul>
+
+        <a href="#demo" class="btn btn-ghost">Book a demo</a>
+      </article>
+
+      <article class="tier">
+        <div class="tier-path tier-path-hosted">Hosted · on bookitmalta.com</div>
+        <div class="tier-name">Hosted Founding</div>
+        <div class="tier-tag">First 5 Hosted operators · €0/€0 locked for 24 months</div>
+
+        <p class="tier-desc">For operators who don't have a website and don't want to manage one. We host your booking page at bookitmalta.com/charters/yourname, white-labelled to your brand. Customers see your name, your photos, your boats — our infrastructure invisible behind it. Pay nothing until your first booking lands.</p>
+
+        <div class="tier-setup">€0 setup</div>
+        <div class="tier-price">
+          <span class="tier-price-big">€0</span>
+          <span class="tier-price-unit">/ month</span>
+        </div>
+        <div class="tier-commission"><strong>Flat fee per booking</strong> · deposit IS the commission</div>
+
+        <ul class="tier-features">
+          <li>Booking page hosted at <em style="color: var(--terracotta); font-style: normal;">bookitmalta.com/charters/yourname</em></li>
+          <li>White-labelled to your brand — your photos, your colours, your name on every receipt</li>
+          <li>Captain portal + all operational tools — identical to Embedded tiers</li>
+          <li>Customer pays deposit at Stripe Checkout; you collect the balance directly on the day</li>
+          <li>Listed on the BookItMalta charter directory — we drive the SEO traffic</li>
+          <li>Pay only when you earn — no monthly cost, no setup, no minimum bookings</li>
+          <li>Stripe Connect direct payouts to your bank, weekly</li>
+          <li>Cancel anytime · keep your customer list · page archives but doesn't delete</li>
+        </ul>
+
+        <a href="#demo" class="btn btn-ghost">Book a demo</a>
+      </article>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== ADD-ONS ==================== -->
+<section class="addons" id="addons">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">§ 05b — Add-ons</div>
+      <h2>Optional services. <em>Only if useful.</em></h2>
+      <p class="lead">
+        Things we deliver in addition to the platform. Charged separately so the core stays simple. Mix and match per season.
+      </p>
+    </div>
+
+    <div class="addon-grid">
+
+      <div class="addon">
+        <h4>Owned-list email marketing</h4>
+        <div class="addon-price">€99 / month</div>
+        <p>Seasonal email campaigns to your past customers. Repeat-booking driver. The thing OTAs literally cannot do for you because they hide your customer list.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Google Ads pilot</h4>
+        <div class="addon-price">€299 / month + ad spend</div>
+        <p>We run paid acquisition for you. Direct traffic to your site, your booking engine, your customer relationship. We earn the commission on what converts; aligned incentives.</p>
+      </div>
+
+      <div class="addon">
+        <h4>WhatsApp recapture</h4>
+        <div class="addon-price">€49 / month</div>
+        <p>Automated follow-ups on abandoned bookings. WhatsApp open rates are 90%+ vs email at 22%. Recovers 5–15% of would-be-lost enquiries.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Multilingual</h4>
+        <div class="addon-price">€500 one-time / language</div>
+        <p>Italian, German, French. Malta tourism is heavily mainland-Europe driven. Each language pays for itself within one peak season.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Photography refresh</h4>
+        <div class="addon-price">Price on request</div>
+        <p>Pro shoot of your boat, crew, and key experiences. Two-hour session, 30+ edited images, full commercial usage rights, delivered within 7 days. We coordinate the photographer and quote per-job.</p>
+      </div>
+
+      <div class="addon">
+        <h4>Site refresh</h4>
+        <div class="addon-price">€1,500 flat · 7 business days</div>
+        <p>If your existing site is hurting bookings, we rebuild it on a fast template. Same domain, SEO preserved, booking engine native. Optional — only if your current site has real problems.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DEMO CTA ==================== -->
+<section class="demo" id="demo">
+  <div class="wrap">
+    <div class="eyebrow">§ 06 — Next step</div>
+    <h2>See it running. <em>Then decide.</em></h2>
+    <p class="lead">
+      A 20-minute screen-share. We walk you through the captain's portal, show you exactly how the booking flow would work on your site, and answer the operational questions. No commitment. No follow-up emails.
+    </p>
+
+    <div class="cta-row">
+      <a href="https://calendly.com/true-northdigital/30min" class="btn btn-primary" target="_blank" rel="noopener">
+        Book a 20-min demo <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <div class="demo-meta">
+      <span>Usually available within <strong>48 hours</strong></span>
+      <span>No sales team — you talk to <strong>Julian</strong></span>
+      <span>We travel to your dock if you prefer</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section class="faq">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 1rem;">§ 07 — Questions</div>
+    <h2>Answers, before you ask.</h2>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Do I keep my existing website?</summary>
+        <p>Yes — that's the whole point. You keep your domain, your branding, your SEO, your Google presence. We embed the booking engine into your existing site. Most operators are live in one day of setup.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What if I don't have a website yet?</summary>
+        <p>Two paths depending on how much you want to invest in your digital presence. The <strong>Founding Partner</strong> tier is the full-build option — we build you a brand-new website from scratch on your own domain, integrate the booking engine end-to-end, load your content, train your team. Premium tier, premium outcome, 4-6 weeks to launch. The <strong>Hosted Founding</strong> tier is the lightweight option — €0 setup, €0/month, your booking page lives at bookitmalta.com/charters/yourname, white-labelled to your brand, usually live within a week. Pick by how much site you want.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I still use marketplaces and OTAs alongside this?</summary>
+        <p>Absolutely. BookItMalta handles the bookings that come through your direct channels — your website, Instagram, Google, referrals. You keep the platform channels running in parallel for the reach they provide. Over time, most operators find their direct-booking share grows and their platform dependence shrinks. Your call, your pace.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Who actually owns the customer data?</summary>
+        <p>You do. Every booking's email, phone, preferences, and notes sit in your captain's portal, exportable at any time. Full CSV download, GDPR-compliant, no lock-in. If you ever cancel BookItMalta, your customer list goes with you. That's different from how the big platforms work, and it's one of the main reasons operators move across.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What happens if I cancel?</summary>
+        <p>You export your data, take your website, and go. No penalty, no lock-in. We give you 30 days to migrate to another system. The only thing that stays with us is our code — everything else is yours.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why should I trust a new platform?</summary>
+        <p>BookItMalta is built by TrueNorthDigital, using the same booking stack we've been running in production with a Malta charter operator for the past year. Same codebase, same principles — now available to other operators. This isn't a prototype we're selling before we've proven it.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How long does setup take?</summary>
+        <p>Typical onboarding is 7–10 days from signature to live bookings. We build your listing, embed the booking engine on your site, configure pricing and availability, train you on the captain's portal, and run a test booking with you. The longest part is usually waiting for your approval on each step.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-intro">
+        <div class="wordmark">BookIt<span>Malta</span></div>
+        <p>Booking infrastructure for Malta's boat charter operators. Built in Malta by TrueNorthDigital. Own your customer, own your business.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#tiers">Pricing</a></li>
+          <li><a href="#demo">Book a demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@bookitmalta.com">hello@bookitmalta.com</a></li>
+          <li><a href="https://www.facebook.com/profile.php?id=61572009367594" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 BookItMalta</span>
+      <span>Malta</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), 120 * i);
+  });
+});
+</script>
+
+</body>
+</html>
