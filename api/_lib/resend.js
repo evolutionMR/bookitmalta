@@ -284,6 +284,17 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo 
   const resend = getResend();
   const from = getTenantEnvOptional(tenantSlug, 'RESEND_FROM', 'BookItMalta <noreply@bookitmalta.com>');
   const operatorEmail = getTenantEnvOptional(tenantSlug, 'OPERATOR_EMAIL', null);
+  const adminBcc = (process.env.ADMIN_BCC_EMAIL || '').trim() || null;
+
+  // BCC the platform admin on operator-bound emails so the BookItMalta owner
+  // stays in the loop (new enquiry, customer paid, captain action confirmed)
+  // without exposing their address to the operator. BCC is hidden from
+  // recipients. Customer-bound emails are NOT bcc'd — those are visible on
+  // the Resend Dashboard if needed.
+  const normalizedTo = (typeof to === 'string') ? to.toLowerCase().trim() : '';
+  const normalizedOperator = (operatorEmail || '').toLowerCase().trim();
+  const isOperatorBound = !!(normalizedOperator && normalizedTo === normalizedOperator);
+  const bccAddress = (isOperatorBound && adminBcc) ? adminBcc : undefined;
 
   // NOTE: Resend Node SDK expects camelCase 'replyTo' — snake_case 'reply_to'
   // is the REST API field name and is silently ignored by the SDK, which
@@ -294,6 +305,7 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo 
     subject,
     text,
     replyTo: replyTo || operatorEmail || undefined,
+    ...(bccAddress ? { bcc: bccAddress } : {}),
   });
 
   // Resend SDK v3+ returns errors in the response body rather than throwing.
