@@ -129,7 +129,7 @@ footer a { color: var(--mute); }
 
 <main>
   <div class="legal">
-    <p class="last-reviewed">Last reviewed: 15 May 2026</p>
+    <p class="last-reviewed">Last reviewed: 20 May 2026</p>
     <h1>Privacy Policy</h1>
 
     <p>This notice explains how <strong>BookItMalta</strong>, a trading name of <strong>TrueNorthDigital</strong> ("BookItMalta", "we", "us"), collects and handles personal data when you browse this website, submit an enquiry, or pay a booking fee for a charter offered by one of our partner operators. We are established in Malta. You can contact our data protection lead at <a href="mailto:true-northdigital@outlook.com">true-northdigital@outlook.com</a>.</p>
@@ -143,6 +143,7 @@ footer a { color: var(--mute); }
       <li><strong>Payment information</strong> when you pay a booking fee: handled directly by Stripe. We never see or store your card number, CVV, or full bank account details. We receive only a payment confirmation, the amount, the last four digits of your card, and a Stripe customer reference.</li>
       <li><strong>Email correspondence</strong> if you reply to any automated booking email — replies go to the operator, with BookItMalta as a fall-back recipient if the operator's mailbox bounces.</li>
       <li><strong>Website interactions</strong>: standard server logs (IP address, user agent, request timestamps) retained for up to 30 days for security and debugging.</li>
+      <li><strong>Usage analytics</strong> via Microsoft Clarity: anonymised session recordings and heatmaps showing how visitors navigate the site — page views, clicks, scrolls, and general device and browser information. Clarity automatically masks text entered into forms and other sensitive content. <strong>Clarity loads only after you accept analytics cookies via our consent banner</strong>; if you decline, it never runs and sets no cookies. You can change your choice at any time using the "Cookie settings" link in the footer. We use this only to understand and improve how the site works.</li>
     </ul>
 
     <h2>Why we use your data</h2>
@@ -159,12 +160,13 @@ footer a { color: var(--mute); }
       <li><strong>Stripe</strong> (Ireland/EU): processes the €300 booking-fee payment and issues the payment confirmation. Stripe's privacy policy applies to your card data.</li>
       <li><strong>Resend</strong> (Delaware/USA): sends transactional emails (enquiry acknowledgement, payment link, booking confirmation). Email content is transmitted via Resend's SMTP infrastructure under EU Standard Contractual Clauses.</li>
       <li><strong>Vercel</strong> (Frankfurt/EU primary): hosts the website and serverless functions that handle enquiry submission and webhooks.</li>
+      <li><strong>Microsoft Clarity</strong> (Microsoft Corporation, USA): provides website analytics — session recordings and heatmaps — so we can see how visitors use the site. Clarity collects usage and device data and masks form inputs by default. Microsoft's privacy statement governs the data it processes.</li>
       <li><strong>The charter operator you are booking with</strong>: receives your name, email, phone, charter date, party size, and message so they can confirm availability and contact you about the charter itself.</li>
     </ul>
     <p>We do not sell your data, and we do not share it with marketing or advertising networks.</p>
 
     <h2>International transfers</h2>
-    <p>When data leaves the EU/EEA (Stripe and Resend operate partly from the US), we rely on the European Commission's Standard Contractual Clauses and the recipient's supplementary safeguards. Copies of the relevant clauses are available on request.</p>
+    <p>When data leaves the EU/EEA (Stripe and Resend operate partly from the US, and Microsoft Clarity is provided from the US), we rely on the European Commission's Standard Contractual Clauses and the recipient's supplementary safeguards. Copies of the relevant clauses are available on request.</p>
 
     <h2>How long we keep your data</h2>
     <ul>
@@ -172,6 +174,7 @@ footer a { color: var(--mute); }
       <li><strong>Booking records and booking-fee receipts</strong>: at least 10 years to meet Malta tax and accounting obligations (Article 50, Income Tax Management Act).</li>
       <li><strong>Server logs</strong>: up to 30 days.</li>
       <li><strong>Email delivery logs</strong> (Resend): up to 90 days.</li>
+      <li><strong>Clarity analytics</strong> (session recordings and heatmaps): retained by Microsoft Clarity for up to 30 days.</li>
     </ul>
 
     <h2>Your privacy rights</h2>
@@ -209,6 +212,8 @@ footer a { color: var(--mute); }
     <span><a href="/">Home</a> · <a href="/terms.html">Terms</a></span>
   </div>
 </footer>
+
+<script src="/consent.js" defer></script>
 
 </body>
 </html>
