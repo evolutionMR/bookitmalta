@@ -833,6 +833,8 @@ footer .wordmark span { color: var(--terracotta); }
                 if (!res.ok) {
                   throw new Error(payload.error || 'Sorry — your enquiry could not be sent. Please try again or email us directly.');
                 }
+                // Meta Pixel conversion: only fires if the visitor consented (fbq present)
+                if (window.fbq) { window.fbq('track', 'Lead'); }
                 window.location.href = payload.redirect || '/charters/bandama#enquiry-confirmed';
               } catch (ex) {
                 submitting = false;
