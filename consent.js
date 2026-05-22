@@ -13,7 +13,11 @@
 
   var CLARITY_ID = "wemhqvel3r";
   var META_PIXEL_ID = "959223593544701";
-  var KEY = "bim_consent"; // values: "granted" | "denied"
+  // Bumped from "bim_consent" because the consent PURPOSE changed: we now load
+  // the Meta advertising pixel, not just analytics. Versioning the key means
+  // anyone who accepted the old analytics-only banner ("no ads") is re-prompted
+  // and must give fresh consent before any advertising tracking loads (GDPR).
+  var KEY = "bim_consent_v2"; // values: "granted" | "denied"
 
   function loadClarity() {
     if (window.__bimClarityLoaded) return;
