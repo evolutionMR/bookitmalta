@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /social-publish.html
 
 Sitemap: https://bookitmalta.com/sitemap.xml

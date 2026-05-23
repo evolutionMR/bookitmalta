@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Social Publisher (internal) — BookItMalta</title>
+<style>
+  :root { --ink:#0B2545; --paper:#F4EBD9; --terracotta:#C85C2E; --rule:rgba(11,37,69,.18); }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Manrope",sans-serif; background:var(--paper); color:var(--ink); margin:0; padding:24px; }
+  .wrap { max-width:640px; margin:0 auto; }
+  h1 { font-size:1.3rem; margin:0 0 4px; }
+  p.sub { color:rgba(11,37,69,.6); font-size:.9rem; margin:0 0 20px; }
+  label { display:block; font-size:.8rem; font-weight:600; margin:14px 0 4px; text-transform:uppercase; letter-spacing:.05em; }
+  textarea, input[type=text], input[type=password] { width:100%; padding:10px 12px; border:1px solid var(--rule); border-radius:8px; font-size:.95rem; font-family:inherit; background:#fff; }
+  textarea { min-height:120px; resize:vertical; }
+  .row { display:flex; gap:18px; align-items:center; margin-top:10px; }
+  .row label { margin:0; text-transform:none; letter-spacing:0; font-weight:500; display:flex; align-items:center; gap:6px; }
+  .btns { display:flex; gap:10px; margin-top:18px; }
+  button { font:inherit; font-weight:600; padding:11px 20px; border-radius:8px; cursor:pointer; border:1px solid var(--ink); background:#fff; color:var(--ink); }
+  button.primary { background:var(--terracotta); border-color:var(--terracotta); color:#fff; }
+  button:disabled { opacity:.5; cursor:default; }
+  pre { background:#0B2545; color:#dfe8f0; padding:14px; border-radius:8px; font-size:.8rem; white-space:pre-wrap; word-break:break-word; margin-top:16px; }
+  .note { font-size:.8rem; color:rgba(11,37,69,.6); margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Social Publisher <span style="font-weight:400;color:rgba(11,37,69,.5)">· internal</span></h1>
+  <p class="sub">Preview a post, then publish to the BookItMalta Facebook Page and/or Instagram. Nothing posts until you click Publish.</p>
+
+  <label for="secret">Publish secret</label>
+  <input id="secret" type="password" placeholder="SOCIAL_PUBLISH_SECRET" autocomplete="off" />
+  <div class="note">Stored only in this browser tab. Click "Check connection" to verify it works.</div>
+
+  <label for="message">Caption</label>
+  <textarea id="message" placeholder="Write the post caption…"></textarea>
+
+  <label for="imageUrl">Image URL (public — required for Instagram)</label>
+  <input id="imageUrl" type="text" placeholder="https://bookitmalta.com/og-image.jpg" />
+  <div class="note">Use a public image URL, e.g. one of your site/brand images. Facebook can post text-only; Instagram needs an image.</div>
+
+  <div class="row">
+    <label><input type="checkbox" id="fb" checked /> Facebook</label>
+    <label><input type="checkbox" id="ig" /> Instagram</label>
+  </div>
+
+  <div class="btns">
+    <button id="check">Check connection</button>
+    <button id="publish" class="primary">Publish</button>
+  </div>
+
+  <pre id="out" hidden></pre>
+</div>
+
+<script>
+  var $ = function (id) { return document.getElementById(id); };
+  // remember the secret for this tab only
+  try { $('secret').value = sessionStorage.getItem('bim_pub_secret') || ''; } catch (e) {}
+  $('secret').addEventListener('input', function () {
+    try { sessionStorage.setItem('bim_pub_secret', $('secret').value); } catch (e) {}
+  });
+
+  function show(obj) { var o = $('out'); o.hidden = false; o.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2); }
+
+  $('check').addEventListener('click', async function () {
+    var secret = $('secret').value.trim();
+    if (!secret) return show('Enter the publish secret first.');
+    show('Checking…');
+    try {
+      var r = await fetch('/api/admin/social-publish?check=1', { headers: { 'Authorization': 'Bearer ' + secret } });
+      show(await r.json());
+    } catch (e) { show('Error: ' + e.message); }
+  });
+
+  $('publish').addEventListener('click', async function () {
+    var secret = $('secret').value.trim();
+    if (!secret) return show('Enter the publish secret first.');
+    var targets = [];
+    if ($('fb').checked) targets.push('facebook');
+    if ($('ig').checked) targets.push('instagram');
+    if (targets.length === 0) return show('Tick Facebook and/or Instagram.');
+    var payload = { message: $('message').value, imageUrl: $('imageUrl').value.trim(), targets: targets };
+    if (!confirm('Publish this post to: ' + targets.join(', ') + '?\n\nIt goes live immediately.')) return;
+    $('publish').disabled = true; show('Publishing…');
+    try {
+      var r = await fetch('/api/admin/social-publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + secret },
+        body: JSON.stringify(payload),
+      });
+      show(await r.json());
+    } catch (e) { show('Error: ' + e.message); }
+    $('publish').disabled = false;
+  });
+</script>
+</body>
+</html>
