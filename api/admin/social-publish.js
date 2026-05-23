@@ -56,6 +56,19 @@ async function resolveIgUserId(pageId, token) {
   return data.instagram_business_account && data.instagram_business_account.id;
 }
 
+async function getPageToken(pageId, userToken) {
+  // META_PAGE_TOKEN is a system-user token. Reading the Page works with it, but
+  // PUBLISHING to /{page}/feed must use the Page's OWN access token, otherwise
+  // Meta returns (#200) "requires ... pages_manage_posts ... as an admin". Derive
+  // the Page token from the system-user token. (If META_PAGE_TOKEN is already a
+  // Page token, this still returns a valid Page token.)
+  const data = await graph(`${pageId}`, { fields: 'access_token', access_token: userToken }, 'GET');
+  if (!data.access_token) {
+    throw new Error('Could not derive a Page access token from META_PAGE_TOKEN. The system user needs Full control of the Page plus pages_show_list + pages_manage_posts.');
+  }
+  return data.access_token;
+}
+
 async function publishFacebook(pageId, token, message, imageUrl) {
   if (imageUrl) {
     return graph(`${pageId}/photos`, { url: imageUrl, caption: message || '', access_token: token });
@@ -91,13 +104,14 @@ module.exports = async function handler(req, res) {
   // GET ?check — verify wiring without posting
   if (req.method === 'GET') {
     try {
-      const page = await graph(`${pageId}`, { fields: 'id,name', access_token: token }, 'GET');
+      const pageToken = await getPageToken(pageId, token);
+      const page = await graph(`${pageId}`, { fields: 'id,name', access_token: pageToken }, 'GET');
       let instagram = null;
       try {
-        const igId = await resolveIgUserId(pageId, token);
-        if (igId) instagram = await graph(`${igId}`, { fields: 'id,username', access_token: token }, 'GET');
+        const igId = await resolveIgUserId(pageId, pageToken);
+        if (igId) instagram = await graph(`${igId}`, { fields: 'id,username', access_token: pageToken }, 'GET');
       } catch (e) { instagram = { error: e.message }; }
-      return res.status(200).json({ ok: true, page, instagram });
+      return res.status(200).json({ ok: true, page, instagram, pageToken: 'derived' });
     } catch (e) {
       return res.status(502).json({ ok: false, error: e.message });
     }
@@ -118,15 +132,20 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Provide a message and/or imageUrl' });
   }
 
+  // META_PAGE_TOKEN is a system-user token; derive the Page's own token to publish.
+  let pageToken;
+  try { pageToken = await getPageToken(pageId, token); }
+  catch (e) { return res.status(502).json({ ok: false, results: { error: e.message } }); }
+
   const results = {};
   let anyOk = false;
 
   if (targets.includes('facebook') || targets.includes('fb')) {
-    try { results.facebook = { ok: true, ...(await publishFacebook(pageId, token, message, imageUrl)) }; anyOk = true; }
+    try { results.facebook = { ok: true, ...(await publishFacebook(pageId, pageToken, message, imageUrl)) }; anyOk = true; }
     catch (e) { results.facebook = { ok: false, error: e.message }; }
   }
   if (targets.includes('instagram') || targets.includes('ig')) {
-    try { results.instagram = { ok: true, ...(await publishInstagram(pageId, token, message, imageUrl)) }; anyOk = true; }
+    try { results.instagram = { ok: true, ...(await publishInstagram(pageId, pageToken, message, imageUrl)) }; anyOk = true; }
     catch (e) { results.instagram = { ok: false, error: e.message }; }
   }
 
