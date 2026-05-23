@@ -1,16 +1,23 @@
 /*
- * BookItMalta cookie consent + analytics gate.
+ * BookItMalta cookie consent + analytics/advertising gate.
  *
- * Privacy-preserving default: Microsoft Clarity does NOT load until the
- * visitor explicitly accepts. Choice is remembered in localStorage. A
- * "Cookie settings" link is added to the footer so the visitor can change
- * their mind (GDPR withdrawal).
+ * Privacy-preserving default: NOTHING loads until the visitor explicitly
+ * accepts. On consent we load Microsoft Clarity (usage analytics) and the
+ * Meta pixel (advertising measurement / retargeting). Choice is remembered in
+ * localStorage. A "Cookie settings" link is added to the footer so the visitor
+ * can change their mind (GDPR withdrawal). If the visitor declines, neither
+ * tool runs and no analytics/advertising cookies are set.
  */
 (function () {
   "use strict";
 
   var CLARITY_ID = "wemhqvel3r";
-  var KEY = "bim_consent"; // values: "granted" | "denied"
+  var META_PIXEL_ID = "959223593544701";
+  // Bumped from "bim_consent" because the consent PURPOSE changed: we now load
+  // the Meta advertising pixel, not just analytics. Versioning the key means
+  // anyone who accepted the old analytics-only banner ("no ads") is re-prompted
+  // and must give fresh consent before any advertising tracking loads (GDPR).
+  var KEY = "bim_consent_v2"; // values: "granted" | "denied"
 
   function loadClarity() {
     if (window.__bimClarityLoaded) return;
@@ -20,6 +27,26 @@
       t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
       y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", CLARITY_ID);
+  }
+
+  function loadMetaPixel() {
+    if (window.__bimPixelLoaded) return;
+    window.__bimPixelLoaded = true;
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = "2.0"; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v;
+      s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+    window.fbq("init", META_PIXEL_ID);
+    window.fbq("track", "PageView");
+  }
+
+  // Load everything the visitor has consented to.
+  function loadConsented() {
+    loadClarity();
+    loadMetaPixel();
   }
 
   function getChoice() {
@@ -65,7 +92,7 @@
 
     var text = document.createElement("p");
     text.className = "bim-c-text";
-    text.innerHTML = "We use Microsoft Clarity to see how visitors use the site, so we can improve it — no ads, no data selling. <a href=\"/privacy.html\">Privacy Policy</a>";
+    text.innerHTML = "We use cookies for analytics (Microsoft Clarity) and advertising (the Meta pixel) — to understand how visitors use the site and to measure our ads. You can accept or decline. <a href=\"/privacy.html\">Privacy Policy</a>";
 
     var actions = document.createElement("div");
     actions.className = "bim-c-actions";
@@ -86,7 +113,7 @@
     accept.addEventListener("click", function () {
       setChoice("granted");
       removeBanner();
-      loadClarity();
+      loadConsented();
     });
 
     actions.appendChild(decline);
@@ -118,7 +145,7 @@
   function init() {
     var choice = getChoice();
     if (choice === "granted") {
-      loadClarity();
+      loadConsented();
     } else if (choice !== "denied") {
       showBanner();
     }
