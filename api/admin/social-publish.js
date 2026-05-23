@@ -81,22 +81,17 @@ async function publishInstagram(pageId, token, message, imageUrl) {
   const igId = await resolveIgUserId(pageId, token);
   if (!igId) throw new Error('No Instagram business account linked to this Page');
   const container = await graph(`${igId}/media`, { image_url: imageUrl, caption: message || '', access_token: token });
-  // IG processes the image asynchronously; media_publish fails with "Media ID is
-  // not available" if called before the container is FINISHED. Poll briefly first.
-  // Kept short to stay within the ~10s function budget; most small images finish
-  // on the first poll. If still processing, ask the user to click Publish again.
-  let status = '';
-  for (let i = 0; i < 3; i++) {
-    await new Promise((r) => setTimeout(r, 2000));
-    const s = await graph(`${container.id}`, { fields: 'status_code', access_token: token }, 'GET');
-    status = s.status_code || '';
-    if (status === 'FINISHED') break;
-    if (status === 'ERROR') throw new Error('Instagram could not process the image (check it is a public JPG/PNG with a valid aspect ratio)');
+  // IG processes the image asynchronously; calling media_publish immediately fails
+  // with "Media ID is not available". Wait briefly for processing, then publish.
+  // A fixed wait avoids an extra container status-read call and stays within the
+  // ~10s function budget; small images finish well inside this window.
+  await new Promise((r) => setTimeout(r, 6000));
+  let published;
+  try {
+    published = await graph(`${igId}/media_publish`, { creation_id: container.id, access_token: token });
+  } catch (e) {
+    throw new Error('Instagram media still processing — click Publish again in a few seconds (' + e.message + ')');
   }
-  if (status !== 'FINISHED') {
-    throw new Error('Instagram media still processing (status: ' + (status || 'unknown') + ') — click Publish again in a few seconds');
-  }
-  const published = await graph(`${igId}/media_publish`, { creation_id: container.id, access_token: token });
   return { container_id: container.id, id: published.id };
 }
 
