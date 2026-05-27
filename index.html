@@ -355,6 +355,28 @@ footer .wordmark span { color: var(--terracotta); }
   .hero-meta { gap: 1rem 1.5rem; }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://bookitmalta.com/#organization",
+      "name": "BookItMalta",
+      "legalName": "TrueNorthDigital",
+      "url": "https://bookitmalta.com/",
+      "logo": "https://bookitmalta.com/icon-512.png"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://bookitmalta.com/#website",
+      "name": "BookItMalta",
+      "url": "https://bookitmalta.com/",
+      "publisher": { "@id": "https://bookitmalta.com/#organization" }
+    }
+  ]
+}
+</script>
 </head>
 
 <body>
