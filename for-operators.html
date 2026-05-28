@@ -4,8 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>BookItMalta — Booking infrastructure for Malta's charter operators</title>
-<meta name="description" content="The Malta-built booking engine and captain's portal for boat charter operators. Own your customer relationship. Keep more of every booking. Plans from €0/month." />
+<title>BookItMalta — Booking Engine for Malta Charter Operators</title>
+<meta name="description" content="Malta's booking engine and captain's portal for boat charter operators. Own the customer. Keep more of every booking. Tiers from €0/month." />
 <meta name="keywords" content="Malta boat booking system, charter operator software, catamaran booking engine Malta, captain portal Malta, marketplace alternative Malta" />
 <link rel="canonical" href="https://bookitmalta.com/for-operators" />
 <meta name="robots" content="index, follow" />
@@ -36,9 +36,11 @@
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
-    "@type": "Offer",
+    "@type": "AggregateOffer",
     "priceCurrency": "EUR",
-    "price": "250"
+    "lowPrice": "0",
+    "highPrice": "250",
+    "offerCount": "3"
   },
   "provider": {
     "@type": "Organization",
@@ -49,6 +51,71 @@
       "addressCountry": "MT"
     }
   }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I keep my existing website?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — that's the whole point. You keep your domain, your branding, your SEO, your Google presence. We embed the booking engine into your existing site. Most operators are live in one day of setup."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I don't have a website yet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Two paths depending on how much you want to invest in your digital presence. The Founding Partner tier is the full-build option — we build you a brand-new website from scratch on your own domain, integrate the booking engine end-to-end, load your content, train your team. Premium tier, premium outcome, 4-6 weeks to launch. The Hosted Founding tier is the lightweight option — €0 setup, €0/month, your booking page lives at bookitmalta.com/charters/yourname, white-labelled to your brand, usually live within a week. Pick by how much site you want."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I still use marketplaces and OTAs alongside this?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Absolutely. BookItMalta handles the bookings that come through your direct channels — your website, Instagram, Google, referrals. You keep the platform channels running in parallel for the reach they provide. Over time, most operators find their direct-booking share grows and their platform dependence shrinks. Your call, your pace."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who actually owns the customer data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You do. Every booking's email, phone, preferences, and notes sit in your captain's portal, exportable at any time. Full CSV download, GDPR-compliant, no lock-in. If you ever cancel BookItMalta, your customer list goes with you. That's different from how the big platforms work, and it's one of the main reasons operators move across."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I cancel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You export your data, take your website, and go. No penalty, no lock-in. We give you 30 days to migrate to another system. The only thing that stays with us is our code — everything else is yours."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why should I trust a new platform?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BookItMalta is built by TrueNorthDigital, using the same booking stack we've been running in production with a Malta charter operator for the past year. Same codebase, same principles — now available to other operators. This isn't a prototype we're selling before we've proven it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does setup take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Typical onboarding is 7–10 days from signature to live bookings. We build your listing, embed the booking engine on your site, configure pricing and availability, train you on the captain's portal, and run a test booking with you. The longest part is usually waiting for your approval on each step."
+      }
+    }
+  ]
 }
 </script>
 
