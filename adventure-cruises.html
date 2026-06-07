@@ -152,17 +152,15 @@ em { font-style: italic; color: var(--terracotta); }
 
 .hero-photo {
   border-radius: 12px; aspect-ratio: 4/3; overflow: hidden;
-  background: linear-gradient(135deg, #4A90A4 0%, #3D6B6F 50%, #2A4858 100%);
+  background: var(--paper-deep);
   position: relative;
   box-shadow: 0 20px 60px rgba(11, 37, 69, 0.18);
 }
-.hero-photo::after {
-  content: '?? swap: drone shot of boat in Blue Lagoon';
-  position: absolute; bottom: 1rem; left: 1rem; right: 1rem;
-  font-family: var(--mono); font-size: 0.72rem;
-  color: rgba(255,255,255,0.7);
-  background: rgba(11, 37, 69, 0.6); padding: 0.4rem 0.7rem;
-  border-radius: 4px;
+.hero-photo img,
+.boat-photo img,
+.private-image img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
 }
 
 /* Trust strip */
@@ -434,15 +432,8 @@ em { font-style: italic; color: var(--terracotta); }
 }
 .boat-photo {
   aspect-ratio: 4/3;
-  background: linear-gradient(135deg, #5A8FA6 0%, #3D6B6F 100%);
-  position: relative;
-}
-.boat-photo::after {
-  content: '?? swap: real boat photo';
-  position: absolute; bottom: 0.8rem; left: 0.8rem;
-  font-family: var(--mono); font-size: 0.68rem;
-  color: rgba(255,255,255,0.8); background: rgba(11, 37, 69, 0.5);
-  padding: 0.25rem 0.5rem; border-radius: 3px;
+  background: var(--paper-deep);
+  position: relative; overflow: hidden;
 }
 .boat-card .body { padding: 1.4rem 1.6rem 1.6rem; }
 .boat-card h4 { font-size: 1.3rem; margin-bottom: 0.4rem; }
@@ -478,16 +469,9 @@ em { font-style: italic; color: var(--terracotta); }
 
 .private-image {
   aspect-ratio: 4/3; border-radius: 10px;
-  background: linear-gradient(135deg, #1C3558, #0B2545);
+  background: var(--paper-deep);
   position: relative; overflow: hidden;
   border: 1px solid rgba(255, 216, 168, 0.2);
-}
-.private-image::after {
-  content: '?? swap: lifestyle shot, private group on boat';
-  position: absolute; bottom: 1rem; left: 1rem;
-  font-family: var(--mono); font-size: 0.68rem;
-  color: rgba(255, 216, 168, 0.7); background: rgba(0,0,0,0.3);
-  padding: 0.25rem 0.5rem; border-radius: 3px;
 }
 
 /* ============================================================
@@ -579,7 +563,11 @@ em { font-style: italic; color: var(--terracotta); }
           <a href="#about" class="btn btn-ghost">See what's included</a>
         </div>
       </div>
-      <div class="hero-photo"></div>
+      <div class="hero-photo">
+        <img src="/charters/adventure-cruises-images/hero-valletta-skyline.jpg"
+             alt="Adventure Cruises Malta powerboat with passengers, returning to Sliema Ferries with the Valletta skyline behind."
+             width="1920" height="2560" fetchpriority="high" decoding="async" />
+      </div>
     </div>
   </div>
 </section>
@@ -591,7 +579,7 @@ em { font-style: italic; color: var(--terracotta); }
       <span>⛵ <b>2 boats · 80 seats / departure</b></span>
       <span>📍 <b>Sliema Ferries</b></span>
       <span>⏰ <b>Daily 09:30 &amp; 14:30</b></span>
-      <span>⭐ <b>4.7 on GetYourGuide</b> <span style="color:var(--mute);font-size:0.75rem;">?? confirm</span></span>
+      <span>⭐ <b>4.9 on TripAdvisor</b> · 44+ reviews</span>
       <span>🌤 <b>Weather refund</b></span>
     </div>
   </div>
@@ -602,8 +590,8 @@ em { font-style: italic; color: var(--terracotta); }
   <div class="wrap">
     <div class="head">
       <div class="eyebrow">§ Today and the next 6 days</div>
-      <h2>Live availability.</h2>
-      <p class="lead">Real seats, updated as bookings come in. If a slot is grey, it's full — try the other departure or a different day.</p>
+      <h2>Pick your day.</h2>
+      <p class="lead">Tap any day to lock it in below — Anthony confirms availability over WhatsApp, usually inside 30 minutes during the day. Live, real-time seat counts coming with the new booking engine.</p>
     </div>
     <div class="avail-grid" id="availGrid">
       <!-- JS populates next 7 days. Until the live engine ships, all
@@ -732,7 +720,7 @@ em { font-style: italic; color: var(--terracotta); }
         <ul>
           <li class="yes">Captain &amp; deck crew</li>
           <li class="yes">Fresh water on tap — bring a bottle</li>
-          <li class="yes">Snorkel masks &amp; floats <span style="color:var(--mute);font-size:0.78rem;">?? confirm</span></li>
+          <li class="yes">Snorkel masks &amp; pool floats</li>
           <li class="yes">Ice &amp; coolers for your own drinks</li>
           <li class="yes">Life vests, including child sizes</li>
           <li class="yes">Bluetooth speaker — pick the playlist</li>
@@ -762,19 +750,27 @@ em { font-style: italic; color: var(--terracotta); }
     </div>
     <div class="boats-grid">
       <div class="boat-card">
-        <div class="boat-photo"></div>
+        <div class="boat-photo">
+          <img src="/charters/adventure-cruises-images/boat-albert-v.jpg"
+               alt="Albert V — Adventure Cruises Malta powerboat, stern view returning to Sliema."
+               loading="lazy" decoding="async" />
+        </div>
         <div class="body">
-          <h4>Boat 1 <span style="color:var(--mute);font-size:0.8rem;font-weight:400;">— name ?? confirm</span></h4>
-          <div class="specs">40 seats · 12m · 2x diesel · WC</div>
-          <p>Sunbathing deck forward, shaded saloon aft. Boarding ladder at stern for easy swim access.</p>
+          <h4>Albert V</h4>
+          <div class="specs">40 seats · Open deck · Shaded canopy · WC</div>
+          <p>Sundeck forward, shaded centre canopy. Boarding ladder at stern for easy swim access at the Blue Lagoon stop.</p>
         </div>
       </div>
       <div class="boat-card">
-        <div class="boat-photo"></div>
+        <div class="boat-photo">
+          <img src="/charters/adventure-cruises-images/boat-adventure-1.jpg"
+               alt="Adventure 1 — Adventure Cruises Malta sister vessel, identical layout to Albert V."
+               loading="lazy" decoding="async" />
+        </div>
         <div class="body">
-          <h4>Boat 2 <span style="color:var(--mute);font-size:0.8rem;font-weight:400;">— name ?? confirm</span></h4>
-          <div class="specs">40 seats · 12m · 2x diesel · WC</div>
-          <p>Same comfort as Boat 1 — both vessels run identical departures, identical capacity, identical experience.</p>
+          <h4>Adventure 1</h4>
+          <div class="specs">40 seats · Open deck · Shaded canopy · WC</div>
+          <p>Sister vessel to Albert V — identical layout, identical capacity, identical experience. Crew assigns boat at boarding.</p>
         </div>
       </div>
     </div>
@@ -792,7 +788,11 @@ em { font-style: italic; color: var(--terracotta); }
         <p>Pricing depends on date &amp; route — get a quote and we'll come back within 2 business hours.</p>
         <a href="#enquiry" class="btn-light">Get a private charter quote →</a>
       </div>
-      <div class="private-image"></div>
+      <div class="private-image">
+        <img src="/charters/adventure-cruises-images/private-yacht-comino.jpg"
+             alt="Adventure Cruises private charter yacht moored beside a Comino sea cave, turquoise water."
+             loading="lazy" decoding="async" />
+      </div>
     </div>
   </div>
 </section>
@@ -807,7 +807,7 @@ em { font-style: italic; color: var(--terracotta); }
     <div class="faq-list">
       <div class="faq-item">
         <h4>Where do we meet?</h4>
-        <p>Sliema Ferries dock — the wooden pontoon at the south end. Look for the Adventure Cruises sign. Please arrive 15 minutes before departure so we can board on time. <span style="color:var(--mute);">?? confirm exact pontoon</span></p>
+        <p>Sliema Ferries — look for the Adventure Cruises boats (white powerboats with our name on the hull) and crew at the dock. You'll get the exact pontoon and crew contact in your confirmation message. Please arrive 15 minutes before departure so we can board on time.</p>
       </div>
       <div class="faq-item">
         <h4>What happens in bad weather?</h4>
@@ -819,7 +819,7 @@ em { font-style: italic; color: var(--terracotta); }
       </div>
       <div class="faq-item">
         <h4>Are children welcome?</h4>
-        <p>Yes. Life vests in every size are on board. Under-3s are free; ages 3–12 are €25/seat (half price); 13+ pay the full €40. <span style="color:var(--mute);">?? confirm child pricing — your call</span></p>
+        <p>Yes. Life vests in every size are on board, including child sizes. Discounted child rates apply — message us via WhatsApp with the ages of the kids in your group and we'll send the exact pricing for the day.</p>
       </div>
       <div class="faq-item">
         <h4>How do I pay the €30/seat balance on the day?</h4>
@@ -839,23 +839,23 @@ em { font-style: italic; color: var(--terracotta); }
     <div class="foot-grid">
       <div class="foot-brand">
         <div class="name">Adventure Cruises <em>Malta</em></div>
-        <p>Powerboat tours of Comino, the Blue Lagoon, and the Gozo coastline. Operating from Sliema Ferries since [?? year]. Listed and booked via BookItMalta.</p>
+        <p>Powerboat day tours of Comino, the Blue Lagoon, and the Gozo coastline — plus private charters on a separate cabin yacht. Departing from Sliema Ferries. Bookings and seat fees handled by BookItMalta; balance paid to crew on the day.</p>
       </div>
       <div class="foot-col">
         <h5>Tour</h5>
         <ul>
           <li><a href="#book">Book a seat</a></li>
           <li><a href="#about">Itinerary</a></li>
-          <li><a href="#avail">Live availability</a></li>
+          <li><a href="#avail">Pick your day</a></li>
           <li><a href="#enquiry">Private charter</a></li>
         </ul>
       </div>
       <div class="foot-col">
         <h5>Contact</h5>
         <ul>
-          <li>+356 9928 6698</li>
-          <li>hello@adventurecruisesmalta.com</li>
-          <li>WhatsApp · Mon–Sun 8am–8pm</li>
+          <li><a href="https://wa.me/35699286698">WhatsApp +356 9928 6698</a></li>
+          <li>Daily 8am – 8pm</li>
+          <li>Sliema Ferries · Malta</li>
         </ul>
       </div>
     </div>
