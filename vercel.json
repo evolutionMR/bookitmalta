@@ -8,7 +8,9 @@
   },
   "redirects": [
     { "source": "/charters", "destination": "/", "permanent": true },
-    { "source": "/charters/", "destination": "/", "permanent": true }
+    { "source": "/charters/", "destination": "/", "permanent": true },
+    { "source": "/charters/adventure-cruises", "destination": "/adventure-cruises", "permanent": true },
+    { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true }
   ],
   "rewrites": [
     { "source": "/captain/:path*", "destination": "/api/captain" },
