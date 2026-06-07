@@ -41,6 +41,10 @@
   <input id="imageUrl" type="text" placeholder="https://bookitmalta.com/og-image.jpg" />
   <div class="note">Use a public image URL, e.g. one of your site/brand images. Facebook can post text-only; Instagram needs an image.</div>
 
+  <label for="imageUrl2">Second image URL (optional — makes it a carousel)</label>
+  <input id="imageUrl2" type="text" placeholder="(leave blank for a single photo)" />
+  <div class="note">Add a second public image to post a 2-photo carousel (Facebook album / Instagram carousel). Leave blank for a single photo.</div>
+
   <div class="row">
     <label><input type="checkbox" id="fb" checked /> Facebook</label>
     <label><input type="checkbox" id="ig" /> Instagram</label>
@@ -68,8 +72,15 @@
   try {
     var qs = new URLSearchParams(location.search);
     if (qs.has('caption')) $('message').value = qs.get('caption');
+    // Images can arrive as image= (+ optional image2=) or images=url1,url2
+    var imgs = [];
+    if (qs.has('images')) imgs = qs.get('images').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
     var img = qs.get('image') || qs.get('imageUrl');
-    if (img) $('imageUrl').value = img;
+    if (img && imgs.indexOf(img) === -1) imgs.unshift(img);
+    var img2 = qs.get('image2');
+    if (img2 && imgs.indexOf(img2) === -1) imgs.push(img2);
+    if (imgs[0]) $('imageUrl').value = imgs[0];
+    if (imgs[1]) $('imageUrl2').value = imgs[1];
     if (qs.has('fb')) $('fb').checked = (qs.get('fb') !== '0' && qs.get('fb') !== 'false');
     if (qs.has('ig')) $('ig').checked = (qs.get('ig') === '1' || qs.get('ig') === 'true');
     if (qs.has('caption') || img) {
@@ -103,8 +114,11 @@
     if ($('fb').checked) targets.push('facebook');
     if ($('ig').checked) targets.push('instagram');
     if (targets.length === 0) return show('Tick Facebook and/or Instagram.');
-    var payload = { message: $('message').value, imageUrl: $('imageUrl').value.trim(), targets: targets };
-    if (!confirm('Publish this post to: ' + targets.join(', ') + '?\n\nIt goes live immediately.')) return;
+    var images = [$('imageUrl').value.trim(), $('imageUrl2').value.trim()].filter(Boolean);
+    // Send images[] (carousel-aware) plus imageUrl for backward compatibility.
+    var payload = { message: $('message').value, imageUrl: images[0] || '', images: images, targets: targets };
+    var label = targets.join(', ') + (images.length > 1 ? ' (' + images.length + '-photo carousel)' : '');
+    if (!confirm('Publish this post to: ' + label + '?\n\nIt goes live immediately.')) return;
     $('publish').disabled = true; show('Publishing…');
     try {
       var r = await fetch('/api/admin/social-publish', {
