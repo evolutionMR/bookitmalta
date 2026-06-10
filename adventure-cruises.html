@@ -347,6 +347,52 @@ em { font-style: italic; color: var(--terracotta); }
   cursor: pointer; transition: background 0.15s;
 }
 .book-confirm-btn:hover { background: var(--terracotta-deep); }
+.book-confirm-btn:disabled {
+  background: var(--mute); cursor: not-allowed;
+}
+
+.book-fallback-btn {
+  width: 100%; margin-top: 0.6rem; padding: 0.7rem;
+  background: transparent; color: var(--ink-soft);
+  border: 1px solid var(--rule-strong); border-radius: 8px;
+  font-family: var(--sans); font-weight: 500; font-size: 0.85rem;
+  cursor: pointer; transition: all 0.15s;
+}
+.book-fallback-btn:hover {
+  border-color: var(--ink); color: var(--ink);
+}
+
+.book-terms {
+  display: flex; gap: 0.6rem; align-items: flex-start;
+  padding: 0.7rem 0 0.4rem; font-size: 0.85rem;
+  color: var(--ink-soft); line-height: 1.4;
+  cursor: pointer;
+}
+.book-terms input[type="checkbox"] {
+  flex-shrink: 0; margin-top: 0.15rem;
+  width: 1rem; height: 1rem;
+  accent-color: var(--terracotta);
+}
+.book-terms a { color: var(--terracotta); text-decoration: underline; }
+
+.book-error {
+  background: #FEF3C7; color: #7C2D12;
+  border: 1px solid #FCD34D; border-radius: 8px;
+  padding: 0.7rem 0.9rem; font-size: 0.88rem;
+  margin: 0.5rem 0 0.8rem; line-height: 1.4;
+}
+
+.book-success {
+  background: #D8F3DC; color: #1B4332;
+  border: 1px solid #95D5B2; border-radius: 8px;
+  padding: 1rem; text-align: center; line-height: 1.5;
+}
+.book-success .code {
+  display: inline-block; margin: 0.4rem 0;
+  font-family: var(--mono); font-weight: 600; font-size: 1.05rem;
+  background: white; padding: 0.25rem 0.6rem; border-radius: 4px;
+  border: 1px solid var(--ok-soft);
+}
 
 .book-fineprint {
   text-align: center; font-size: 0.72rem; color: var(--mute);
@@ -656,12 +702,36 @@ em { font-style: italic; color: var(--terracotta); }
           <div class="line total"><span>Total</span><span>€<span id="mTotal2">80</span>.00</span></div>
         </div>
 
-        <button class="book-confirm-btn" onclick="confirmViaWhatsApp()">
-          Continue on WhatsApp →
+        <div class="book-row">
+          <div class="label">Your name</div>
+          <input type="text" id="bookName" class="book-date-input" placeholder="Full name" autocomplete="name" />
+        </div>
+        <div class="book-row">
+          <div class="label">Email</div>
+          <input type="email" id="bookEmail" class="book-date-input" placeholder="you@example.com" autocomplete="email" />
+        </div>
+        <div class="book-row">
+          <div class="label">WhatsApp or phone <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></div>
+          <input type="tel" id="bookPhone" class="book-date-input" placeholder="+356 ..." autocomplete="tel" />
+        </div>
+
+        <label class="book-terms" for="bookTerms">
+          <input type="checkbox" id="bookTerms" />
+          <span>I agree to the <a href="/terms.html" target="_blank">terms</a> and <a href="/privacy.html" target="_blank">privacy policy</a>.</span>
+        </label>
+
+        <div id="bookError" class="book-error" hidden></div>
+
+        <button class="book-confirm-btn" id="bookSubmit" onclick="submitEnquiry()">
+          Lock in my seats →
+        </button>
+
+        <button class="book-fallback-btn" onclick="confirmViaWhatsApp()" type="button">
+          or message the crew on WhatsApp
         </button>
 
         <div class="book-fineprint">
-          Anthony confirms availability + sends a secure payment link for the €<span id="fpFee">20</span> booking fee. Balance settled with crew at boarding.
+          We'll text you within 30 minutes to confirm availability and send a secure payment link for the €<span id="fpFee">20</span> booking fee. Balance settled with crew at boarding.
         </div>
       </div>
     </div>
@@ -1003,6 +1073,108 @@ function confirmViaWhatsApp() {
   const message = lines.join('\n');
   const url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message);
   window.open(url, '_blank');
+}
+
+// -----------------------------------------------------------------
+// REAL ENQUIRY SUBMIT — POST to /api/enquiry?tenant=adventure-cruises
+// -----------------------------------------------------------------
+// Tied to the "Lock in my seats" CTA. On success we hand the customer
+// a booking code and let the captain follow up via WhatsApp + email
+// (which our backend dispatches). On any failure we fall back to the
+// raw WhatsApp deep-link so the customer never hits a dead end.
+const TERMS_VERSION = '2026-06-08-v1';
+
+function showError(msg) {
+  const el = document.getElementById('bookError');
+  if (!el) return;
+  el.textContent = msg;
+  el.hidden = false;
+}
+
+function clearError() {
+  const el = document.getElementById('bookError');
+  if (el) el.hidden = true;
+}
+
+function showSuccess(code, customerEmail) {
+  const widget = document.querySelector('.book-widget');
+  if (!widget) return;
+  widget.innerHTML =
+    '<div class="book-success">' +
+      '<div style="font-family:var(--serif);font-size:1.4rem;color:var(--ink);margin-bottom:0.4rem;">Got it.</div>' +
+      '<div>Your enquiry is locked in. Booking code:</div>' +
+      '<div class="code">' + code.toUpperCase().slice(0, 8) + '</div>' +
+      '<div style="margin-top:0.6rem;">Anthony will confirm availability and send a secure payment link for the €10/seat booking fee within 30 minutes (8am–8pm). Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.</div>' +
+    '</div>';
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+async function submitEnquiry() {
+  clearError();
+  const btn = document.getElementById('bookSubmit');
+  const date  = document.getElementById('bookDate').value;
+  const slot  = (document.querySelector('.book-slot.selected') || {}).dataset
+                  ? document.querySelector('.book-slot.selected').dataset.slot
+                  : '09:30';
+  const seats = parseInt(document.getElementById('bookSeats').value, 10) || 1;
+  const name  = document.getElementById('bookName').value.trim();
+  const email = document.getElementById('bookEmail').value.trim();
+  const phone = document.getElementById('bookPhone').value.trim();
+  const terms = document.getElementById('bookTerms').checked;
+
+  // Client-side validation — fast fail without round-trip
+  if (!date)    return showError('Please pick a departure date.');
+  if (!name)    return showError('Please enter your name.');
+  if (!email)   return showError('Please enter your email.');
+  if (!terms)   return showError('Please accept the terms to continue.');
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('/api/enquiry?tenant=adventure-cruises', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant:          'adventure-cruises',
+        customer_name:   name,
+        customer_email:  email,
+        customer_phone:  phone || null,
+        preferred_date:  date,
+        party_size:      seats,
+        tour_option:     slot,
+        slot_time:       slot,    // belt-and-braces
+        terms_accepted:  true,
+        terms_version:   TERMS_VERSION,
+      }),
+    });
+
+    if (!res.ok) {
+      let serverMsg;
+      try { serverMsg = (await res.json()).error; } catch { /* ignore */ }
+      throw new Error(serverMsg || ('HTTP ' + res.status));
+    }
+
+    const data = await res.json();
+    showSuccess(data.enquiry_id || 'AC-PENDING', email);
+  } catch (e) {
+    console.error('[ac] enquiry submit failed:', e);
+    showError(
+      'Couldn\'t reach the booking engine — opening WhatsApp as a fallback so you don\'t lose your spot. ' +
+      '(' + (e && e.message ? e.message : 'network error') + ')'
+    );
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    // Auto-fallback to WhatsApp after a moment so the customer sees the
+    // error then gets handed off — never a dead end.
+    setTimeout(confirmViaWhatsApp, 1200);
+  }
 }
 
 // Init on load

@@ -2,6 +2,10 @@
 //
 // Minimal input validation for the enquiry form.
 // Keep it dependency-free — no Zod, no Joi. Vercel cold-start matters.
+//
+// Tenant-aware (2026-06-08): the `party_size` cap, the required-vs-optional
+// `tour_option` semantics, and the allowed `tour_option` values all depend
+// on the tenant config. validateEnquiry now takes (body, tenantConfig).
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -20,10 +24,24 @@ class ValidationError extends Error {
   }
 }
 
-function validateEnquiry(body) {
+/**
+ * Validate enquiry form body against tenant rules.
+ *
+ * @param {object} body
+ * @param {object} [tenantConfig] — from config/tenants.js. Optional for
+ *   backward compatibility: when omitted, falls back to legacy Bandama
+ *   limits (party_size 1..20, tour_option optional + free-text).
+ */
+function validateEnquiry(body, tenantConfig) {
   if (!body || typeof body !== 'object') {
     throw new ValidationError('Empty request body');
   }
+
+  // Resolve tenant-specific limits with safe Bandama-era defaults.
+  const maxPartySize = (tenantConfig && tenantConfig.defaultCapPerDeparture) || 20;
+  const allowedSlots = (tenantConfig && tenantConfig.departureSlots) || null;
+  const multiSlot =
+    tenantConfig && tenantConfig.schedulingModel === 'multi_slot_per_day';
 
   const trim = (s) => (typeof s === 'string' ? s.trim() : s);
 
@@ -56,13 +74,28 @@ function validateEnquiry(body) {
   const party_size = v(parseInt(body.party_size, 10), 'party_size', (x) =>
     !Number.isFinite(x) ? 'required' :
     x < 1 ? 'must be at least 1' :
-    x > 20 ? 'too large (max 20)' :
+    x > maxPartySize ? `too large (max ${maxPartySize})` :
     null
   );
 
-  const alt_dates  = trim(body.alt_dates)  || null;
-  const message    = trim(body.message)    || null;
-  const tour_option = trim(body.tour_option) || null;
+  const alt_dates = trim(body.alt_dates) || null;
+  const message   = trim(body.message)   || null;
+
+  // tour_option / slot_time: accept either field name from the form
+  // (legacy bandama forms use tour_option; new AC form uses slot_time).
+  // For multi-slot tenants, this becomes REQUIRED and must match
+  // tenantConfig.departureSlots.
+  let tour_option = trim(body.tour_option) || trim(body.slot_time) || null;
+  if (multiSlot) {
+    if (!tour_option) {
+      throw new ValidationError('slot_time: required — pick a departure time');
+    }
+    if (allowedSlots && !allowedSlots.includes(tour_option)) {
+      throw new ValidationError(
+        `slot_time: must be one of ${allowedSlots.join(', ')}`
+      );
+    }
+  }
 
   if (message && message.length > 4000) {
     throw new ValidationError('message: too long (max 4000 chars)');
