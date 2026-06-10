@@ -14,10 +14,19 @@ const TENANTS = {
     operatorFirstName: 'Simon',
     boat: 'Beneteau Swift Trawler 47',
 
+    // Postgres schema in the shared Supabase project (see
+    // feedback_isolated_tenant_supabase_from_day_one for the stage-aware
+    // isolation policy). Bandama lives in `public` since it predates the
+    // schema-isolation split.
+    schema: 'public',
+
     // Pricing in cents (always)
     charterPriceCents: 185000,   // €1,850.00 — full day charter
     depositAmountCents: 30000,   // €300.00 — = our commission
     currency: 'EUR',
+
+    // Pricing model — Bandama sells the whole boat for a fixed price.
+    pricingModel: 'flat_charter',
 
     // Policy
     cancellationWindowDays: 7,   // refund window before charter date
@@ -43,27 +52,47 @@ const TENANTS = {
   'adventure-cruises': {
     slug: 'adventure-cruises',
     name: 'Adventure Cruises',
-    operatorFirstName: null,    // TBD when operator content received
-    boat: 'TBC',
+    operatorFirstName: 'Tony',                    // Anthony Farrugia
+    boat: 'Albert V + Adventure 1 (40 seats each)',
 
-    charterPriceCents: 0,        // TBD
-    depositAmountCents: 0,       // TBD
+    // Lives in its own Postgres schema inside the shared Supabase project.
+    schema: 'adventure_cruises',
+
+    // Pricing — per-seat model, not flat-charter. The engine reads the
+    // pricingModel field to know which math to apply. Per-seat fields are
+    // the source of truth for AC; charterPriceCents/depositAmountCents are
+    // kept as 0 to make any "Bandama-style" math fail loudly if accidentally
+    // triggered for this tenant.
+    pricingModel: 'per_seat',
+    pricePerSeatCents: 4000,                       // €40.00 per seat
+    bookingFeePerSeatCents: 1000,                  // €10.00 per seat to BookItMalta
+    balancePerSeatCents: 3000,                     // €30.00 per seat collected on-boat by crew
+    charterPriceCents: 0,                          // unused — see pricingModel
+    depositAmountCents: 0,                         // unused — see pricingModel
     currency: 'EUR',
 
-    cancellationWindowDays: 7,
-    confirmationExpiryHours: 48,
-    waitlistOfferExpiryHours: 24,
+    // Departure capacity — 2 boats × 40 seats default.
+    defaultCapPerDeparture: 80,
+    fleetBoats: ['albert_v', 'adventure_1'],
+    departureSlots: ['09:30', '14:30'],
 
-    publicPagePath: '/charters/adventure-cruises',
+    // Policy
+    cancellationWindowDays: 1,                     // 24h cancellation
+    confirmationExpiryHours: 24,
+    waitlistOfferExpiryHours: 12,
+
+    // Routing
+    publicPagePath: '/adventure-cruises',
     confirmationAnchor: '#enquiry-confirmed',
 
-    stripeProductName: 'BookItMalta booking fee — Adventure Cruises',
-    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your date. The charter price is paid directly to Adventure Cruises on the day, as a separate transaction.',
+    // Stripe Payment Link config
+    stripeProductName: 'BookItMalta booking fee — Adventure Cruises day tour',
+    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your seats on a shared day tour to Comino, the Blue Lagoon and Gozo. The remaining balance (€30 per seat) is paid to the crew on the day, as a separate transaction.',
 
     emailFromName: 'Adventure Cruises (via BookItMalta)',
-    emailReplyTo: null,
+    emailReplyTo: null,                            // resolved from ADVENTURE_CRUISES_OPERATOR_EMAIL
 
-    // Has multiple tours per day → set to true when we wire calendar
+    // Multiple slots per day — calendar is (date × slot)
     schedulingModel: 'multi_slot_per_day',
   },
 };

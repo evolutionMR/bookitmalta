@@ -8,12 +8,15 @@
   },
   "redirects": [
     { "source": "/charters", "destination": "/", "permanent": true },
-    { "source": "/charters/", "destination": "/", "permanent": true }
+    { "source": "/charters/", "destination": "/", "permanent": true },
+    { "source": "/charters/adventure-cruises", "destination": "/adventure-cruises", "permanent": true },
+    { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true }
   ],
   "rewrites": [
     { "source": "/captain/:path*", "destination": "/api/captain" },
     { "source": "/for-operators", "destination": "/for-operators.html" },
-    { "source": "/demo", "destination": "/demo.html" }
+    { "source": "/demo", "destination": "/demo.html" },
+    { "source": "/adventure-cruises", "destination": "/adventure-cruises.html" }
   ],
   "headers": [
     {

@@ -26,55 +26,151 @@ function getStripe(tenantSlug) {
 }
 
 /**
- * Create a Stripe Payment Link for an enquiry deposit.
+ * Compute the booking-fee math for an enquiry. Returns the Stripe line-item
+ * shape (unit_amount + quantity) plus a human-readable amount summary for
+ * the Payment Link product description.
+ *
+ * Two pricing models supported:
+ *   • 'flat_charter' (Bandama-style) — fixed deposit per booking, quantity 1
+ *   • 'per_seat' (Adventure Cruises-style) — per-seat fee × party_size
+ *
+ * Throws if the tenant's pricingModel is missing or unknown — money math
+ * should fail loudly rather than silently default to a wrong value.
+ */
+function computeBookingFee(tenantConfig, partySize) {
+  const model = tenantConfig.pricingModel;
+  if (!model) {
+    throw new Error(
+      `Tenant "${tenantConfig.slug}" is missing pricingModel. ` +
+      `Add 'flat_charter' or 'per_seat' to config/tenants.js.`
+    );
+  }
+
+  if (model === 'flat_charter') {
+    const unitAmount = tenantConfig.depositAmountCents;
+    if (!unitAmount || unitAmount <= 0) {
+      throw new Error(
+        `Tenant "${tenantConfig.slug}" pricingModel=flat_charter but ` +
+        `depositAmountCents is ${unitAmount}`
+      );
+    }
+    return {
+      unitAmountCents: unitAmount,
+      quantity:        1,
+      totalCents:      unitAmount,
+      summary: formatMoney(unitAmount, tenantConfig.currency)
+        + ' booking fee',
+    };
+  }
+
+  if (model === 'per_seat') {
+    const perSeat = tenantConfig.bookingFeePerSeatCents;
+    if (!perSeat || perSeat <= 0) {
+      throw new Error(
+        `Tenant "${tenantConfig.slug}" pricingModel=per_seat but ` +
+        `bookingFeePerSeatCents is ${perSeat}`
+      );
+    }
+    const seats = Number.isInteger(partySize) && partySize > 0
+      ? partySize
+      : null;
+    if (!seats) {
+      throw new Error(
+        `per_seat pricing requires a positive integer partySize, got ${partySize}`
+      );
+    }
+    const total = perSeat * seats;
+    return {
+      unitAmountCents: perSeat,
+      quantity:        seats,
+      totalCents:      total,
+      summary: `${seats} × ${formatMoney(perSeat, tenantConfig.currency)}`
+        + ` = ${formatMoney(total, tenantConfig.currency)} booking fee`,
+    };
+  }
+
+  throw new Error(
+    `Unknown pricingModel "${model}" for tenant "${tenantConfig.slug}"`
+  );
+}
+
+/**
+ * Render a cents-int as a localised money string (e.g. 4000 EUR → "€40.00").
+ * Minimal — only handles EUR/USD/GBP currency symbols. Anything else falls
+ * back to the ISO code.
+ */
+function formatMoney(cents, currency) {
+  const amount = (cents / 100).toFixed(2);
+  switch (String(currency || '').toUpperCase()) {
+    case 'EUR': return `€${amount}`;
+    case 'USD': return `$${amount}`;
+    case 'GBP': return `£${amount}`;
+    default:    return `${amount} ${currency}`;
+  }
+}
+
+/**
+ * Create a Stripe Payment Link for an enquiry deposit / booking fee.
  *
  * @param {Object} args
  * @param {string} args.tenantSlug
  * @param {Object} args.tenantConfig — from config/tenants.js
  * @param {Object} args.enquiry — row from `enquiries` table
  * @param {string} args.successUrl — where Stripe redirects after payment
- * @returns {Promise<{id: string, url: string, expiresAt: Date}>}
+ * @returns {Promise<{id: string, url: string, expiresAt: Date, totalCents: number}>}
  */
 async function createDepositPaymentLink({ tenantSlug, tenantConfig, enquiry, successUrl }) {
   const stripe = getStripe(tenantSlug);
 
-  // 1. Create the Product (idempotent via tenant slug — reuse if exists)
-  //    Simpler: create on the fly each time. Cheap.
+  // 1. Resolve the per-tenant pricing math (flat charter or per seat).
+  //    This throws if config is malformed — better than a silent wrong amount.
+  const fee = computeBookingFee(tenantConfig, enquiry.party_size);
+
+  // 2. Build a product description that includes the seat-math for per_seat
+  //    tenants. Customers see "4 × €10 = €40 booking fee" in Stripe checkout.
+  const description = tenantConfig.pricingModel === 'per_seat'
+    ? `${tenantConfig.stripeProductDescription} — ${fee.summary}`
+    : tenantConfig.stripeProductDescription;
+
+  // 3. Create the Product (created fresh each enquiry — cheap, no idempotency
+  //    needed because customers see only the latest link).
   const product = await stripe.products.create({
     name: tenantConfig.stripeProductName,
-    description: tenantConfig.stripeProductDescription,
+    description,
     metadata: {
-      tenant: tenantSlug,
-      product_type: 'charter_deposit',
+      tenant:        tenantSlug,
+      product_type:  'charter_deposit',
+      pricing_model: tenantConfig.pricingModel,
+      party_size:    String(enquiry.party_size),
     },
   });
 
-  // 2. Create the Price (one-off, deposit amount)
+  // 4. Create the Price — unit_amount × quantity = total. Stripe shows the
+  //    customer the multiplication inline at checkout.
   const price = await stripe.prices.create({
     product:     product.id,
     currency:    tenantConfig.currency.toLowerCase(),
-    unit_amount: tenantConfig.depositAmountCents,
+    unit_amount: fee.unitAmountCents,
   });
 
-  // 3. Create the Payment Link
+  // 5. Create the Payment Link.
   const link = await stripe.paymentLinks.create({
-    line_items: [{ price: price.id, quantity: 1 }],
+    line_items: [{ price: price.id, quantity: fee.quantity }],
     after_completion: {
       type: 'redirect',
       redirect: { url: successUrl },
     },
     metadata: {
-      tenant:     tenantSlug,
-      enquiry_id: enquiry.id,
-      customer_email: enquiry.customer_email,
-      charter_date:   enquiry.preferred_date,
-      party_size:     String(enquiry.party_size),
+      tenant:           tenantSlug,
+      enquiry_id:       enquiry.id,
+      customer_email:   enquiry.customer_email,
+      charter_date:     enquiry.preferred_date,
+      party_size:       String(enquiry.party_size),
+      pricing_model:    tenantConfig.pricingModel,
+      unit_amount_cents: String(fee.unitAmountCents),
+      total_cents:      String(fee.totalCents),
     },
-    // Pre-fill customer email — Stripe doesn't allow direct email in
-    // payment_links, but we can set restrictions and prefilled_customer
-    // via the customer_creation flag.
     customer_creation: 'always',
-    // Don't allow promotion codes — we're not running promos
     allow_promotion_codes: false,
   });
 
@@ -85,9 +181,10 @@ async function createDepositPaymentLink({ tenantSlug, tenantConfig, enquiry, suc
   );
 
   return {
-    id:        link.id,
-    url:       link.url,
+    id:         link.id,
+    url:        link.url,
     expiresAt,
+    totalCents: fee.totalCents,
   };
 }
 
@@ -118,4 +215,6 @@ module.exports = {
   createDepositPaymentLink,
   deactivatePaymentLink,
   verifyWebhook,
+  computeBookingFee,   // exported for unit tests + captain.js display
+  formatMoney,
 };

@@ -15,6 +15,7 @@
 const { resolveTenant } = require('./_lib/tenant.js');
 const { getSupabase } = require('./_lib/supabase.js');
 const { validateEnquiry, ValidationError } = require('./_lib/validation.js');
+const { computeBookingFee } = require('./_lib/stripe.js');
 const {
   sendEmail,
   captainEnquiryEmail,
@@ -51,10 +52,10 @@ module.exports = async function handler(req, res) {
     try { body = JSON.parse(body); } catch { /* leave as-is */ }
   }
 
-  // Validate
+  // Validate against tenant-specific rules (party_size cap, slot list, etc.)
   let input;
   try {
-    input = validateEnquiry(body);
+    input = validateEnquiry(body, config);
   } catch (e) {
     if (e instanceof ValidationError) {
       return res.status(400).json({ error: e.message });
@@ -89,13 +90,22 @@ module.exports = async function handler(req, res) {
 async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, res }) {
   const audit = auditFields(req);
 
+  // Compute the pricing snapshot for this enquiry. Bandama → flat charter
+  // values from config. AC → party_size × per-seat fees from stripe.js.
+  // computeBookingFee throws if the tenant config is malformed; we'd rather
+  // fail loudly than silently insert wrong numbers.
+  const fee = computeBookingFee(config, input.party_size);
+  const charterTotalCents = config.pricingModel === 'per_seat'
+    ? (config.pricePerSeatCents || 0) * input.party_size
+    : config.charterPriceCents;
+
   // 1. Insert enquiry
   const { data: enquiry, error: insertErr } = await supabase
     .from('enquiries')
     .insert({
       ...input,
-      charter_price_cents:  config.charterPriceCents,
-      deposit_amount_cents: config.depositAmountCents,
+      charter_price_cents:  charterTotalCents,
+      deposit_amount_cents: fee.totalCents,
       currency:             config.currency,
       source:               'web',
       user_agent:           audit.user_agent,
@@ -158,14 +168,20 @@ async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, r
 async function routeToWaitlist({ supabase, tenant, config, input, baseUrl, req, res }) {
   const audit = auditFields(req);
 
+  // Pricing snapshot — same as the enquiry path (per-seat math for AC).
+  const fee = computeBookingFee(config, input.party_size);
+  const charterTotalCents = config.pricingModel === 'per_seat'
+    ? (config.pricePerSeatCents || 0) * input.party_size
+    : config.charterPriceCents;
+
   // We still create an enquiry row to keep the history clean — but mark its
   // status so it doesn't sit in the captain's "received" queue.
   const { data: enquiry, error: enqErr } = await supabase
     .from('enquiries')
     .insert({
       ...input,
-      charter_price_cents:  config.charterPriceCents,
-      deposit_amount_cents: config.depositAmountCents,
+      charter_price_cents:  charterTotalCents,
+      deposit_amount_cents: fee.totalCents,
       currency:             config.currency,
       status:               'cancelled',  // implicit: superseded by waitlist
       source:               'web',
