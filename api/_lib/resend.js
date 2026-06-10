@@ -35,11 +35,76 @@ function fmtDate(isoDate) {
   }
 }
 
+/**
+ * Resolve the per-enquiry pricing for use in email templates.
+ *
+ * Two pricing models supported (mirrors api/_lib/stripe.js → computeBookingFee
+ * but kept inline here so resend.js doesn't pull in the Stripe SDK):
+ *
+ *   • 'flat_charter' (Bandama)      — booking fee + balance read from config
+ *   • 'per_seat'     (Adv. Cruises) — multiply per-seat values by party_size
+ *
+ * Returns:
+ *   bookingFeeCents  — what BookItMalta collects online (the "deposit")
+ *   balanceCents     — what the captain collects on the day
+ *   charterTotalCents — total the customer pays (bookingFee + balance)
+ *
+ * Defaults to flat_charter math if pricingModel is missing, to preserve the
+ * previous behaviour for any tenant that hasn't migrated.
+ */
+function getEnquiryPricing(tenantConfig, partySize) {
+  const seats = Number.isInteger(partySize) && partySize > 0 ? partySize : 1;
+
+  if (tenantConfig.pricingModel === 'per_seat') {
+    const perSeat        = tenantConfig.pricePerSeatCents      || 0;
+    const feePerSeat     = tenantConfig.bookingFeePerSeatCents || 0;
+    const balancePerSeat = tenantConfig.balancePerSeatCents
+      ?? (perSeat - feePerSeat);
+    return {
+      bookingFeeCents:   feePerSeat * seats,
+      balanceCents:      balancePerSeat * seats,
+      charterTotalCents: perSeat * seats,
+    };
+  }
+
+  // flat_charter — Bandama-style. charterPriceCents is the total customer
+  // pays for the charter; depositAmountCents is BookItMalta's slice; balance
+  // is the difference.
+  const bookingFee   = tenantConfig.depositAmountCents || 0;
+  const charterTotal = tenantConfig.charterPriceCents  || 0;
+  return {
+    bookingFeeCents:   bookingFee,
+    balanceCents:      Math.max(0, charterTotal - bookingFee),
+    charterTotalCents: charterTotal,
+  };
+}
+
+/**
+ * Build the standard cancellation-policy paragraph with dynamic processing-
+ * fee figures. Previously hardcoded "€5.95 on a €300 fee" — fine for Bandama
+ * but nonsense for AC's €20 booking fee.
+ *
+ * Returns a single text paragraph ready to drop into a template.
+ */
+function cancellationParagraph(tenantConfig, bookingFeeCents) {
+  const processingFeeCents = Math.round(bookingFeeCents * 0.02);
+  return (
+    `Cancellation: if you cancel ${tenantConfig.cancellationWindowDays} or `
+    + `more days before the charter, we refund the booking fee less a ~2% `
+    + `payment processing fee retained by our payment provider `
+    + `(approximately ${fmtEUR(processingFeeCents)} on a `
+    + `${fmtEUR(bookingFeeCents)} fee). Within `
+    + `${tenantConfig.cancellationWindowDays} days of the charter, the `
+    + `booking fee is forfeit. Full terms at bookitmalta.com/terms.html.`
+  );
+}
+
 // =============================================================================
 // CAPTAIN: new enquiry notification (with confirm/decline magic links)
 // =============================================================================
 function captainEnquiryEmail({ tenantConfig, enquiry, baseUrl }) {
   const reviewUrl = `${baseUrl}/api/captain?token=${enquiry.captain_token}&tenant=${tenantConfig.slug}`;
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
 
   const subject = `[${tenantConfig.name}] New enquiry — ${fmtDate(enquiry.preferred_date)} — ${enquiry.party_size} guests`;
 
@@ -72,8 +137,8 @@ above just shows you the details.
 ────────────────────────────────────────
 
 If you confirm, the customer receives an automated email with a secure
-payment link for the ${fmtEUR(tenantConfig.depositAmountCents)} BookItMalta booking fee. The booking is locked
-the moment they pay. Charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with you on
+payment link for the ${fmtEUR(pricing.bookingFeeCents)} BookItMalta booking fee. The booking is locked
+the moment they pay. The balance of ${fmtEUR(pricing.balanceCents)} is settled directly with you on
 the day.
 
 BookItMalta · bookitmalta.com
@@ -87,6 +152,7 @@ BookItMalta · bookitmalta.com
 // =============================================================================
 function customerEnquiryAckEmail({ tenantConfig, enquiry }) {
   const subject = `We've received your enquiry — ${tenantConfig.name}`;
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
@@ -99,11 +165,11 @@ Your enquiry:
 
 What happens next
   1. Captain reviews and confirms availability (within 24h).
-  2. You receive a secure payment link for the ${fmtEUR(tenantConfig.depositAmountCents)} BookItMalta booking fee.
+  2. You receive a secure payment link for the ${fmtEUR(pricing.bookingFeeCents)} BookItMalta booking fee.
   3. The moment payment lands, the date is locked.
-  4. The charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day.
+  4. The balance of ${fmtEUR(pricing.balanceCents)} is settled directly with the captain on the day.
 
-Cancellation: if you cancel ${tenantConfig.cancellationWindowDays} or more days before the charter, we refund the booking fee less a ~2% payment processing fee retained by our payment provider (approximately €5.95 on a €300 fee). Within ${tenantConfig.cancellationWindowDays} days of the charter, the booking fee is forfeit. Full terms at bookitmalta.com/terms.html.
+${cancellationParagraph(tenantConfig, pricing.bookingFeeCents)}
 
 If you need to reach us in the meantime, just reply to this email.
 
@@ -118,22 +184,23 @@ via BookItMalta · bookitmalta.com
 // =============================================================================
 function customerDepositLinkEmail({ tenantConfig, enquiry, paymentUrl }) {
   const subject = `Confirmed — pay your booking fee to lock in ${fmtDate(enquiry.preferred_date)}`;
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
 Good news — ${tenantConfig.operatorFirstName || tenantConfig.name} has confirmed availability for ${fmtDate(enquiry.preferred_date)}.
 
-Pay your ${fmtEUR(tenantConfig.depositAmountCents)} BookItMalta booking fee here to lock the date:
+Pay your ${fmtEUR(pricing.bookingFeeCents)} BookItMalta booking fee here to lock the date:
 
 ${paymentUrl}
 
 The link is valid for ${tenantConfig.confirmationExpiryHours} hours. Once payment lands, you'll receive a final confirmation by email.
 
-The charter price of ${fmtEUR(tenantConfig.charterPriceCents - tenantConfig.depositAmountCents)} is settled directly with the captain on the day of the charter, as a separate transaction.
+The balance of ${fmtEUR(pricing.balanceCents)} is settled directly with the captain on the day of the charter, as a separate transaction.
 
-What you're paying for: the ${fmtEUR(tenantConfig.depositAmountCents)} is a booking fee charged by BookItMalta to secure your date. The charter itself is supplied by ${tenantConfig.name}. BookItMalta is registered as a small undertaking under Article 11 of the Malta VAT Act — no VAT chargeable on the booking fee.
+What you're paying for: the ${fmtEUR(pricing.bookingFeeCents)} is a booking fee charged by BookItMalta to secure your date. The charter itself is supplied by ${tenantConfig.name}. BookItMalta is registered as a small undertaking under Article 11 of the Malta VAT Act — no VAT chargeable on the booking fee.
 
-Cancellation policy: if you cancel ${tenantConfig.cancellationWindowDays} or more days before the charter, the booking fee is refunded less a ~2% payment processing fee retained by our payment provider (approximately €5.95 on a €300 fee). Within ${tenantConfig.cancellationWindowDays} days of the charter, the booking fee is forfeit. Full terms at bookitmalta.com/terms.html.
+${cancellationParagraph(tenantConfig, pricing.bookingFeeCents).replace(/^Cancellation:/, 'Cancellation policy:')}
 
 Looking forward to having you aboard.
 
@@ -168,7 +235,7 @@ The charter itself (${fmtEUR(booking.balance_due_cents)}) is supplied by ${tenan
 
 ${tenantConfig.operatorFirstName || tenantConfig.name} will be in touch shortly with meeting point details and a final pre-charter briefing.
 
-Cancellation policy: if you cancel ${tenantConfig.cancellationWindowDays} or more days before the charter date, the booking fee is refunded less a ~2% payment processing fee retained by our payment provider (approximately €5.95 on a €300 fee). Within ${tenantConfig.cancellationWindowDays} days of the charter, the booking fee is forfeit. Full terms at bookitmalta.com/terms.html.
+${cancellationParagraph(tenantConfig, booking.deposit_paid_cents).replace(/^Cancellation:/, 'Cancellation policy:')}
 
 Looking forward to your day on the water.
 
@@ -265,11 +332,12 @@ via BookItMalta · bookitmalta.com
 // =============================================================================
 function captainActionConfirmedEmail({ tenantConfig, enquiry, action }) {
   const subject = `[${tenantConfig.name}] ${action.toUpperCase()} recorded — ${enquiry.customer_name}`;
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
   const text = `
 You ${action === 'confirm' ? 'confirmed' : 'declined'} the enquiry from ${enquiry.customer_name} for ${fmtDate(enquiry.preferred_date)}.
 
 ${action === 'confirm'
-  ? `An automated email with a secure payment link for the ${fmtEUR(tenantConfig.depositAmountCents)} booking fee has been sent to ${enquiry.customer_email}. You'll receive a "BOOKED" notification the moment they pay.`
+  ? `An automated email with a secure payment link for the ${fmtEUR(pricing.bookingFeeCents)} booking fee has been sent to ${enquiry.customer_email}. You'll receive a "BOOKED" notification the moment they pay.`
   : `The customer has been notified that the date isn't available.`}
 
 BookItMalta · bookitmalta.com
