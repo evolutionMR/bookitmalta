@@ -81,7 +81,20 @@ module.exports = async function handler(req, res) {
 // =============================================================================
 async function doConfirm({ supabase, tenant, config, enquiry, note, res }) {
   const baseUrl = getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
-  const successUrl = `${baseUrl}${config.publicPagePath}#payment-received`;
+  // Point Stripe at the dedicated post-payment confirmation page so the
+  // customer sees a celebratory "✓ Confirmed" screen with Add-to-Calendar
+  // buttons immediately after paying, instead of landing back on the
+  // operator page with no visible confirmation. All booking data is passed
+  // in query params so the page can render without a DB lookup (and so the
+  // URL is shareable/refreshable across the customer's devices).
+  const successParams = new URLSearchParams({
+    tenant,
+    code:  String(enquiry.id || '').replace(/-/g, '').slice(0, 8).toUpperCase(),
+    date:  enquiry.preferred_date || '',
+    slot:  enquiry.tour_option || '',
+    party: String(enquiry.party_size || 1),
+  });
+  const successUrl = `${baseUrl}/booking-confirmed?${successParams.toString()}`;
 
   let paymentLink;
   try {

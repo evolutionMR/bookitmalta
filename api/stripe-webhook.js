@@ -326,6 +326,7 @@ async function markEnquiryPaid({ tenant, config, enquiryId, paymentIntentId, pay
       to: booking.customer_email,
       subject: msg.subject,
       text: msg.text,
+      attachments: msg.attachments,   // booking.ics for Add-to-Calendar
     });
   } catch (e) {
     console.error('[stripe-webhook] customer confirm email failed:', e);

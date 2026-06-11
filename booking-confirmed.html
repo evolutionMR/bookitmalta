@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+
+<title>Booking confirmed — BookItMalta</title>
+<meta name="description" content="Your booking is locked in. Add it to your calendar — Google, Outlook, or Apple." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..700&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --ink: #0B2545;
+  --ink-soft: #1C3558;
+  --paper: #F4EBD9;
+  --paper-deep: #EBDFC6;
+  --terracotta: #C85C2E;
+  --terracotta-deep: #A64620;
+  --sea: #3D6B6F;
+  --ok: #1B4332;
+  --ok-soft: #95D5B2;
+  --ok-bg: #D8F3DC;
+  --mute: rgba(11, 37, 69, 0.55);
+  --rule: rgba(11, 37, 69, 0.15);
+  --rule-strong: rgba(11, 37, 69, 0.35);
+  --serif: "Fraunces", Georgia, serif;
+  --sans:  "Manrope", -apple-system, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(11,37,69,0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  background: #FFFAF1;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  max-width: 540px;
+  width: 100%;
+  padding: 2.4rem 2rem 2rem;
+  box-shadow: 0 24px 80px rgba(11, 37, 69, 0.12);
+  text-align: center;
+}
+
+.check {
+  width: 64px; height: 64px;
+  margin: 0 auto 1.2rem;
+  border-radius: 50%;
+  background: var(--ok-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: var(--ok); font-weight: 700;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 0.6rem;
+}
+
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 360;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.6rem;
+}
+h1 em { font-style: italic; color: var(--terracotta); }
+
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  margin-bottom: 1.6rem;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  margin: 1.6rem 0 2rem;
+  text-align: left;
+}
+.details .label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.details .value {
+  font-size: 0.95rem;
+  color: var(--ink);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+.details .row {
+  display: flex;
+  flex-direction: column;
+}
+
+.code-row {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--rule);
+  margin-top: 0.4rem;
+}
+.code-row .value {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  background: white;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule-strong);
+  margin-top: 0.3rem;
+}
+
+.cta-section {
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+.cta-section .cta-label {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 0.8rem;
+}
+
+.cal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.cal-btn {
+  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.85rem 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cal-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+.cal-btn .icon {
+  font-size: 1.1rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+}
+
+.footer {
+  margin-top: 1.6rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.footer a {
+  color: var(--terracotta);
+  text-decoration: none;
+  font-weight: 500;
+}
+.footer a:hover { text-decoration: underline; }
+
+@media (max-width: 480px) {
+  .details { grid-template-columns: 1fr; gap: 0.8rem; }
+  .card { padding: 1.8rem 1.4rem 1.6rem; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="check" aria-hidden="true">✓</div>
+  <div class="eyebrow">Booking confirmed</div>
+  <h1 id="title">Your booking is <em>locked in</em>.</h1>
+  <p class="subtitle">A confirmation email is on its way — including a calendar attachment for any other app.</p>
+
+  <div class="details">
+    <div class="row">
+      <span class="label">Operator</span>
+      <span class="value" id="d-operator">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Date</span>
+      <span class="value" id="d-date">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Time</span>
+      <span class="value" id="d-time">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Party size</span>
+      <span class="value" id="d-party">—</span>
+    </div>
+    <div class="row code-row">
+      <span class="label">Booking code</span>
+      <span class="value" id="d-code">—</span>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="cta-label">Add to your calendar</div>
+    <div class="cal-buttons">
+      <a class="cal-btn" id="btn-google" href="#" target="_blank" rel="noopener">
+        <span class="icon">📅</span> Add to Google Calendar
+      </a>
+      <a class="cal-btn" id="btn-outlook" href="#" target="_blank" rel="noopener">
+        <span class="icon">📅</span> Add to Outlook
+      </a>
+      <a class="cal-btn" id="btn-apple" href="#" download="booking.ics">
+        <span class="icon">📅</span> Apple Calendar (.ics file)
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">
+    Questions? Reply to the confirmation email — it lands straight in your operator's inbox.
+    <br><br>
+    <a href="/">Back to BookItMalta</a>
+  </div>
+</div>
+
+<script>
+// =============================================================================
+// /booking-confirmed — post-Stripe-payment celebration screen.
+//
+// All data comes from the URL (?tenant=…&code=…&date=…&slot=…&party=…) so
+// this page is fully static + cacheable. The page also generates Google /
+// Outlook / .ics URLs in the browser using a tiny inline copy of the
+// calendar.js logic, so customers get one-tap calendar-add without any
+// server round-trip.
+// =============================================================================
+
+// Tenant catalogue — kept inline + small so we don't need an API call.
+// Source of truth lives in config/tenants.js — keep these in sync when adding
+// new tenants. (If this list ever exceeds ~5 tenants, switch to an API call.)
+const TENANTS = {
+  'bandama': {
+    name: 'Bandama Yacht Charters',
+    boat: 'Beneteau Swift Trawler 47',
+    calendarTitle: 'Bandama — Private Day Charter',
+    location: "Ta' Xbiex Creek Marina, Ta' Xbiex, Malta",
+    durationHours: 8,
+    defaultStartTime: '09:00',
+  },
+  'adventure-cruises': {
+    name: 'Adventure Cruises',
+    boat: 'Albert V + Adventure 1',
+    calendarTitle: 'Adventure Cruises — Day Tour to Comino',
+    location: 'Sliema Ferries, Sliema, Malta',
+    durationHours: 5,
+    defaultStartTime: null, // start time comes from booking slot
+  },
+};
+
+// Parse URL params.
+const params = new URLSearchParams(window.location.search);
+const tenantSlug = params.get('tenant') || 'bandama';
+const code   = (params.get('code')  || 'PENDING').toUpperCase();
+const dateIso = params.get('date')  || '';
+const slot   = params.get('slot')  || '';
+const party  = parseInt(params.get('party') || '1', 10) || 1;
+
+const tenant = TENANTS[tenantSlug] || TENANTS['bandama'];
+
+// Resolve start time.
+function resolveStartTime() {
+  if (/^\d{2}:\d{2}$/.test(slot)) return slot;
+  if (tenant.defaultStartTime)    return tenant.defaultStartTime;
+  return '09:00';
+}
+
+function addHours(hhmm, hours) {
+  const [h, m] = hhmm.split(':').map(n => parseInt(n, 10));
+  const totalMin = h * 60 + m + Math.round(hours * 60);
+  const endH = Math.min(23, Math.floor(totalMin / 60));
+  const endM = totalMin % 60;
+  return String(endH).padStart(2,'0') + ':' + String(endM).padStart(2,'0');
+}
+
+function lastSunday(year, monthOneBased) {
+  const lastDay = new Date(Date.UTC(year, monthOneBased, 0)).getUTCDate();
+  for (let d = lastDay; d >= 1; d--) {
+    if (new Date(Date.UTC(year, monthOneBased - 1, d)).getUTCDay() === 0) return d;
+  }
+  return 1;
+}
+
+function maltaLocalToUtc(iso, hhmm) {
+  const [Y, M, D] = iso.split('-').map(n => parseInt(n, 10));
+  const [h, m]    = hhmm.split(':').map(n => parseInt(n, 10));
+  const guess  = Date.UTC(Y, M - 1, D, h, m);
+  const dstS   = Date.UTC(Y, 2, lastSunday(Y, 3), 1);
+  const dstE   = Date.UTC(Y, 9, lastSunday(Y, 10), 1);
+  const inDst  = guess >= dstS && guess < dstE;
+  const offsetMin = inDst ? 120 : 60;
+  return new Date(guess - offsetMin * 60 * 1000);
+}
+
+function fmtUtcZ(d) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return d.getUTCFullYear()
+       + pad(d.getUTCMonth() + 1)
+       + pad(d.getUTCDate())
+       + 'T'
+       + pad(d.getUTCHours())
+       + pad(d.getUTCMinutes())
+       + pad(d.getUTCSeconds())
+       + 'Z';
+}
+
+function fmtIso(d) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return d.getUTCFullYear() + '-'
+       + pad(d.getUTCMonth() + 1) + '-'
+       + pad(d.getUTCDate()) + 'T'
+       + pad(d.getUTCHours()) + ':'
+       + pad(d.getUTCMinutes()) + ':'
+       + pad(d.getUTCSeconds()) + 'Z';
+}
+
+function icsEscape(s) {
+  return String(s)
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/,/g, '\\,')
+    .replace(/\r?\n/g, '\\n');
+}
+
+function buildEventDescription() {
+  return [
+    'Booking confirmed.',
+    '',
+    'Booking code: ' + code,
+    'Party size:   ' + party,
+    'Operator:     ' + tenant.name,
+    '',
+    'Meeting point: ' + tenant.location + '.',
+    '',
+    'The operator will be in touch with the final pre-charter briefing.',
+    '',
+    'Managed by BookItMalta — bookitmalta.com',
+  ].join('\n');
+}
+
+function buildGoogleUrl(startUtc, endUtc) {
+  const p = new URLSearchParams({
+    action: 'TEMPLATE',
+    text:   tenant.calendarTitle,
+    dates:  fmtUtcZ(startUtc) + '/' + fmtUtcZ(endUtc),
+    details: buildEventDescription(),
+    location: tenant.location,
+    ctz:    'Europe/Malta',
+  });
+  return 'https://calendar.google.com/calendar/render?' + p.toString();
+}
+
+function buildOutlookUrl(startUtc, endUtc) {
+  const p = new URLSearchParams({
+    path:    '/calendar/action/compose',
+    rru:     'addevent',
+    subject: tenant.calendarTitle,
+    body:    buildEventDescription(),
+    startdt: fmtIso(startUtc),
+    enddt:   fmtIso(endUtc),
+    location: tenant.location,
+  });
+  return 'https://outlook.live.com/calendar/0/deeplink/compose?' + p.toString();
+}
+
+function buildIcs(startTime, endTime) {
+  const dCompact = dateIso.replace(/-/g, '');
+  const startLocal = dCompact + 'T' + startTime.replace(':','') + '00';
+  const endLocal   = dCompact + 'T' + endTime.replace(':','')   + '00';
+  const dtstamp = fmtUtcZ(new Date());
+  const uid = code.toLowerCase() + '@bookitmalta.com';
+
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//BookItMalta//Bookings//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VTIMEZONE',
+    'TZID:Europe/Malta',
+    'BEGIN:STANDARD',
+    'DTSTART:19701025T030000',
+    'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+    'TZOFFSETFROM:+0200',
+    'TZOFFSETTO:+0100',
+    'TZNAME:CET',
+    'END:STANDARD',
+    'BEGIN:DAYLIGHT',
+    'DTSTART:19700329T020000',
+    'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+    'TZOFFSETFROM:+0100',
+    'TZOFFSETTO:+0200',
+    'TZNAME:CEST',
+    'END:DAYLIGHT',
+    'END:VTIMEZONE',
+    'BEGIN:VEVENT',
+    'UID:' + icsEscape(uid),
+    'DTSTAMP:' + dtstamp,
+    'DTSTART;TZID=Europe/Malta:' + startLocal,
+    'DTEND;TZID=Europe/Malta:'   + endLocal,
+    'SUMMARY:' + icsEscape(tenant.calendarTitle),
+    'DESCRIPTION:' + icsEscape(buildEventDescription()),
+    'LOCATION:' + icsEscape(tenant.location),
+    'ORGANIZER;CN=' + icsEscape(tenant.name) + ':mailto:noreply@bookitmalta.com',
+    'STATUS:CONFIRMED',
+    'TRANSP:OPAQUE',
+    'END:VEVENT',
+    'END:VCALENDAR',
+    '',
+  ].join('\r\n');
+}
+
+function fmtDateHuman(iso) {
+  if (!iso) return '—';
+  try {
+    return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    });
+  } catch { return iso; }
+}
+
+// Render the details + wire up the buttons.
+function render() {
+  const startTime = resolveStartTime();
+  const endTime   = addHours(startTime, tenant.durationHours);
+
+  document.getElementById('d-operator').textContent = tenant.name;
+  document.getElementById('d-date').textContent     = fmtDateHuman(dateIso);
+  document.getElementById('d-time').textContent     = dateIso
+    ? `${startTime} → ${endTime} (Malta time)`
+    : 'See email';
+  document.getElementById('d-party').textContent    = party === 1 ? '1 guest' : `${party} guests`;
+  document.getElementById('d-code').textContent     = code;
+
+  document.title = `Booking confirmed — ${fmtDateHuman(dateIso)}`;
+
+  if (!dateIso) {
+    // Edge case — no date in URL. Hide the calendar buttons gracefully.
+    document.querySelector('.cta-section').style.display = 'none';
+    return;
+  }
+
+  const startUtc = maltaLocalToUtc(dateIso, startTime);
+  const endUtc   = maltaLocalToUtc(dateIso, endTime);
+
+  document.getElementById('btn-google').href  = buildGoogleUrl(startUtc, endUtc);
+  document.getElementById('btn-outlook').href = buildOutlookUrl(startUtc, endUtc);
+
+  // Build .ics as a data URL — clicking the Apple button downloads booking.ics
+  // (or opens in iOS Calendar directly on iPhone).
+  const ics = buildIcs(startTime, endTime);
+  const dataUrl = 'data:text/calendar;charset=utf-8;base64,'
+                + btoa(unescape(encodeURIComponent(ics)));
+  document.getElementById('btn-apple').href = dataUrl;
+}
+
+render();
+</script>
+
+</body>
+</html>

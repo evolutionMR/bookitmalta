@@ -9,6 +9,11 @@
 
 const { Resend } = require('resend');
 const { getTenantEnv, getTenantEnvOptional } = require('./tenant.js');
+const {
+  buildIcsContent,
+  buildGoogleCalUrl,
+  buildOutlookUrl,
+} = require('./calendar.js');
 
 let resendClient = null;
 function getResend() {
@@ -214,7 +219,17 @@ via BookItMalta · bookitmalta.com
 // CUSTOMER: deposit paid → booking confirmed
 // =============================================================================
 function customerBookingConfirmedEmail({ tenantConfig, booking }) {
-  const subject = `Booking confirmed — ${fmtDate(booking.charter_date)} aboard ${tenantConfig.boat}`;
+  // Subject kept short — customers see this in their inbox preview line on
+  // mobile, where boat names like "Albert V + Adventure 1 (40 seats each)"
+  // got truncated and looked confusing. Date is the load-bearing info.
+  const subject = `Booking confirmed — ${fmtDate(booking.charter_date)}`;
+
+  // Build Add-to-Calendar links from shared calendar.js helpers. The full
+  // .ics is attached via sendEmail's attachments param — these URLs are the
+  // one-tap path for users on Google/Outlook web.
+  const googleUrl  = buildGoogleCalUrl(booking, tenantConfig);
+  const outlookUrl = buildOutlookUrl(booking, tenantConfig);
+
   const text = `
 Hi ${booking.customer_name.split(' ')[0] || 'there'},
 
@@ -224,6 +239,11 @@ Your booking is locked in.
   Party size:       ${booking.party_size}
   Booking fee paid: ${fmtEUR(booking.deposit_paid_cents)} (to BookItMalta)
   Charter price:    ${fmtEUR(booking.balance_due_cents)} (paid directly to captain on the day)
+
+Add to your calendar
+  Google Calendar:  ${googleUrl}
+  Outlook:          ${outlookUrl}
+  Apple / other:    open the attached booking.ics file
 
 Receipt — BookItMalta booking fee
   Amount:        ${fmtEUR(booking.deposit_paid_cents)}
@@ -242,7 +262,19 @@ Looking forward to your day on the water.
 ${tenantConfig.name}
 via BookItMalta · bookitmalta.com
 `;
-  return { subject, text };
+
+  // .ics attached as 'booking.ics' — Resend accepts base64 or raw string.
+  // Buffer-from-utf8 → base64 is the most reliable across SDK versions.
+  const icsContent = buildIcsContent(booking, tenantConfig);
+  const attachments = [
+    {
+      filename: 'booking.ics',
+      content: Buffer.from(icsContent, 'utf8').toString('base64'),
+      contentType: 'text/calendar; charset=utf-8; method=PUBLISH',
+    },
+  ];
+
+  return { subject, text, attachments };
 }
 
 // =============================================================================
@@ -348,7 +380,7 @@ BookItMalta · bookitmalta.com
 // =============================================================================
 // SEND wrapper
 // =============================================================================
-async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo }) {
+async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo, attachments }) {
   const resend = getResend();
   const from = getTenantEnvOptional(tenantSlug, 'RESEND_FROM', 'BookItMalta <noreply@bookitmalta.com>');
   const operatorEmail = getTenantEnvOptional(tenantSlug, 'OPERATOR_EMAIL', null);
@@ -374,6 +406,7 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo 
     text,
     replyTo: replyTo || operatorEmail || undefined,
     ...(bccAddress ? { bcc: bccAddress } : {}),
+    ...(Array.isArray(attachments) && attachments.length ? { attachments } : {}),
   });
 
   // Resend SDK v3+ returns errors in the response body rather than throwing.
