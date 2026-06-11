@@ -480,9 +480,14 @@ async function handleLogin(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  // Mint the login token + build the magic URL
+  // Mint the login token + build the magic URL.
+  // Derive baseUrl from the request's host so magic links route back to
+  // whatever deployment received the login (production OR vercel preview).
+  // Without this, preview testing breaks because previews issue links to
+  // production where the new B2.2 code doesn't exist yet. Host header is
+  // allowlisted to prevent injection: bookitmalta.com + *.vercel.app only.
   const token = issueLoginToken({ tenant, email: normalizedEmail });
-  const baseUrl = getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+  const baseUrl = deriveMagicLinkBaseUrl(req, tenant);
   const magicUrl = `${baseUrl}/api/captain?mode=auth&token=${encodeURIComponent(token)}&tenant=${encodeURIComponent(tenant)}`;
 
   try {
@@ -611,6 +616,33 @@ function ipHashFromReq(req) {
   } catch {
     return null;
   }
+}
+
+/**
+ * Derive the base URL the magic link should point to. Prefers the request's
+ * own host so production hits → production link, preview hits → preview link.
+ *
+ * Host-header injection guard: we only honor hosts on a small allowlist
+ * (bookitmalta.com + any *.vercel.app preview). Unknown hosts fall back to
+ * the tenant's PUBLIC_BASE_URL env var, then to production bookitmalta.com.
+ *
+ * This means: an attacker who manages to inject a malicious Host header
+ * still can't make the magic link point to attacker-controlled domains.
+ */
+function deriveMagicLinkBaseUrl(req, tenant) {
+  const h = req.headers || {};
+  const proto = String(h['x-forwarded-proto'] || 'https').split(',')[0].trim();
+  const host  = String(h['x-forwarded-host'] || h.host || '').split(',')[0].trim().toLowerCase();
+
+  const isAllowed =
+    host === 'bookitmalta.com' ||
+    host === 'www.bookitmalta.com' ||
+    /^[a-z0-9-]+\.vercel\.app$/.test(host);
+
+  if (isAllowed) return `${proto}://${host}`;
+
+  // Fallback paths — tenant env var, then hard default.
+  return getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
 }
 
 function hashEmail(email) {
