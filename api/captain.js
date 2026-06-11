@@ -654,9 +654,12 @@ async function handleDashboardData(req, res) {
   // Pull every confirmed/completed booking in the window in one query.
   // Filter to bookings that consume capacity ('booked'|'completed') — same
   // status set used by get_departure_availability.
+  // Note: bookings table does NOT have a 'source' column (it's on enquiries).
+  // If we need source on the dashboard later, JOIN bookings → enquiries
+  // by enquiry_id. For B2.3 we drop it.
   const { data: bookings, error: bookErr } = await supabase
     .from('bookings')
-    .select('id, customer_name, party_size, customer_email, customer_phone, charter_date, slot_time, tour_option, status, source, created_at')
+    .select('id, enquiry_id, customer_name, party_size, customer_email, customer_phone, charter_date, slot_time, tour_option, status, created_at')
     .gte('charter_date', startDate)
     .lte('charter_date', endDate)
     .in('status', ['booked', 'completed'])
@@ -739,7 +742,6 @@ async function handleDashboardData(req, res) {
           customer_email: b.customer_email,
           customer_phone: b.customer_phone,
           status:         b.status,
-          source:         b.source,
         })),
       });
     }
