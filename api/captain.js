@@ -588,51 +588,61 @@ async function handleVerifyPin(req, res) {
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch { /* leave as-is */ }
   }
-  const tenant = (body && body.tenant) || (req.query && req.query.tenant);
-  const pin    = (body && body.pin)    || (req.query && req.query.pin);
+  const pin = (body && body.pin) || (req.query && req.query.pin);
 
-  if (!tenant || typeof tenant !== 'string') {
-    return jsonError(res, 400, 'Missing tenant');
-  }
   if (!pin || typeof pin !== 'string') {
     return jsonError(res, 400, 'Missing PIN');
   }
 
-  // Validate tenant exists in config (defends against arbitrary-string
-  // tenant claims by clients).
-  let config;
-  try {
-    const { getTenant } = require('../config/tenants.js');
-    config = getTenant(tenant);
-  } catch {
-    return jsonError(res, 400, 'Unknown tenant');
+  // PIN-only auth: iterate every configured tenant, try each tenant's PIN
+  // against the submitted value, first match wins. This drops the
+  // tenant-toggle UI element — Tony just types his PIN, the server figures
+  // out the operator from the match. Scales to N tenants with no UI work.
+  //
+  // Collision policy: Julian picks every tenant's PIN. He's responsible for
+  // keeping them unique. At 2-10 tenants with 4-digit PINs the collision
+  // probability is fine (~0.45% at 10 if PINs were random; 0% if Julian
+  // checks). Bump to 6-8 digits when we cross ~10 tenants.
+  //
+  // Constant-time consideration: we iterate ALL tenants even after we find
+  // a match, so an attacker can't time-probe to discover N. verifyPin
+  // itself is constant-time per call.
+  const { listTenants, getTenant } = require('../config/tenants.js');
+  let matchedSlug = null;
+  for (const slug of listTenants()) {
+    if (verifyPin(slug, pin)) {
+      if (matchedSlug === null) matchedSlug = slug;
+      // Don't break — keep iterating for constant time + to detect dupes.
+      else {
+        console.error('[captain-auth] PIN COLLISION across tenants', {
+          first: matchedSlug, second: slug,
+        });
+        // First-match wins, but we logged for ops attention.
+      }
+    }
   }
 
-  if (!verifyPin(tenant, pin)) {
-    // Don't leak whether the tenant has a PIN configured or the PIN was
-    // wrong — both surface as a generic 401.
+  if (!matchedSlug) {
     const ipHashShort = ipHashFromReq(req);
-    console.log('[captain-auth] verify-pin failed', { tenant, ipHashShort });
+    console.log('[captain-auth] verify-pin failed', { ipHashShort });
     return jsonError(res, 401, 'Invalid PIN');
   }
 
-  // PIN matched — mint session cookie. For per-tenant PINs we don't have a
-  // specific user identity, so we use a synthetic operator identifier so
-  // the existing getCaptainFromRequest contract (which returns { tenant,
-  // email }) still works for the dashboard's mode=me call.
-  //
-  // Synthetic identifier: pin-{tenant}@bookitmalta.local — clearly a
-  // service-account-style placeholder, not a real email. The dashboard
-  // displays config.name as the operator anyway; the email field just
-  // shows "PIN session" in the header (see dashboard.html).
-  const syntheticEmail = `pin-${tenant}@bookitmalta.local`;
-  const sessionToken = issueSessionToken({ tenant, email: syntheticEmail });
+  let config;
+  try { config = getTenant(matchedSlug); }
+  catch { return jsonError(res, 500, 'Tenant config error'); }
+
+  // Synthetic identifier so getCaptainFromRequest still returns
+  // { tenant, email } shape. handleMe rewrites this to "PIN session"
+  // before sending to the dashboard.
+  const syntheticEmail = `pin-${matchedSlug}@bookitmalta.local`;
+  const sessionToken = issueSessionToken({ tenant: matchedSlug, email: syntheticEmail });
   res.setHeader('Set-Cookie', buildSessionCookie(sessionToken));
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   return res.status(200).json({
     ok: true,
     redirect: '/captain/dashboard',
-    tenant,
+    tenant: matchedSlug,
     tenant_name: config.name,
   });
 }

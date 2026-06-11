@@ -227,18 +227,11 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 <div class="card">
   <div class="eyebrow">Captain dashboard</div>
   <h1>Sign in</h1>
-  <p class="subtitle">Pick your operator, type your PIN.</p>
+  <p class="subtitle">Type your operator PIN.</p>
 
   <div id="notice"></div>
 
-  <!-- ---- Tenant toggle ---- -->
-  <label for="tenantToggle">Which operator?</label>
-  <div class="tenant-toggle" role="tablist" id="tenantToggle">
-    <button type="button" class="tenant-btn" data-slug="adventure-cruises" role="tab">Adventure Cruises</button>
-    <button type="button" class="tenant-btn" data-slug="bandama" role="tab">Bandama</button>
-  </div>
-
-  <!-- ---- PIN form (primary) ---- -->
+  <!-- ---- PIN form (primary, no tenant toggle — server identifies tenant from PIN match) ---- -->
   <form id="pinForm" novalidate>
     <label for="pin">PIN</label>
     <input
@@ -253,12 +246,19 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
     <button type="submit" class="submit" id="pinSubmitBtn">Sign in</button>
   </form>
 
-  <!-- ---- Magic-link fallback ---- -->
+  <!-- ---- Magic-link fallback (tenant toggle lives here, hidden until expanded) ---- -->
   <div class="fallback">
     <details id="fallbackDetails">
       <summary>Forgot your PIN? Sign in via email link</summary>
       <div class="fallback-body">
-        <p>We'll send a one-time sign-in link to your email. The link expires in 15 minutes and can only be used once.</p>
+        <p>We'll send a one-time sign-in link to your email. Pick your operator below — the link goes to the address on that operator's allowlist.</p>
+
+        <label for="tenantToggle">Which operator?</label>
+        <div class="tenant-toggle" role="tablist" id="tenantToggle">
+          <button type="button" class="tenant-btn" data-slug="adventure-cruises" role="tab">Adventure Cruises</button>
+          <button type="button" class="tenant-btn" data-slug="bandama" role="tab">Bandama</button>
+        </div>
+
         <form id="emailForm" novalidate>
           <label for="email">Email address (on operator allowlist)</label>
           <input type="email" id="email" name="email" autocomplete="email" placeholder="you@operator.com" />
@@ -269,7 +269,7 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
   </div>
 
   <div class="footer-tip">
-    Not sure of your PIN? Contact BookItMalta and we'll remind you securely. The PIN is per-operator and is the same for everyone with access.
+    Not sure of your PIN? Contact BookItMalta and we'll remind you securely.
   </div>
 </div>
 
@@ -278,21 +278,21 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 // /captain/login — PIN primary, magic-link fallback (B2.2.pin)
 // =============================================================================
 
-// ---- Tenant toggle (defaults to AC) ----
+// ---- Tenant toggle for magic-link fallback (defaults to AC; PIN flow
+//      doesn't use this — server identifies tenant from PIN match)
 let selectedTenant = 'adventure-cruises';
 const toggle = document.getElementById('tenantToggle');
-toggle.querySelectorAll('.tenant-btn').forEach((btn) => {
-  if (btn.dataset.slug === selectedTenant) btn.setAttribute('aria-selected', 'true');
-  btn.addEventListener('click', () => {
-    selectedTenant = btn.dataset.slug;
-    toggle.querySelectorAll('.tenant-btn').forEach((b) =>
-      b.setAttribute('aria-selected', b === btn ? 'true' : 'false')
-    );
-    // Clear any error notice when the user switches tenant — previous error
-    // might no longer apply.
-    document.getElementById('notice').innerHTML = '';
+if (toggle) {
+  toggle.querySelectorAll('.tenant-btn').forEach((btn) => {
+    if (btn.dataset.slug === selectedTenant) btn.setAttribute('aria-selected', 'true');
+    btn.addEventListener('click', () => {
+      selectedTenant = btn.dataset.slug;
+      toggle.querySelectorAll('.tenant-btn').forEach((b) =>
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false')
+      );
+    });
   });
-});
+}
 
 // ---- Error from URL (?error=expired / not_allowed / etc.) ----
 const params = new URLSearchParams(window.location.search);
@@ -321,11 +321,13 @@ document.getElementById('pinForm').addEventListener('submit', async (e) => {
   btn.textContent = 'Signing in…';
 
   try {
+    // PIN-only — no tenant in body. Server iterates configured tenants and
+    // identifies the operator from the first PIN match.
     const res = await fetch('/api/captain?mode=verify-pin', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tenant: selectedTenant, pin }),
+      body: JSON.stringify({ pin }),
     });
     if (res.ok) {
       let body = {};
