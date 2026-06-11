@@ -9,7 +9,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <style>
 :root {
@@ -30,20 +30,15 @@
   --sans:  "Manrope", -apple-system, sans-serif;
   --mono:  "JetBrains Mono", ui-monospace, monospace;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 17px;
   line-height: 1.55;
-  font-weight: 400;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 2rem 1rem;
   -webkit-font-smoothing: antialiased;
 }
@@ -55,19 +50,15 @@ body::before {
   pointer-events: none;
   z-index: 0;
 }
-
 .card {
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
   background: #FFFAF1;
   border: 1px solid var(--rule);
   border-radius: 14px;
-  max-width: 460px;
-  width: 100%;
+  max-width: 460px; width: 100%;
   padding: 2.4rem 2rem 2rem;
   box-shadow: 0 24px 80px rgba(11, 37, 69, 0.12);
 }
-
 .eyebrow {
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -76,32 +67,26 @@ body::before {
   color: var(--terracotta);
   margin-bottom: 0.6rem;
 }
-
 h1 {
   font-family: var(--serif);
-  font-size: 1.9rem;
-  font-weight: 380;
-  color: var(--ink);
-  line-height: 1.1;
+  font-size: 1.9rem; font-weight: 380;
+  color: var(--ink); line-height: 1.1;
   letter-spacing: -0.015em;
   margin-bottom: 0.6rem;
 }
-
 .subtitle {
   color: var(--ink-soft);
   font-size: 1rem;
   margin-bottom: 1.6rem;
 }
 
+/* ---- Tenant toggle ---- */
 .tenant-toggle {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 1.2rem;
+  display: flex; gap: 0.4rem;
+  margin-bottom: 1.4rem;
 }
 .tenant-btn {
-  flex: 1;
-  background: white;
-  color: var(--ink);
+  flex: 1; background: white; color: var(--ink);
   border: 1px solid var(--rule-strong);
   border-radius: 8px;
   padding: 0.7rem 1rem;
@@ -113,8 +98,7 @@ h1 {
   transition: all 0.15s ease;
 }
 .tenant-btn[aria-selected="true"] {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--ink); color: var(--paper);
   border-color: var(--ink);
 }
 
@@ -128,6 +112,30 @@ label {
   margin-bottom: 0.4rem;
 }
 
+/* ---- PIN input (numeric keypad on mobile) ---- */
+input.pin-input {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  letter-spacing: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+input.pin-input::placeholder {
+  color: var(--mute); letter-spacing: 0.3rem; font-weight: 400;
+}
+input.pin-input:focus {
+  outline: none;
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px rgba(200, 92, 46, 0.15);
+}
+
 input[type="email"] {
   width: 100%;
   background: var(--paper);
@@ -137,20 +145,17 @@ input[type="email"] {
   font-family: var(--sans);
   font-size: 1rem;
   color: var(--ink);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 input[type="email"]:focus {
-  outline: none;
-  border-color: var(--terracotta);
+  outline: none; border-color: var(--terracotta);
   box-shadow: 0 0 0 3px rgba(200, 92, 46, 0.15);
 }
 
 button.submit {
   width: 100%;
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
-  border-radius: 999px;
+  background: var(--ink); color: var(--paper);
+  border: none; border-radius: 999px;
   padding: 0.95rem;
   font-family: var(--mono);
   font-size: 0.82rem;
@@ -162,6 +167,33 @@ button.submit {
 button.submit:hover { background: var(--terracotta); transform: translateY(-1px); }
 button.submit:disabled { opacity: 0.5; cursor: wait; }
 
+/* ---- Magic-link fallback details/summary ---- */
+.fallback {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+}
+.fallback summary {
+  cursor: pointer; list-style: none;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--terracotta);
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.fallback summary::-webkit-details-marker { display: none; }
+.fallback summary::after { content: "↓"; font-size: 0.85em; margin-left: auto; transition: transform 0.15s ease; }
+.fallback details[open] summary::after { transform: rotate(180deg); }
+.fallback .fallback-body {
+  margin-top: 1rem;
+}
+.fallback p {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+}
+
+/* ---- Notices ---- */
 .notice {
   border-radius: 8px;
   padding: 0.85rem 1rem;
@@ -170,18 +202,16 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
   line-height: 1.5;
 }
 .notice.err {
-  background: var(--err-soft);
-  color: var(--err);
+  background: var(--err-soft); color: var(--err);
   border: 1px solid rgba(179, 38, 30, 0.25);
 }
 .notice.ok {
-  background: var(--ok-bg);
-  color: var(--ok);
+  background: var(--ok-bg); color: var(--ok);
   border: 1px solid rgba(27, 67, 50, 0.2);
 }
 .notice strong { font-weight: 600; }
 
-.footer {
+.footer-tip {
   margin-top: 1.5rem;
   padding-top: 1.2rem;
   border-top: 1px solid var(--rule);
@@ -189,8 +219,6 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
   color: var(--mute);
   line-height: 1.5;
 }
-.footer a { color: var(--terracotta); text-decoration: none; }
-.footer a:hover { text-decoration: underline; }
 </style>
 </head>
 
@@ -199,31 +227,59 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 <div class="card">
   <div class="eyebrow">Captain dashboard</div>
   <h1>Sign in</h1>
-  <p class="subtitle">Enter the email address on your operator account. We'll send a one-time sign-in link.</p>
+  <p class="subtitle">Pick your operator, type your PIN.</p>
 
   <div id="notice"></div>
 
-  <form id="loginForm" novalidate>
-    <label for="tenant-select">Which operator?</label>
-    <div class="tenant-toggle" role="tablist" id="tenantToggle">
-      <button type="button" class="tenant-btn" data-slug="adventure-cruises" role="tab">Adventure Cruises</button>
-      <button type="button" class="tenant-btn" data-slug="bandama" role="tab">Bandama</button>
-    </div>
+  <!-- ---- Tenant toggle ---- -->
+  <label for="tenantToggle">Which operator?</label>
+  <div class="tenant-toggle" role="tablist" id="tenantToggle">
+    <button type="button" class="tenant-btn" data-slug="adventure-cruises" role="tab">Adventure Cruises</button>
+    <button type="button" class="tenant-btn" data-slug="bandama" role="tab">Bandama</button>
+  </div>
 
-    <label for="email">Email address</label>
-    <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@operator.com" />
-
-    <button type="submit" class="submit" id="submitBtn">Send sign-in link</button>
+  <!-- ---- PIN form (primary) ---- -->
+  <form id="pinForm" novalidate>
+    <label for="pin">PIN</label>
+    <input
+      type="password" id="pin" name="pin"
+      class="pin-input"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      minlength="4" maxlength="8"
+      autocomplete="off"
+      placeholder="• • • •"
+      required />
+    <button type="submit" class="submit" id="pinSubmitBtn">Sign in</button>
   </form>
 
-  <div class="footer">
-    Not on your operator's allowlist? Reach out to BookItMalta and we'll add you. The link expires in 15 minutes and can only be used once.
+  <!-- ---- Magic-link fallback ---- -->
+  <div class="fallback">
+    <details id="fallbackDetails">
+      <summary>Forgot your PIN? Sign in via email link</summary>
+      <div class="fallback-body">
+        <p>We'll send a one-time sign-in link to your email. The link expires in 15 minutes and can only be used once.</p>
+        <form id="emailForm" novalidate>
+          <label for="email">Email address (on operator allowlist)</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@operator.com" />
+          <button type="submit" class="submit" id="emailSubmitBtn">Send sign-in link</button>
+        </form>
+      </div>
+    </details>
+  </div>
+
+  <div class="footer-tip">
+    Not sure of your PIN? Contact BookItMalta and we'll remind you securely. The PIN is per-operator and is the same for everyone with access.
   </div>
 </div>
 
 <script>
-// ---- tenant toggle ----
-let selectedTenant = 'adventure-cruises'; // default
+// =============================================================================
+// /captain/login — PIN primary, magic-link fallback (B2.2.pin)
+// =============================================================================
+
+// ---- Tenant toggle (defaults to AC) ----
+let selectedTenant = 'adventure-cruises';
 const toggle = document.getElementById('tenantToggle');
 toggle.querySelectorAll('.tenant-btn').forEach((btn) => {
   if (btn.dataset.slug === selectedTenant) btn.setAttribute('aria-selected', 'true');
@@ -232,33 +288,80 @@ toggle.querySelectorAll('.tenant-btn').forEach((btn) => {
     toggle.querySelectorAll('.tenant-btn').forEach((b) =>
       b.setAttribute('aria-selected', b === btn ? 'true' : 'false')
     );
+    // Clear any error notice when the user switches tenant — previous error
+    // might no longer apply.
+    document.getElementById('notice').innerHTML = '';
   });
 });
 
-// ---- error from URL (?error=expired / not_allowed / missing_token) ----
+// ---- Error from URL (?error=expired / not_allowed / etc.) ----
 const params = new URLSearchParams(window.location.search);
 const errMap = {
-  expired:        'The sign-in link expired or had been used already. Request a new one below.',
-  missing_token:  'That sign-in link looked invalid. Request a new one below.',
-  not_allowed:    'That email isn\'t on the allowlist for this operator. If this is unexpected, contact BookItMalta.',
+  expired:        'Your sign-in link expired or had been used already. Sign in again below.',
+  missing_token:  'That sign-in link looked invalid. Sign in again below.',
+  not_allowed:    'That email isn\'t on the operator allowlist. Use a PIN, or contact BookItMalta.',
   unknown_tenant: 'Unknown operator. Pick one above and try again.',
 };
 if (params.get('error') && errMap[params.get('error')]) {
   showNotice('err', errMap[params.get('error')]);
 }
 
-// ---- form submit ----
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
+// ---- PIN form submit ----
+document.getElementById('pinForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const email = document.getElementById('email').value.trim().toLowerCase();
+  document.getElementById('notice').innerHTML = '';
+
+  const pin = (document.getElementById('pin').value || '').trim();
+  if (!/^\d{4,8}$/.test(pin)) {
+    return showNotice('err', 'Please enter a 4 to 8 digit PIN.');
+  }
+
+  const btn = document.getElementById('pinSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    const res = await fetch('/api/captain?mode=verify-pin', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenant: selectedTenant, pin }),
+    });
+    if (res.ok) {
+      let body = {};
+      try { body = await res.json(); } catch {}
+      // Cookie was set on this response — just navigate to the dashboard.
+      window.location.href = body.redirect || '/captain/dashboard';
+      return;
+    }
+    if (res.status === 401) {
+      showNotice('err', 'That PIN didn\'t match. Try again, or sign in via email link.');
+    } else {
+      let err = 'Could not sign in. Please try again.';
+      try { err = (await res.json()).error || err; } catch {}
+      showNotice('err', err);
+    }
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  } catch {
+    showNotice('err', 'Network error — please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+});
+
+// ---- Magic-link fallback form ----
+document.getElementById('emailForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = (document.getElementById('email').value || '').trim().toLowerCase();
   if (!email) return showNotice('err', 'Please enter an email address.');
-  const btn = document.getElementById('submitBtn');
+  const btn = document.getElementById('emailSubmitBtn');
   btn.disabled = true;
   btn.textContent = 'Sending…';
-
   try {
     const res = await fetch('/api/captain?mode=login', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tenant: selectedTenant, email }),
     });
@@ -275,7 +378,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       '<strong>Check your inbox.</strong> If <code>' + escapeHtml(email) + '</code> is on the operator allowlist, a sign-in link will arrive shortly. Expires in 15 minutes.'
     );
     btn.textContent = 'Link sent ✓';
-  } catch (err) {
+  } catch {
     showNotice('err', 'Network error — please try again.');
     btn.disabled = false;
     btn.textContent = 'Send sign-in link';
@@ -283,14 +386,17 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 });
 
 function showNotice(kind, html) {
-  const el = document.getElementById('notice');
-  el.innerHTML = '<div class="notice ' + kind + '">' + html + '</div>';
+  document.getElementById('notice').innerHTML =
+    '<div class="notice ' + kind + '">' + html + '</div>';
 }
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+
+// Auto-focus the PIN input for fast keypad entry
+document.getElementById('pin').focus();
 </script>
 
 </body>

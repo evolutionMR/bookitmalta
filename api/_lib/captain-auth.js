@@ -209,6 +209,50 @@ function getCaptainFromRequest(req) {
 }
 
 /**
+ * Verify a captain dashboard PIN against the tenant-namespaced env var.
+ *
+ * Env var convention: <TENANT_SLUG_UPPER_UNDERSCORE>_CAPTAIN_PIN
+ *   - adventure-cruises → ADVENTURE_CRUISES_CAPTAIN_PIN
+ *   - bandama           → BANDAMA_CAPTAIN_PIN
+ *
+ * PIN is stored as plaintext in Vercel env vars (marked Sensitive). Compare
+ * uses crypto.timingSafeEqual to defend against timing-attack probing.
+ *
+ * Returns true on match. Returns false on mismatch or missing env var
+ * (the latter is logged so we don't silently allow when misconfigured).
+ */
+function verifyPin(tenantSlug, submittedPin) {
+  if (!tenantSlug || typeof submittedPin !== 'string') return false;
+  if (!/^\d{4,8}$/.test(submittedPin)) return false;       // 4-8 digit range
+
+  const envVarName = String(tenantSlug)
+    .toUpperCase()
+    .replace(/-/g, '_') + '_CAPTAIN_PIN';
+  const expected = process.env[envVarName];
+  if (!expected || typeof expected !== 'string') {
+    console.error('[captain-auth] verifyPin: missing env var', envVarName);
+    return false;
+  }
+
+  // Constant-time compare. Buffers MUST be equal-length for timingSafeEqual;
+  // pad both to a fixed long length so a wrong-length guess doesn't short-
+  // circuit on a length mismatch.
+  const FIXED = 32;
+  const a = Buffer.alloc(FIXED, 0);
+  const b = Buffer.alloc(FIXED, 0);
+  Buffer.from(submittedPin, 'utf8').copy(a);
+  Buffer.from(expected, 'utf8').copy(b);
+  try {
+    if (!crypto.timingSafeEqual(a, b)) return false;
+  } catch {
+    return false;
+  }
+  // Defense in depth — verify post-equal that lengths really match, so
+  // overly long submissions that fit in 32B can't pass via padding alias.
+  return submittedPin.length === expected.length;
+}
+
+/**
  * Check that an email is on the tenant's captainAllowlist (case-insensitive).
  */
 function isAllowed(tenantConfig, email) {
@@ -232,4 +276,5 @@ module.exports = {
   buildClearCookie,
   getCaptainFromRequest,
   isAllowed,
+  verifyPin,
 };

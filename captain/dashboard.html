@@ -523,7 +523,10 @@ async function loadDashboard() {
     if (meRes.ok) {
       const j = await meRes.json();
       document.getElementById('tenantName').textContent = j.tenant_name || j.tenant || '—';
-      document.getElementById('userEmail').textContent  = j.email || '—';
+      // PIN sessions return email=null with auth_method='pin'. Show a friendly
+      // label rather than the synthetic placeholder address.
+      document.getElementById('userEmail').textContent =
+        j.email || (j.auth_method === 'pin' ? 'PIN session' : '—');
     }
   } catch (e) {
     notice.innerHTML = '<div class="error-banner">Could not verify session. Refresh to retry.</div>';

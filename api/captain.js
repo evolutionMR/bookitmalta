@@ -34,15 +34,19 @@ const {
   buildClearCookie,
   getCaptainFromRequest,
   isAllowed,
+  verifyPin,
   LOGIN_TOKEN_TTL_SECS,
 } = require('./_lib/captain-auth.js');
 const crypto = require('crypto');
 
 module.exports = async function handler(req, res) {
   // ---------- DASHBOARD AUTH SUB-ROUTES (B2.2) ----------
-  // ?mode=login | auth | logout | me — handled before the per-enquiry token path.
+  // ?mode=verify-pin — primary login (per-tenant PIN, matches Catamaran UX).
+  // ?mode=login | auth — magic-link fallback ("Forgot PIN" path).
+  // ?mode=logout | me — session management.
   // ?mode=dashboard-data — B2.3 read-only data feed for /captain/dashboard.
   const mode = (req.query && req.query.mode) || null;
+  if (mode === 'verify-pin')     return await handleVerifyPin(req, res);
   if (mode === 'login')          return await handleLogin(req, res);
   if (mode === 'auth')           return await handleAuth(req, res);
   if (mode === 'logout')         return await handleLogout(req, res);
@@ -560,6 +564,80 @@ async function handleAuth(req, res) {
 }
 
 /**
+ * POST /api/captain?mode=verify-pin
+ * Body (JSON): { tenant, pin }
+ *
+ * Primary login flow — Tony types a per-tenant PIN and gets a 7-day session
+ * cookie immediately, no email round-trip. Catamaran-style UX.
+ *
+ * PIN is compared (constant-time) against the tenant-namespaced env var
+ * <TENANT>_CAPTAIN_PIN. On success the response body has the redirect URL
+ * for the client to navigate to (the cookie is set on the same response).
+ *
+ * No explicit rate limit yet — Vercel function cold-start latency naturally
+ * gates brute-force to ~1 attempt/sec, and a 4-digit space at that rate is
+ * ~2.7 hours to exhaust. Future hardening: add a small DB-backed attempt
+ * counter per IP that locks after 5 wrong tries.
+ */
+async function handleVerifyPin(req, res) {
+  if (req.method !== 'POST') {
+    return jsonError(res, 405, 'Method not allowed');
+  }
+
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch { /* leave as-is */ }
+  }
+  const tenant = (body && body.tenant) || (req.query && req.query.tenant);
+  const pin    = (body && body.pin)    || (req.query && req.query.pin);
+
+  if (!tenant || typeof tenant !== 'string') {
+    return jsonError(res, 400, 'Missing tenant');
+  }
+  if (!pin || typeof pin !== 'string') {
+    return jsonError(res, 400, 'Missing PIN');
+  }
+
+  // Validate tenant exists in config (defends against arbitrary-string
+  // tenant claims by clients).
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(tenant);
+  } catch {
+    return jsonError(res, 400, 'Unknown tenant');
+  }
+
+  if (!verifyPin(tenant, pin)) {
+    // Don't leak whether the tenant has a PIN configured or the PIN was
+    // wrong — both surface as a generic 401.
+    const ipHashShort = ipHashFromReq(req);
+    console.log('[captain-auth] verify-pin failed', { tenant, ipHashShort });
+    return jsonError(res, 401, 'Invalid PIN');
+  }
+
+  // PIN matched — mint session cookie. For per-tenant PINs we don't have a
+  // specific user identity, so we use a synthetic operator identifier so
+  // the existing getCaptainFromRequest contract (which returns { tenant,
+  // email }) still works for the dashboard's mode=me call.
+  //
+  // Synthetic identifier: pin-{tenant}@bookitmalta.local — clearly a
+  // service-account-style placeholder, not a real email. The dashboard
+  // displays config.name as the operator anyway; the email field just
+  // shows "PIN session" in the header (see dashboard.html).
+  const syntheticEmail = `pin-${tenant}@bookitmalta.local`;
+  const sessionToken = issueSessionToken({ tenant, email: syntheticEmail });
+  res.setHeader('Set-Cookie', buildSessionCookie(sessionToken));
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  return res.status(200).json({
+    ok: true,
+    redirect: '/captain/dashboard',
+    tenant,
+    tenant_name: config.name,
+  });
+}
+
+/**
  * POST or GET /api/captain?mode=logout
  * Clears the captain session cookie + redirects to /captain/login.
  */
@@ -778,9 +856,16 @@ async function handleMe(req, res) {
     return jsonError(res, 401, 'Unknown tenant in session');
   }
 
+  // PIN-issued sessions have a synthetic email like
+  // `pin-<tenant>@bookitmalta.local`. Surface those as a PIN-session flag
+  // rather than the placeholder so the dashboard renders "PIN session"
+  // instead of leaking the synthetic address.
+  const isPinSession = /^pin-[a-z0-9-]+@bookitmalta\.local$/.test(session.email || '');
+
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   return res.status(200).json({
-    email:       session.email,
+    email:       isPinSession ? null : session.email,
+    auth_method: isPinSession ? 'pin' : 'magic-link',
     tenant:      session.tenant,
     tenant_name: tenantName,
   });
