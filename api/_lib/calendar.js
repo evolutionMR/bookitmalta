@@ -154,7 +154,14 @@ function buildEventDescription(booking, tenantConfig) {
 }
 
 function shortBookingCode(booking) {
-  const src = booking.id || booking.enquiry_id || '';
+  // Prefer enquiry_id so the code matches across all surfaces:
+  //   - /booking-confirmed URL param (always enquiry.id, set in captain.js)
+  //   - customer email body + subject
+  //   - .ics attachment SUMMARY/DESCRIPTION
+  //   - captain notification email
+  // Falls back to booking.id if enquiry_id is missing (defensive).
+  // (Codex P2 finding on PR #28 — booking code mismatch.)
+  const src = booking.enquiry_id || booking.id || '';
   return String(src).replace(/-/g, '').slice(0, 8).toUpperCase();
 }
 
