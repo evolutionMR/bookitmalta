@@ -47,6 +47,13 @@ const TENANTS = {
 
     // Single slot per day → calendar is just a date set
     schedulingModel: 'single_slot_per_day',
+
+    // Calendar event fields — used by /booking-confirmed page + customer
+    // booking-confirmed email (.ics attachment + Add-to-Calendar links).
+    experienceDurationHours: 8,
+    defaultStartTime: '09:00',                     // 24h Malta local
+    meetingPointAddress: "Ta' Xbiex Creek Marina, Ta' Xbiex, Malta",
+    calendarEventTitle: 'Bandama — Private Day Charter',
   },
 
   'adventure-cruises': {
@@ -94,6 +101,13 @@ const TENANTS = {
 
     // Multiple slots per day — calendar is (date × slot)
     schedulingModel: 'multi_slot_per_day',
+
+    // Calendar event fields — start time pulled from booking.tour_option
+    // (09:30 or 14:30 Malta local). 5-hour shared day tour.
+    experienceDurationHours: 5,
+    // No defaultStartTime — start time comes from booking.tour_option
+    meetingPointAddress: 'Sliema Ferries, Sliema, Malta',
+    calendarEventTitle: 'Adventure Cruises — Day Tour to Comino',
   },
 };
 

@@ -394,6 +394,121 @@ em { font-style: italic; color: var(--terracotta); }
   border: 1px solid var(--ok-soft);
 }
 
+/* ============================ CONFIRMATION MODAL ============================
+   Center-screen popup that appears on successful enquiry submission.
+   Designed to be impossible to miss regardless of scroll position.
+   ESC closes; click on backdrop closes; "Got it, thanks" CTA closes. */
+.confirm-modal {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+.confirm-modal[aria-hidden="false"] { display: flex; }
+.confirm-modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(11, 37, 69, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cm-fade 220ms ease-out;
+}
+.confirm-modal-card {
+  position: relative;
+  background: #FFFAF1;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  max-width: 460px; width: 100%;
+  padding: 2.2rem 2rem 1.8rem;
+  box-shadow: 0 24px 80px rgba(11, 37, 69, 0.28);
+  text-align: center;
+  animation: cm-rise 260ms cubic-bezier(.22,.9,.3,1) both;
+}
+.confirm-modal-check {
+  width: 56px; height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: #D8F3DC;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem; color: #1B4332;
+  font-weight: 700;
+}
+.confirm-modal-card h3 {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+  font-weight: 420;
+  letter-spacing: -0.01em;
+}
+.confirm-modal-sub {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin-bottom: 1.2rem;
+}
+.confirm-modal-code-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 0.5rem;
+}
+.confirm-modal-code {
+  display: inline-block;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: var(--paper);
+  padding: 0.55rem 0.95rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule-strong);
+  margin-bottom: 1.3rem;
+  letter-spacing: 0.06em;
+}
+.confirm-modal-body {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+.confirm-modal-body strong { color: var(--ink); }
+.confirm-modal-close {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.7rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.confirm-modal-close:hover {
+  background: var(--terracotta);
+  transform: translateY(-1px);
+}
+.confirm-modal-x {
+  position: absolute; top: 0.8rem; right: 1rem;
+  background: none; border: none;
+  font-size: 1.6rem;
+  color: var(--mute);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+}
+.confirm-modal-x:hover { color: var(--ink); }
+@keyframes cm-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cm-rise {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+body.cm-locked { overflow: hidden; }
+
 .book-fineprint {
   text-align: center; font-size: 0.72rem; color: var(--mute);
   margin-top: 0.9rem; font-style: italic;
@@ -731,7 +846,7 @@ em { font-style: italic; color: var(--terracotta); }
         </button>
 
         <div class="book-fineprint">
-          We'll text you within 30 minutes to confirm availability and send a secure payment link for the €<span id="fpFee">20</span> booking fee. Balance settled with crew at boarding.
+          We'll confirm availability and send a secure payment link for the €<span id="fpFee">20</span> booking fee within 1 hour. Balance settled with crew at boarding.
         </div>
       </div>
     </div>
@@ -1097,15 +1212,49 @@ function clearError() {
 }
 
 function showSuccess(code, customerEmail) {
+  const shortCode = code.toUpperCase().slice(0, 8);
+
+  // 1) Open the center-screen modal so the success is impossible to miss
+  //    regardless of where the user scrolled.
+  const codeEl = document.getElementById('confirmModalCode');
+  const bodyEl = document.getElementById('confirmModalBody');
+  if (codeEl) codeEl.textContent = shortCode;
+  if (bodyEl) {
+    bodyEl.innerHTML =
+      'Anthony will confirm availability and send a secure payment link for the €10/seat booking fee <strong>within 1 hour</strong>. ' +
+      'Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.';
+  }
+  const modal = document.getElementById('confirmModal');
+  if (modal) {
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('cm-locked');
+    document.addEventListener('keydown', _cmEscHandler);
+  }
+
+  // 2) Also replace the form widget with a quieter inline note so the user
+  //    can't re-submit if they close the modal. Keeps the booking code
+  //    persistently visible without the modal needing to stay open.
   const widget = document.querySelector('.book-widget');
-  if (!widget) return;
-  widget.innerHTML =
-    '<div class="book-success">' +
-      '<div style="font-family:var(--serif);font-size:1.4rem;color:var(--ink);margin-bottom:0.4rem;">Got it.</div>' +
-      '<div>Your enquiry is locked in. Booking code:</div>' +
-      '<div class="code">' + code.toUpperCase().slice(0, 8) + '</div>' +
-      '<div style="margin-top:0.6rem;">Anthony will confirm availability and send a secure payment link for the €10/seat booking fee within 30 minutes (8am–8pm). Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.</div>' +
-    '</div>';
+  if (widget) {
+    widget.innerHTML =
+      '<div class="book-success" id="enquiry-confirmed">' +
+        '<div style="font-family:var(--serif);font-size:1.4rem;color:var(--ink);margin-bottom:0.4rem;">Enquiry sent.</div>' +
+        '<div>Booking code: <strong>' + escapeHtml(shortCode) + '</strong></div>' +
+        '<div style="margin-top:0.6rem;font-size:0.9rem;">Anthony will confirm within 1 hour. Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.</div>' +
+      '</div>';
+  }
+}
+
+function closeConfirmModal() {
+  const modal = document.getElementById('confirmModal');
+  if (!modal) return;
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('cm-locked');
+  document.removeEventListener('keydown', _cmEscHandler);
+}
+
+function _cmEscHandler(e) {
+  if (e.key === 'Escape') closeConfirmModal();
 }
 
 function escapeHtml(s) {
@@ -1184,6 +1333,25 @@ document.addEventListener('DOMContentLoaded', function() {
   updateMath(parseInt(document.getElementById('bookSeats').value, 10) || 2);
 });
 </script>
+
+<!-- ====================== ENQUIRY CONFIRMATION MODAL ======================
+     Opened by showSuccess() after a successful /api/enquiry POST.
+     Closes on backdrop click, ESC, or the "Got it, thanks" button. -->
+<div class="confirm-modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle" aria-hidden="true">
+  <div class="confirm-modal-backdrop" onclick="closeConfirmModal()"></div>
+  <div class="confirm-modal-card">
+    <button class="confirm-modal-x" onclick="closeConfirmModal()" aria-label="Close">×</button>
+    <div class="confirm-modal-check" aria-hidden="true">✓</div>
+    <h3 id="confirmModalTitle">Got it.</h3>
+    <div class="confirm-modal-sub">Your enquiry is locked in.</div>
+    <span class="confirm-modal-code-label">Booking code</span>
+    <div class="confirm-modal-code" id="confirmModalCode">—</div>
+    <div class="confirm-modal-body" id="confirmModalBody">
+      <!-- populated by showSuccess() -->
+    </div>
+    <button class="confirm-modal-close" onclick="closeConfirmModal()">Got it, thanks</button>
+  </div>
+</div>
 
 </body>
 </html>

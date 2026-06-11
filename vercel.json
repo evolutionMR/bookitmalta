@@ -16,7 +16,8 @@
     { "source": "/captain/:path*", "destination": "/api/captain" },
     { "source": "/for-operators", "destination": "/for-operators.html" },
     { "source": "/demo", "destination": "/demo.html" },
-    { "source": "/adventure-cruises", "destination": "/adventure-cruises.html" }
+    { "source": "/adventure-cruises", "destination": "/adventure-cruises.html" },
+    { "source": "/booking-confirmed", "destination": "/booking-confirmed.html" }
   ],
   "headers": [
     {
