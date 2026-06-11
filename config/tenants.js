@@ -54,6 +54,10 @@ const TENANTS = {
     defaultStartTime: '09:00',                     // 24h Malta local
     meetingPointAddress: "Ta' Xbiex Creek Marina, Ta' Xbiex, Malta",
     calendarEventTitle: 'Bandama — Private Day Charter',
+    captainAllowlist: [
+      'catamaranmaltacharters@gmail.com',          // Simon (operator)
+      'true-northdigital@outlook.com',             // Julian (owner)
+    ],
   },
 
   'adventure-cruises': {
@@ -108,6 +112,10 @@ const TENANTS = {
     // No defaultStartTime — start time comes from booking.tour_option
     meetingPointAddress: 'Sliema Ferries, Sliema, Malta',
     calendarEventTitle: 'Adventure Cruises — Day Tour to Comino',
+    captainAllowlist: [
+      'farrugia34@hotmail.com',                    // Tony (operator)
+      'true-northdigital@outlook.com',             // Julian (owner)
+    ],
   },
 };
 

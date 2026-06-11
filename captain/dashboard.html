@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+
+<title>Captain dashboard — BookItMalta</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --ink: #0B2545;
+  --ink-soft: #1C3558;
+  --paper: #F4EBD9;
+  --paper-deep: #EBDFC6;
+  --terracotta: #C85C2E;
+  --mute: rgba(11, 37, 69, 0.55);
+  --rule: rgba(11, 37, 69, 0.15);
+  --rule-strong: rgba(11, 37, 69, 0.35);
+  --serif: "Fraunces", Georgia, serif;
+  --sans:  "Manrope", -apple-system, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(11,37,69,0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 0;
+}
+.wrap { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; }
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2rem;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+h1 {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 380;
+  letter-spacing: -0.015em;
+  margin-top: 0.3rem;
+}
+.logout-btn {
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.logout-btn:hover { background: var(--ink); color: var(--paper); }
+
+.card {
+  background: #FFFAF1;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.4rem;
+}
+.card h2 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 420;
+  margin-bottom: 0.6rem;
+}
+.card p { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.55; }
+
+.coming-soon {
+  text-align: center;
+  padding: 3rem 2rem;
+  border: 2px dashed var(--rule-strong);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.coming-soon h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 380;
+  margin-bottom: 0.6rem;
+}
+.coming-soon ul {
+  list-style: none;
+  margin-top: 1.4rem;
+  text-align: left;
+  display: inline-block;
+}
+.coming-soon li {
+  padding: 0.4rem 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+.coming-soon li::before {
+  content: "→ ";
+  color: var(--terracotta);
+  font-weight: 700;
+  margin-right: 0.3rem;
+}
+
+.session-info {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--mute);
+  letter-spacing: 0.05em;
+}
+.session-info strong { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="eyebrow">Captain dashboard</div>
+    <h1 id="tenantName">Loading…</h1>
+  </div>
+  <button class="logout-btn" id="logoutBtn">Sign out</button>
+</header>
+
+<div class="card session-info" id="sessionCard">
+  Signed in as <strong id="userEmail">—</strong>
+</div>
+
+<div class="coming-soon">
+  <div class="eyebrow">Coming next</div>
+  <h2>Your daily operations view, right here.</h2>
+  <p style="margin-top: 0.4rem; color: var(--ink-soft);">
+    The dashboard is being built in stages — what you'll see here over the next sprint:
+  </p>
+  <ul>
+    <li>Next 14 days at a glance — bookings, blocked slots, customer manifests</li>
+    <li>Block actions: weather days, mechanical issues, specific slots</li>
+    <li>Manual booking entry for WhatsApp / walk-up customers</li>
+    <li>Google Calendar push so your crew sees every departure on their phone</li>
+  </ul>
+</div>
+
+</div>
+
+<script>
+// =============================================================================
+// Captain dashboard — read session info from /api/captain/me (B2.3).
+// For now (B2.2 stub), we read the tenant + email from a small inline payload
+// embedded by the server-side render later. As a stopgap, render placeholders
+// so the page works as soon as the session cookie exists.
+// =============================================================================
+
+// Attempt to fetch /api/captain?mode=me — not yet implemented; fall back
+// to placeholder UI so the page is visually complete.
+(async function init() {
+  try {
+    const res = await fetch('/api/captain?mode=me', { credentials: 'include' });
+    if (res.ok) {
+      const j = await res.json();
+      document.getElementById('tenantName').textContent = j.tenant_name || j.tenant || '—';
+      document.getElementById('userEmail').textContent  = j.email || '—';
+      return;
+    }
+    // 401 or 404 → still logged out
+    if (res.status === 401) {
+      window.location.href = '/captain/login?error=expired';
+      return;
+    }
+  } catch { /* fall through to placeholder */ }
+  document.getElementById('tenantName').textContent = 'Signed in';
+  document.getElementById('userEmail').textContent  = 'see cookie';
+})();
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  try {
+    await fetch('/api/captain?mode=logout', { method: 'POST', credentials: 'include' });
+  } catch {}
+  window.location.href = '/captain/login';
+});
+</script>
+
+</body>
+</html>
