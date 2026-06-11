@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Version 1 — Departure Board · AC Ops prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #0B2545; --ink-soft: #1C3558;
+  --paper: #F4EBD9; --paper-deep: #EBDFC6; --card: #FFFAF1;
+  --terracotta: #C85C2E;
+  --mute: rgba(11,37,69,.55); --rule: rgba(11,37,69,.15); --rule-strong: rgba(11,37,69,.35);
+  --ok: #1B4332; --ok-bg: #D8F3DC;
+  --warn: #7A5B00; --warn-bg: #FFF3D6;
+  --err: #B3261E; --err-bg: rgba(179,38,30,.1);
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Manrope", -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; min-height: 100vh; padding: 1rem 1rem 6rem; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 520px; margin: 0 auto; }
+.proto-band { background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; text-align: center; padding: .35rem .5rem; border-radius: 6px; margin-bottom: 1rem; }
+header { padding-bottom: .9rem; border-bottom: 1px solid var(--rule); margin-bottom: 1rem; }
+.eyebrow { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--terracotta); display: block; }
+h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spacing: -.015em; line-height: 1.15; }
+.sub { font-size: .8rem; color: var(--mute); margin-top: .15rem; }
+
+/* date strip */
+.dates { display: flex; gap: .45rem; overflow-x: auto; padding: .2rem 0 .8rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.dates::-webkit-scrollbar { display: none; }
+.date-chip { flex: 0 0 auto; border: 1px solid var(--rule-strong); background: var(--card); border-radius: 999px; padding: .45rem .85rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; cursor: pointer; white-space: nowrap; color: var(--ink); }
+.date-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.slot-h { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 1.1rem 0 .5rem; display:flex; justify-content: space-between; }
+.slot-h .tot { color: var(--ink); }
+
+/* departure card */
+.dep { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .85rem .9rem; margin-bottom: .65rem; }
+.dep.full { border-color: var(--err); }
+.dep-top { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.boat { font-family: var(--serif); font-size: 1.08rem; font-weight: 450; }
+.count { font-family: var(--mono); font-size: .92rem; font-weight: 600; }
+.count .cap { color: var(--mute); font-weight: 400; }
+.bar { height: 7px; background: var(--paper-deep); border-radius: 99px; margin: .5rem 0 .55rem; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 99px; background: var(--ok); }
+.bar.warn i { background: #C99700; }
+.bar.full i { background: var(--err); }
+.chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.chip { font-family: var(--mono); font-size: .62rem; letter-spacing: .04em; border: 1px solid var(--rule); border-radius: 999px; padding: .18rem .55rem; color: var(--ink-soft); background: #fff; }
+.chip b { font-weight: 600; }
+.dep-actions { display: flex; gap: .45rem; margin-top: .7rem; }
+.btn { flex: 1; border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 8px; padding: .55rem .4rem; font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; text-align: center; }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* manifest */
+.manifest { margin-top: .7rem; border-top: 1px dashed var(--rule); padding-top: .55rem; display: none; }
+.manifest.open { display: block; }
+.mrow { display: flex; justify-content: space-between; align-items: center; padding: .42rem .1rem; border-bottom: 1px solid var(--rule); font-size: .88rem; cursor: pointer; }
+.mrow:last-child { border-bottom: 0; }
+.mrow .src { font-family: var(--mono); font-size: .58rem; letter-spacing: .04em; border-radius: 999px; padding: .1rem .45rem; background: var(--paper-deep); color: var(--ink-soft); margin-left: .4rem; }
+.mrow .pax { font-family: var(--mono); font-weight: 600; }
+.mrow .tel { display: none; width: 100%; font-family: var(--mono); font-size: .72rem; color: var(--mute); padding-top: .15rem; }
+.mrow.open { flex-wrap: wrap; }
+.mrow.open .tel { display: block; }
+
+/* add form */
+.addf { margin-top: .7rem; border-top: 1px dashed var(--rule); padding-top: .65rem; display: none; }
+.addf.open { display: block; }
+.addf label { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .5rem 0 .25rem; }
+.addf input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 8px; padding: .6rem .7rem; font-family: var(--sans); font-size: 1rem; background: #fff; color: var(--ink); }
+.stepper { display: flex; align-items: center; gap: .8rem; }
+.stepper button { width: 46px; height: 46px; border-radius: 10px; border: 1px solid var(--rule-strong); background: #fff; font-size: 1.4rem; color: var(--ink); cursor: pointer; }
+.stepper .n { font-family: var(--mono); font-size: 1.5rem; font-weight: 600; min-width: 2.2rem; text-align: center; }
+.srcpick { display: flex; gap: .4rem; flex-wrap: wrap; }
+.srcpick .sp { border: 1px solid var(--rule-strong); background: #fff; border-radius: 999px; padding: .45rem .8rem; font-family: var(--mono); font-size: .68rem; cursor: pointer; color: var(--ink); }
+.srcpick .sp.on { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+.guard { margin-top: .55rem; font-size: .8rem; border-radius: 8px; padding: .5rem .65rem; display: none; }
+.guard.err { display: block; background: var(--err-bg); color: var(--err); border: 1px solid var(--err); }
+.guard.ok { display: block; background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+.addf .save { margin-top: .65rem; width: 100%; }
+
+/* dock mode overlay */
+#dock { position: fixed; inset: 0; background: var(--ink); color: var(--paper); z-index: 50; display: none; flex-direction: column; padding: 1rem; overflow-y: auto; }
+#dock.open { display: flex; }
+#dock .d-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .6rem; }
+#dock .d-title { font-family: var(--serif); font-size: 1.5rem; }
+#dock .d-sub { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: rgba(244,235,217,.65); text-transform: uppercase; }
+#dock .d-count { font-family: var(--mono); font-size: 2.4rem; font-weight: 600; text-align: center; margin: .6rem 0 .9rem; }
+#dock .d-count small { display: block; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(244,235,217,.6); font-weight: 400; }
+#dock .drow { display: flex; justify-content: space-between; align-items: center; background: rgba(244,235,217,.08); border: 1px solid rgba(244,235,217,.22); border-radius: 12px; padding: 1rem .9rem; margin-bottom: .55rem; font-size: 1.15rem; cursor: pointer; }
+#dock .drow .pax { font-family: var(--mono); font-size: 1.25rem; font-weight: 600; }
+#dock .drow.on { background: var(--ok-bg); border-color: var(--ok-bg); color: var(--ok); }
+#dock .drow.on::after { content: "✓ ABOARD"; font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; margin-left: .5rem; }
+#dock .exit { margin-top: auto; background: var(--paper); color: var(--ink); border: 0; border-radius: 10px; padding: .9rem; font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+
+/* vote bar */
+.votebar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule-strong); padding: .6rem .9rem calc(.6rem + env(safe-area-inset-bottom)); display: flex; gap: .55rem; z-index: 40; }
+.votebar a, .votebar button { flex: 1; text-decoration: none; text-align: center; border-radius: 9px; padding: .7rem .4rem; font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.votebar .back { border: 1px solid var(--rule-strong); color: var(--ink); background: #fff; }
+.votebar .vote { background: #25D366; color: #fff; border: 0; font-weight: 600; }
+.reset { display: block; text-align: center; font-family: var(--mono); font-size: .62rem; color: var(--mute); margin-top: 1.2rem; cursor: pointer; text-decoration: underline; background: none; border: 0; width: 100%; }
+.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="proto-band">Prototype 1 of 2 · demo data only — nothing is real</div>
+  <header>
+    <span class="eyebrow">Adventure Cruises · Version 1</span>
+    <h1>Departure Board</h1>
+    <div class="sub">Every boat, every departure — capacity always in view. Tap a boat to see its list or add a booking to it.</div>
+  </header>
+
+  <div class="dates" id="dates"></div>
+  <div id="board"></div>
+
+  <button class="reset" onclick="AC.reset('v1')">Reset demo data</button>
+</div>
+
+<div id="dock"></div>
+
+<div class="votebar">
+  <a class="back" href="../index.html">← Compare</a>
+  <button class="vote" onclick="AC.vote('Version 1','Departure Board')">👍 Vote for this one</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="../shared/data.js"></script>
+<script>
+let bookings = AC.load("v1");
+let selDate = AC.dayOffset(0);
+let openManifest = null, openAdd = null;
+let addState = { pax: 2, source: null };
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2200);
+}
+
+function renderDates() {
+  const el = document.getElementById("dates");
+  el.innerHTML = "";
+  for (let i = 0; i < 7; i++) {
+    const d = AC.dayOffset(i);
+    const c = document.createElement("button");
+    c.className = "date-chip" + (d === selDate ? " active" : "");
+    c.textContent = AC.fmtDay(d);
+    c.onclick = () => { selDate = d; openManifest = openAdd = null; render(); };
+    el.appendChild(c);
+  }
+}
+
+function depKey(slot, boat) { return selDate + "|" + slot + "|" + boat; }
+
+function renderBoard() {
+  const el = document.getElementById("board");
+  el.innerHTML = "";
+  AC.SLOTS.forEach(slot => {
+    const slotList = AC.forDeparture(bookings, selDate, slot);
+    const h = document.createElement("div");
+    h.className = "slot-h";
+    h.innerHTML = "<span>" + slot + " departure</span><span class='tot'>" + AC.seats(slotList) + " / 80 seats</span>";
+    el.appendChild(h);
+
+    AC.BOATS.forEach(boat => {
+      const list = AC.forDeparture(bookings, selDate, slot, boat.id);
+      const sold = AC.seats(list);
+      const left = boat.cap - sold;
+      const pct = Math.min(100, Math.round(sold / boat.cap * 100));
+      const state = sold >= boat.cap ? "full" : (sold >= boat.cap * 0.75 ? "warn" : "ok");
+      const srcs = AC.bySource(list);
+      const key = depKey(slot, boat.id);
+
+      const card = document.createElement("div");
+      card.className = "dep" + (state === "full" ? " full" : "");
+      card.innerHTML =
+        "<div class='dep-top'><span class='boat'>" + boat.name + "</span>" +
+        "<span class='count'>" + sold + "<span class='cap'> / " + boat.cap + "</span></span></div>" +
+        "<div class='bar " + state + "'><i style='width:" + pct + "%'></i></div>" +
+        "<div class='chips'>" + AC.SOURCES.map(s => "<span class='chip'>" + s.short + " <b>" + (srcs[s.id] || 0) + "</b></span>").join("") + "</div>" +
+        "<div class='dep-actions'>" +
+          "<button class='btn' data-act='man'>List (" + list.length + ")</button>" +
+          "<button class='btn tc' data-act='add'" + (left <= 0 ? " disabled" : "") + ">+ Add</button>" +
+          "<button class='btn primary' data-act='dock'>Dock</button>" +
+        "</div>" +
+        "<div class='manifest" + (openManifest === key ? " open" : "") + "' data-man></div>" +
+        "<div class='addf" + (openAdd === key ? " open" : "") + "' data-add></div>";
+
+      card.querySelector("[data-act=man]").onclick = () => { openManifest = openManifest === key ? null : key; openAdd = null; render(); };
+      card.querySelector("[data-act=add]").onclick = () => { openAdd = openAdd === key ? null : key; openManifest = null; addState = { pax: 2, source: null, name: "" }; render(); };
+      card.querySelector("[data-act=dock]").onclick = () => openDock(slot, boat);
+
+      if (openManifest === key) renderManifest(card.querySelector("[data-man]"), list);
+      if (openAdd === key) renderAdd(card.querySelector("[data-add]"), slot, boat, left);
+      el.appendChild(card);
+    });
+  });
+}
+
+function renderManifest(el, list) {
+  if (!list.length) { el.innerHTML = "<div style='font-size:.82rem;color:var(--mute);padding:.3rem 0'>No bookings yet.</div>"; return; }
+  el.innerHTML = "";
+  list.forEach(x => {
+    const r = document.createElement("div");
+    r.className = "mrow";
+    const src = AC.SOURCES.find(s => s.id === x.source);
+    r.innerHTML = "<span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span>" +
+      "<span class='tel'>" + (x.phone || "no phone on file") + "</span>";
+    r.onclick = () => r.classList.toggle("open");
+    el.appendChild(r);
+  });
+}
+
+function renderAdd(el, slot, boat, left) {
+  el.innerHTML =
+    "<label>Name / group</label><input type='text' id='af-name' placeholder='e.g. Lync group (Rossi)' value='" + (addState.name || "") + "' />" +
+    "<label>Seats</label><div class='stepper'>" +
+      "<button id='af-minus'>−</button><span class='n' id='af-n'>" + addState.pax + "</span><button id='af-plus'>+</button>" +
+      "<span style='font-family:var(--mono);font-size:.7rem;color:var(--mute)'>" + left + " left on " + boat.name + "</span></div>" +
+    "<label>Source</label><div class='srcpick'>" +
+      AC.SOURCES.map(s => "<button class='sp" + (addState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
+    "<div class='guard' id='af-guard'></div>" +
+    "<button class='btn tc save' id='af-save'>Save booking</button>";
+
+  const guard = el.querySelector("#af-guard");
+  function check() {
+    const other = AC.BOATS.find(b2 => b2.id !== boat.id);
+    const otherLeft = other.cap - AC.seats(AC.forDeparture(bookings, selDate, slot, other.id));
+    if (addState.pax > left) {
+      guard.className = "guard err";
+      guard.textContent = "⛔ Only " + left + " seats left on " + boat.name + (otherLeft >= addState.pax ? " — " + other.name + " has " + otherLeft + " free." : " — both boats can't fit this group.");
+      return false;
+    }
+    guard.className = "guard"; guard.textContent = "";
+    return true;
+  }
+  el.querySelector("#af-minus").onclick = () => { addState.pax = Math.max(1, addState.pax - 1); el.querySelector("#af-n").textContent = addState.pax; check(); };
+  el.querySelector("#af-plus").onclick = () => { addState.pax++; el.querySelector("#af-n").textContent = addState.pax; check(); };
+  el.querySelectorAll("[data-src]").forEach(b2 => b2.onclick = () => {
+    addState.source = b2.dataset.src;
+    el.querySelectorAll("[data-src]").forEach(o => o.classList.toggle("on", o.dataset.src === addState.source));
+  });
+  el.querySelector("#af-name").oninput = e => addState.name = e.target.value;
+  el.querySelector("#af-save").onclick = () => {
+    if (!check()) return;
+    if (!addState.source) { guard.className = "guard err"; guard.textContent = "Pick a source — that's how the week reconciles itself."; return; }
+    const name = (addState.name || "").trim() || "Unnamed group";
+    bookings.push({ id: "bk" + Date.now(), date: selDate, slot, boat: boat.id, name, pax: addState.pax, source: addState.source, phone: "", boarded: false });
+    AC.save("v1", bookings);
+    openAdd = null;
+    toast("✓ " + addState.pax + " seats added to " + boat.name + " " + slot);
+    render();
+  };
+}
+
+/* ---- dock mode ---- */
+function openDock(slot, boat) {
+  const dock = document.getElementById("dock");
+  function paint() {
+    const list = AC.forDeparture(bookings, selDate, slot, boat.id);
+    const aboard = list.filter(x => x.boarded).reduce((s, x) => s + x.pax, 0);
+    dock.innerHTML =
+      "<div class='d-head'><div><div class='d-sub'>Dock mode · " + AC.fmtDay(selDate) + "</div>" +
+      "<div class='d-title'>" + boat.name + " — " + slot + "</div></div></div>" +
+      "<div class='d-count'>" + aboard + " / " + AC.seats(list) + "<small>aboard / expected</small></div>" +
+      list.map(x => "<div class='drow" + (x.boarded ? " on" : "") + "' data-id='" + x.id + "'><span>" + x.name + "</span><span class='pax'>" + x.pax + "</span></div>").join("") +
+      (list.length ? "" : "<div style='text-align:center;opacity:.6;padding:2rem 0'>No bookings for this departure.</div>") +
+      "<button class='exit'>Exit dock mode</button>";
+    dock.querySelectorAll(".drow").forEach(r => r.onclick = () => {
+      const bk = bookings.find(x => x.id === r.dataset.id);
+      bk.boarded = !bk.boarded; AC.save("v1", bookings); paint();
+    });
+    dock.querySelector(".exit").onclick = () => { dock.classList.remove("open"); render(); };
+  }
+  paint();
+  dock.classList.add("open");
+}
+
+function render() { renderDates(); renderBoard(); }
+render();
+</script>
+</body>
+</html>

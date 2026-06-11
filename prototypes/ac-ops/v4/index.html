@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Version 2 — Add First · AC Ops prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #0B2545; --ink-soft: #1C3558;
+  --paper: #F4EBD9; --paper-deep: #EBDFC6; --card: #FFFAF1;
+  --terracotta: #C85C2E;
+  --mute: rgba(11,37,69,.55); --rule: rgba(11,37,69,.15); --rule-strong: rgba(11,37,69,.35);
+  --ok: #1B4332; --ok-bg: #D8F3DC;
+  --warn: #7A5B00; --warn-bg: #FFF3D6;
+  --err: #B3261E; --err-bg: rgba(179,38,30,.1);
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Manrope", -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; min-height: 100vh; padding: 1rem 1rem 9.5rem; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 520px; margin: 0 auto; }
+.proto-band { background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; text-align: center; padding: .35rem .5rem; border-radius: 6px; margin-bottom: 1rem; }
+header { padding-bottom: .9rem; border-bottom: 1px solid var(--rule); margin-bottom: 1rem; }
+.eyebrow { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--terracotta); display: block; }
+h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spacing: -.015em; line-height: 1.15; }
+.sub { font-size: .8rem; color: var(--mute); margin-top: .15rem; }
+
+/* summary tile */
+.sum { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .8rem .9rem; margin-bottom: 1rem; }
+.sum .big { font-family: var(--mono); font-size: 1.7rem; font-weight: 600; }
+.sum .big .cap { color: var(--mute); font-weight: 400; font-size: 1.1rem; }
+.sum .lbl { font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+.sum .mini { display: flex; gap: 1rem; margin-top: .45rem; font-family: var(--mono); font-size: .72rem; color: var(--ink-soft); }
+.sum .mini b { font-weight: 600; }
+
+/* wizard */
+.q { font-family: var(--serif); font-size: 1.2rem; margin: 1.1rem 0 .6rem; }
+.bigbtns { display: grid; gap: .6rem; }
+.bigbtn { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--rule-strong); border-radius: 12px; padding: 1rem .95rem; cursor: pointer; font-size: 1.05rem; color: var(--ink); text-align: left; width: 100%; }
+.bigbtn .left { font-family: var(--mono); font-size: .78rem; font-weight: 600; }
+.bigbtn .left.ok { color: var(--ok); } .bigbtn .left.warn { color: var(--warn); } .bigbtn .left.full { color: var(--err); }
+.bigbtn.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.bigbtn.on .left { color: var(--paper); }
+.bigbtn:disabled { opacity: .45; cursor: not-allowed; }
+.bigbtn .sug { font-family: var(--mono); font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; background: var(--terracotta); color: #fff; border-radius: 999px; padding: .15rem .5rem; margin-left: .45rem; }
+.stepper { display: flex; align-items: center; gap: 1rem; justify-content: center; margin: .4rem 0; }
+.stepper button { width: 58px; height: 58px; border-radius: 12px; border: 1px solid var(--rule-strong); background: var(--card); font-size: 1.7rem; color: var(--ink); cursor: pointer; }
+.stepper .n { font-family: var(--mono); font-size: 2.2rem; font-weight: 600; min-width: 3rem; text-align: center; }
+input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 10px; padding: .75rem .8rem; font-family: var(--sans); font-size: 1.05rem; background: var(--card); color: var(--ink); }
+.hint { font-size: .76rem; color: var(--mute); margin-top: .3rem; }
+.guard { margin-top: .6rem; font-size: .84rem; border-radius: 8px; padding: .55rem .7rem; display: none; }
+.guard.err { display: block; background: var(--err-bg); color: var(--err); border: 1px solid var(--err); }
+.cta { width: 100%; margin-top: 1rem; background: var(--terracotta); color: #fff; border: 0; border-radius: 10px; padding: .95rem; font-family: var(--mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; font-weight: 600; }
+.cta.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule-strong); margin-top: .5rem; }
+.steps { display: flex; gap: .3rem; margin-bottom: .2rem; }
+.steps i { flex: 1; height: 4px; border-radius: 99px; background: var(--paper-deep); }
+.steps i.on { background: var(--terracotta); }
+
+/* confirm card */
+.confirm { background: var(--ok-bg); border: 1px solid var(--ok); color: var(--ok); border-radius: 12px; padding: 1rem; text-align: center; margin-top: 1rem; }
+.confirm .t { font-family: var(--serif); font-size: 1.25rem; margin-bottom: .2rem; }
+.confirm .d { font-family: var(--mono); font-size: .78rem; }
+
+/* overview tab */
+.ov-day { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 1rem 0 .45rem; }
+.ov-row { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .7rem .85rem; margin-bottom: .5rem; }
+.ov-row.full { border-color: var(--err); }
+.ov-row .nm { font-size: .95rem; }
+.ov-row .nm small { display: block; font-family: var(--mono); font-size: .62rem; color: var(--mute); }
+.ov-row .ct { font-family: var(--mono); font-weight: 600; }
+.ov-row .ct.ok { color: var(--ok); } .ov-row .ct.warn { color: var(--warn); } .ov-row .ct.full { color: var(--err); }
+
+/* dock */
+#dock { position: fixed; inset: 0; background: var(--ink); color: var(--paper); z-index: 50; display: none; flex-direction: column; padding: 1rem; overflow-y: auto; }
+#dock.open { display: flex; }
+#dock .d-title { font-family: var(--serif); font-size: 1.5rem; }
+#dock .d-sub { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: rgba(244,235,217,.65); text-transform: uppercase; }
+#dock .d-count { font-family: var(--mono); font-size: 2.4rem; font-weight: 600; text-align: center; margin: .6rem 0 .9rem; }
+#dock .d-count small { display: block; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(244,235,217,.6); font-weight: 400; }
+#dock .drow { display: flex; justify-content: space-between; align-items: center; background: rgba(244,235,217,.08); border: 1px solid rgba(244,235,217,.22); border-radius: 12px; padding: 1rem .9rem; margin-bottom: .55rem; font-size: 1.15rem; cursor: pointer; }
+#dock .drow .pax { font-family: var(--mono); font-size: 1.25rem; font-weight: 600; }
+#dock .drow.on { background: var(--ok-bg); border-color: var(--ok-bg); color: var(--ok); }
+#dock .drow.on::after { content: "✓ ABOARD"; font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; margin-left: .5rem; }
+#dock .exit { margin-top: auto; background: var(--paper); color: var(--ink); border: 0; border-radius: 10px; padding: .9rem; font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+#dock .pick { background: rgba(244,235,217,.08); border: 1px solid rgba(244,235,217,.3); color: var(--paper); border-radius: 12px; padding: 1.05rem; margin-bottom: .55rem; font-size: 1.1rem; display: flex; justify-content: space-between; cursor: pointer; width: 100%; text-align: left; }
+
+/* tabs + vote */
+.tabs { position: fixed; left: 0; right: 0; bottom: 3.4rem; background: var(--card); border-top: 1px solid var(--rule); display: flex; z-index: 40; }
+.tabs button { flex: 1; background: none; border: 0; padding: .7rem .3rem .6rem; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); cursor: pointer; border-top: 3px solid transparent; }
+.tabs button.on { color: var(--terracotta); border-top-color: var(--terracotta); font-weight: 600; }
+.votebar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule-strong); padding: .45rem .9rem calc(.45rem + env(safe-area-inset-bottom)); display: flex; gap: .55rem; z-index: 40; }
+.votebar a, .votebar button { flex: 1; text-decoration: none; text-align: center; border-radius: 9px; padding: .6rem .4rem; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.votebar .back { border: 1px solid var(--rule-strong); color: var(--ink); background: #fff; }
+.votebar .vote { background: #25D366; color: #fff; border: 0; font-weight: 600; }
+.reset { display: block; text-align: center; font-family: var(--mono); font-size: .62rem; color: var(--mute); margin-top: 1.2rem; cursor: pointer; text-decoration: underline; background: none; border: 0; width: 100%; }
+.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; }
+.dates { display: flex; gap: .45rem; overflow-x: auto; padding: .2rem 0 .6rem; scrollbar-width: none; }
+.dates::-webkit-scrollbar { display: none; }
+.date-chip { flex: 0 0 auto; border: 1px solid var(--rule-strong); background: var(--card); border-radius: 999px; padding: .45rem .85rem; font-family: var(--mono); font-size: .68rem; cursor: pointer; white-space: nowrap; color: var(--ink); }
+.date-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="proto-band">Prototype 2 of 2 · demo data only — nothing is real</div>
+  <header>
+    <span class="eyebrow">Adventure Cruises · Version 2</span>
+    <h1>Add First</h1>
+    <div class="sub">One big button. Capacity lives inside it — you can never oversell by accident. Built for the dock and the phone call.</div>
+  </header>
+
+  <div id="view"></div>
+  <button class="reset" onclick="AC.reset('v4')">Reset demo data</button>
+</div>
+
+<div id="dock"></div>
+
+<div class="tabs">
+  <button id="tab-add" class="on">＋ Add</button>
+  <button id="tab-today">Overview</button>
+  <button id="tab-dock">Dock</button>
+</div>
+<div class="votebar">
+  <a class="back" href="../index.html">← Compare</a>
+  <button class="vote" onclick="AC.vote('Version 2','Add First')">👍 Vote for this one</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="../shared/data.js"></script>
+<script>
+let bookings = AC.load("v4");
+let tab = "add";
+let wiz = null; // {step, date, slot, pax, source, name, boat}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2400);
+}
+function slotLeft(date, slot) {
+  return 80 - AC.seats(AC.forDeparture(bookings, date, slot));
+}
+function boatLeft(date, slot, boatId) {
+  const cap = AC.BOATS.find(x => x.id === boatId).cap;
+  return cap - AC.seats(AC.forDeparture(bookings, date, slot, boatId));
+}
+function setTab(t) {
+  tab = t;
+  document.getElementById("tab-add").className = t === "add" ? "on" : "";
+  document.getElementById("tab-today").className = t === "today" ? "on" : "";
+  document.getElementById("tab-dock").className = t === "dock" ? "on" : "";
+  render();
+}
+document.getElementById("tab-add").onclick = () => { wiz = null; setTab("add"); };
+document.getElementById("tab-today").onclick = () => setTab("today");
+document.getElementById("tab-dock").onclick = () => setTab("dock");
+
+/* ============ ADD TAB ============ */
+function renderAdd(el) {
+  if (!wiz) {
+    const today = AC.dayOffset(0);
+    const sold = AC.seats(bookings.filter(x => x.date === today));
+    el.innerHTML =
+      "<div class='sum'><div class='lbl'>Today — seats sold</div>" +
+      "<div class='big'>" + sold + "<span class='cap'> / 160</span></div>" +
+      "<div class='mini'><span>09:30 · <b>" + slotLeft(today, "09:30") + " left</b></span><span>14:30 · <b>" + slotLeft(today, "14:30") + " left</b></span></div></div>" +
+      "<button class='cta' id='start'>＋ Add a booking</button>" +
+      "<div class='hint' style='text-align:center;margin-top:.5rem'>Lync call · walk-up · phone — everything lands here, three taps.</div>";
+    el.querySelector("#start").onclick = () => { wiz = { step: 1, date: AC.dayOffset(0), pax: 2, source: null, name: "", slot: null, boat: null }; render(); };
+    return;
+  }
+
+  const steps = "<div class='steps'>" + [1,2,3,4].map(i => "<i class='" + (wiz.step >= i ? "on" : "") + "'></i>").join("") + "</div>";
+
+  /* step 1 — day + slot, capacity inside the buttons */
+  if (wiz.step === 1) {
+    let dateChips = "<div class='dates'>";
+    for (let i = 0; i < 7; i++) {
+      const d = AC.dayOffset(i);
+      dateChips += "<button class='date-chip" + (d === wiz.date ? " active" : "") + "' data-d='" + d + "'>" + AC.fmtDay(d) + "</button>";
+    }
+    dateChips += "</div>";
+    el.innerHTML = steps + "<div class='q'>Which departure?</div>" + dateChips +
+      "<div class='bigbtns'>" + AC.SLOTS.map(s => {
+        const left = slotLeft(wiz.date, s);
+        const cls = left <= 0 ? "full" : (left <= 20 ? "warn" : "ok");
+        return "<button class='bigbtn' data-slot='" + s + "'" + (left <= 0 ? " disabled" : "") + "><span>" + s + "</span><span class='left " + cls + "'>" + (left <= 0 ? "FULL" : left + " seats left") + "</span></button>";
+      }).join("") + "</div>";
+    el.querySelectorAll("[data-d]").forEach(c => c.onclick = () => { wiz.date = c.dataset.d; render(); });
+    el.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { wiz.slot = b.dataset.slot; wiz.step = 2; render(); });
+    return;
+  }
+
+  /* step 2 — pax */
+  if (wiz.step === 2) {
+    const left = slotLeft(wiz.date, wiz.slot);
+    el.innerHTML = steps + "<div class='q'>How many seats?</div>" +
+      "<div class='stepper'><button id='mi'>−</button><span class='n'>" + wiz.pax + "</span><button id='pl'>+</button></div>" +
+      "<div class='hint' style='text-align:center'>" + left + " seats left across both boats at " + wiz.slot + "</div>" +
+      "<div class='guard" + (wiz.pax > left ? " err" : "") + "'>⛔ Only " + left + " seats left at " + wiz.slot + " — can't take " + wiz.pax + ".</div>" +
+      "<button class='cta' id='next'" + (wiz.pax > left ? " disabled style='opacity:.45'" : "") + ">Next</button>" +
+      "<button class='cta ghost' id='bk'>← Back</button>";
+    el.querySelector("#mi").onclick = () => { wiz.pax = Math.max(1, wiz.pax - 1); render(); };
+    el.querySelector("#pl").onclick = () => { wiz.pax++; render(); };
+    el.querySelector("#next").onclick = () => { if (wiz.pax <= left) { wiz.step = 3; render(); } };
+    el.querySelector("#bk").onclick = () => { wiz.step = 1; render(); };
+    return;
+  }
+
+  /* step 3 — source + name */
+  if (wiz.step === 3) {
+    el.innerHTML = steps + "<div class='q'>Who's it from?</div>" +
+      "<div class='bigbtns'>" + AC.SOURCES.map(s =>
+        "<button class='bigbtn" + (wiz.source === s.id ? " on" : "") + "' data-src='" + s.id + "'><span>" + s.label + "</span></button>").join("") + "</div>" +
+      "<div class='q' style='font-size:1rem'>Name / group <span style='font-family:var(--sans);font-size:.75rem;color:var(--mute)'>(optional)</span></div>" +
+      "<input type='text' id='nm' placeholder='e.g. Lync group (Rossi)' value='" + wiz.name + "' />" +
+      "<button class='cta' id='next'>Next</button><button class='cta ghost' id='bk'>← Back</button>";
+    el.querySelectorAll("[data-src]").forEach(b => b.onclick = () => { wiz.source = b.dataset.src; render(); });
+    el.querySelector("#nm").oninput = e => wiz.name = e.target.value;
+    el.querySelector("#next").onclick = () => {
+      if (!wiz.source) { toast("Pick a source first"); return; }
+      wiz.step = 4; render();
+    };
+    el.querySelector("#bk").onclick = () => { wiz.step = 2; render(); };
+    return;
+  }
+
+  /* step 4 — boat assignment, suggested boat preselected */
+  if (wiz.step === 4) {
+    const lefts = AC.BOATS.map(b => ({ b, left: boatLeft(wiz.date, wiz.slot, b.id) }));
+    const suggested = lefts.filter(x => x.left >= wiz.pax).sort((a, b2) => b2.left - a.left)[0];
+    if (!wiz.boat && suggested) wiz.boat = suggested.b.id;
+    el.innerHTML = steps + "<div class='q'>Which boat?</div>" +
+      "<div class='bigbtns'>" + lefts.map(x =>
+        "<button class='bigbtn" + (wiz.boat === x.b.id ? " on" : "") + "' data-boat='" + x.b.id + "'" + (x.left < wiz.pax ? " disabled" : "") + ">" +
+        "<span>" + x.b.name + (suggested && suggested.b.id === x.b.id ? "<span class='sug'>suggested</span>" : "") + "</span>" +
+        "<span class='left " + (x.left < wiz.pax ? "full" : "ok") + "'>" + x.left + " left</span></button>").join("") + "</div>" +
+      (suggested ? "" : "<div class='guard err'>⛔ Neither boat can fit " + wiz.pax + " at " + wiz.slot + ".</div>") +
+      "<button class='cta' id='save'" + (suggested ? "" : " disabled style='opacity:.45'") + ">Confirm booking</button>" +
+      "<button class='cta ghost' id='bk'>← Back</button>";
+    el.querySelectorAll("[data-boat]").forEach(b => b.onclick = () => { wiz.boat = b.dataset.boat; render(); });
+    el.querySelector("#bk").onclick = () => { wiz.step = 3; render(); };
+    el.querySelector("#save").onclick = () => {
+      if (!wiz.boat) return;
+      const name = (wiz.name || "").trim() || "Unnamed group";
+      bookings.push({ id: "bk" + Date.now(), date: wiz.date, slot: wiz.slot, boat: wiz.boat, name, pax: wiz.pax, source: wiz.source, phone: "", boarded: false });
+      AC.save("v4", bookings);
+      const boatName = AC.BOATS.find(x => x.id === wiz.boat).name;
+      const done = { pax: wiz.pax, slot: wiz.slot, boat: boatName, date: wiz.date };
+      wiz = null; render();
+      toast("✓ " + done.pax + " seats — " + done.boat + " " + done.slot);
+    };
+    return;
+  }
+}
+
+/* ============ OVERVIEW TAB ============ */
+function renderToday(el) {
+  el.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const d = AC.dayOffset(i);
+    const h = document.createElement("div");
+    h.className = "ov-day"; h.textContent = AC.fmtDay(d);
+    el.appendChild(h);
+    AC.SLOTS.forEach(slot => AC.BOATS.forEach(boat => {
+      const sold = AC.seats(AC.forDeparture(bookings, d, slot, boat.id));
+      const cls = sold >= boat.cap ? "full" : (sold >= boat.cap * .75 ? "warn" : "ok");
+      const srcs = AC.bySource(AC.forDeparture(bookings, d, slot, boat.id));
+      const row = document.createElement("div");
+      row.className = "ov-row" + (cls === "full" ? " full" : "");
+      row.innerHTML = "<span class='nm'>" + slot + " — " + boat.name +
+        "<small>BIM " + srcs.bim + " · Lync " + srcs.lync + " · Walk " + srcs.walkup + " · Tel " + srcs.phone + "</small></span>" +
+        "<span class='ct " + cls + "'>" + sold + "/" + boat.cap + "</span>";
+      el.appendChild(row);
+    }));
+  }
+}
+
+/* ============ DOCK TAB ============ */
+function renderDockPick(el) {
+  const today = AC.dayOffset(0);
+  el.innerHTML = "<div class='q'>Boarding which departure?</div>";
+  AC.SLOTS.forEach(slot => AC.BOATS.forEach(boat => {
+    const list = AC.forDeparture(bookings, today, slot, boat.id);
+    const btn = document.createElement("button");
+    btn.className = "bigbtn";
+    btn.style.marginBottom = ".55rem"; btn.style.width = "100%";
+    btn.innerHTML = "<span>" + slot + " — " + boat.name + "</span><span class='left ok'>" + AC.seats(list) + " expected</span>";
+    btn.onclick = () => openDock(today, slot, boat);
+    el.appendChild(btn);
+  }));
+}
+
+function openDock(date, slot, boat) {
+  const dock = document.getElementById("dock");
+  function paint() {
+    const list = AC.forDeparture(bookings, date, slot, boat.id);
+    const aboard = list.filter(x => x.boarded).reduce((s, x) => s + x.pax, 0);
+    dock.innerHTML =
+      "<div><div class='d-sub'>Dock mode · " + AC.fmtDay(date) + "</div>" +
+      "<div class='d-title'>" + boat.name + " — " + slot + "</div></div>" +
+      "<div class='d-count'>" + aboard + " / " + AC.seats(list) + "<small>aboard / expected</small></div>" +
+      list.map(x => "<div class='drow" + (x.boarded ? " on" : "") + "' data-id='" + x.id + "'><span>" + x.name + "</span><span class='pax'>" + x.pax + "</span></div>").join("") +
+      (list.length ? "" : "<div style='text-align:center;opacity:.6;padding:2rem 0'>No bookings for this departure.</div>") +
+      "<button class='exit'>Exit dock mode</button>";
+    dock.querySelectorAll(".drow").forEach(r => r.onclick = () => {
+      const bk = bookings.find(x => x.id === r.dataset.id);
+      bk.boarded = !bk.boarded; AC.save("v4", bookings); paint();
+    });
+    dock.querySelector(".exit").onclick = () => { dock.classList.remove("open"); render(); };
+  }
+  paint();
+  dock.classList.add("open");
+}
+
+function render() {
+  const el = document.getElementById("view");
+  if (tab === "add") renderAdd(el);
+  else if (tab === "today") renderToday(el);
+  else renderDockPick(el);
+}
+render();
+</script>
+</body>
+</html>
