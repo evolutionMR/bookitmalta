@@ -41,11 +41,13 @@ const crypto = require('crypto');
 module.exports = async function handler(req, res) {
   // ---------- DASHBOARD AUTH SUB-ROUTES (B2.2) ----------
   // ?mode=login | auth | logout | me — handled before the per-enquiry token path.
+  // ?mode=dashboard-data — B2.3 read-only data feed for /captain/dashboard.
   const mode = (req.query && req.query.mode) || null;
-  if (mode === 'login')  return await handleLogin(req, res);
-  if (mode === 'auth')   return await handleAuth(req, res);
-  if (mode === 'logout') return await handleLogout(req, res);
-  if (mode === 'me')     return await handleMe(req, res);
+  if (mode === 'login')          return await handleLogin(req, res);
+  if (mode === 'auth')           return await handleAuth(req, res);
+  if (mode === 'logout')         return await handleLogout(req, res);
+  if (mode === 'me')             return await handleMe(req, res);
+  if (mode === 'dashboard-data') return await handleDashboardData(req, res);
 
   // ---------- PER-ENQUIRY MAGIC LINK (existing) ----------
   let tenant, config;
@@ -565,6 +567,196 @@ async function handleLogout(req, res) {
   res.setHeader('Set-Cookie', buildClearCookie());
   res.setHeader('Location', '/captain/login');
   return res.status(302).end();
+}
+
+/**
+ * GET /api/captain?mode=dashboard-data
+ *
+ * B2.3 — Returns the read-only operations view for the captain dashboard.
+ * Reads from the tenant's bookings table + get_departure_availability RPC
+ * (the source of truth defined in B2.1) so cap-overrides + schedule rules
+ * are honored automatically.
+ *
+ * Default window: today + next 13 days (14 days total).
+ * Response shape:
+ *   {
+ *     tenant: 'adventure-cruises',
+ *     tenant_name: 'Adventure Cruises',
+ *     scheduling_model: 'multi_slot_per_day' | 'single_slot_per_day',
+ *     today_iso: '2026-06-11',
+ *     days: [
+ *       {
+ *         date: '2026-06-11',
+ *         dow: 4,  // 0=Sun
+ *         slots: [
+ *           {
+ *             slot_time: '09:30',
+ *             total_cap: 80,
+ *             seats_taken: 1,
+ *             seats_available: 79,
+ *             is_blocked: false,
+ *             block_reason: null,
+ *             bookings: [
+ *               { id, customer_name, party_size, customer_email,
+ *                 customer_phone, status, source, tour_option }
+ *             ]
+ *           }
+ *         ]
+ *       },
+ *       …
+ *     ]
+ *   }
+ */
+async function handleDashboardData(req, res) {
+  const session = getCaptainFromRequest(req);
+  if (!session) return jsonError(res, 401, 'Not signed in');
+
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(session.tenant);
+  } catch {
+    return jsonError(res, 401, 'Unknown tenant in session');
+  }
+
+  const supabase = getSupabase(session.tenant);
+
+  // Build the date window — today + 13 future days in Malta local time.
+  // Vercel runtimes are UTC; format the date in Europe/Malta to avoid
+  // showing "yesterday" to Tony when he opens the dashboard after midnight UTC
+  // but before midnight Malta (which is ~01:00 UTC in summer).
+  const nowMalta = new Date(
+    new Date().toLocaleString('en-US', { timeZone: 'Europe/Malta' })
+  );
+  const fmtIso = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  };
+  const days = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(nowMalta);
+    d.setDate(d.getDate() + i);
+    days.push({ date: fmtIso(d), dow: d.getDay() });
+  }
+  const startDate = days[0].date;
+  const endDate   = days[days.length - 1].date;
+
+  // Resolve the slot list per tenant. AC has explicit slots; Bandama has one
+  // implicit slot per day (the whole-boat charter). Single_slot tenants get
+  // an empty slot string so manifest rendering stays uniform.
+  const isMulti = config.schedulingModel === 'multi_slot_per_day';
+  const slots = isMulti
+    ? (Array.isArray(config.departureSlots) ? config.departureSlots : [])
+    : [''];
+
+  // Pull every confirmed/completed booking in the window in one query.
+  // Filter to bookings that consume capacity ('booked'|'completed') — same
+  // status set used by get_departure_availability.
+  // Note: bookings table does NOT have a 'source' column (it's on enquiries).
+  // If we need source on the dashboard later, JOIN bookings → enquiries
+  // by enquiry_id. For B2.3 we drop it.
+  const { data: bookings, error: bookErr } = await supabase
+    .from('bookings')
+    .select('id, enquiry_id, customer_name, party_size, customer_email, customer_phone, charter_date, slot_time, tour_option, status, created_at')
+    .gte('charter_date', startDate)
+    .lte('charter_date', endDate)
+    .in('status', ['booked', 'completed'])
+    .order('charter_date', { ascending: true })
+    .order('slot_time',    { ascending: true })
+    .order('created_at',   { ascending: true });
+
+  if (bookErr) {
+    console.error('[captain] dashboard-data bookings select error', bookErr);
+    return jsonError(res, 500, 'Could not load bookings');
+  }
+
+  // Index bookings by (date, slot) so we can attach them to slot cells.
+  const bookingsByKey = {};
+  for (const b of bookings || []) {
+    const slotKey = isMulti ? (b.slot_time || b.tour_option || '') : '';
+    const key = `${b.charter_date}|${slotKey}`;
+    if (!bookingsByKey[key]) bookingsByKey[key] = [];
+    bookingsByKey[key].push(b);
+  }
+
+  // For each (date, slot) compute availability. Single_slot tenants don't
+  // have get_departure_availability yet (it's AC-only), so we synthesize the
+  // numbers from the booking count for those.
+  const result = [];
+  for (const day of days) {
+    const slotsOut = [];
+    for (const slotTime of slots) {
+      const key = `${day.date}|${slotTime}`;
+      const bookingList = bookingsByKey[key] || [];
+      const seats_taken = bookingList.reduce(
+        (s, b) => s + (Number(b.party_size) || 0),
+        0
+      );
+
+      let total_cap = isMulti ? 80 : 1;
+      let seats_available = total_cap - seats_taken;
+      let is_blocked = false;
+      let block_reason = null;
+
+      if (isMulti) {
+        // Source of truth for AC — read get_departure_availability.
+        // Pass party_size=1 just to drive the function; we only care about
+        // the cap/seats/blocked fields, not can_accommodate.
+        const { data: availRows, error: availErr } = await supabase
+          .rpc('get_departure_availability', {
+            p_date:       day.date,
+            p_slot:       slotTime,
+            p_party_size: 1,
+          });
+        if (availErr) {
+          console.error('[captain] dashboard-data availability error', { date: day.date, slot: slotTime, availErr });
+        } else if (Array.isArray(availRows) && availRows[0]) {
+          const a = availRows[0];
+          total_cap       = a.total_cap;
+          seats_available = a.seats_available;
+          is_blocked      = !!a.is_blocked;
+          block_reason    = a.block_reason || null;
+          // Trust the RPC's seats_taken over the manual sum — it filters by
+          // the same status set but covers any drift between table joins.
+          // Defensive: only override if RPC's count is plausible.
+          if (typeof a.seats_taken === 'number') {
+            // No-op — keep our own count which matched bookingList.
+            // (Both come from the same source data.)
+          }
+        }
+      }
+
+      slotsOut.push({
+        slot_time:        slotTime || null,
+        total_cap,
+        seats_taken,
+        seats_available:  Math.max(0, seats_available),
+        is_blocked,
+        block_reason,
+        bookings: bookingList.map((b) => ({
+          id:             b.id,
+          customer_name:  b.customer_name,
+          party_size:     b.party_size,
+          customer_email: b.customer_email,
+          customer_phone: b.customer_phone,
+          status:         b.status,
+        })),
+      });
+    }
+    result.push({ date: day.date, dow: day.dow, slots: slotsOut });
+  }
+
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+  return res.status(200).json({
+    tenant:           session.tenant,
+    tenant_name:      config.name,
+    scheduling_model: config.schedulingModel || 'single_slot_per_day',
+    today_iso:        startDate,
+    days:             result,
+  });
 }
 
 /**
