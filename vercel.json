@@ -13,6 +13,8 @@
     { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/captain/login",     "destination": "/captain/login.html" },
+    { "source": "/captain/dashboard", "destination": "/captain/dashboard.html" },
     { "source": "/captain/:path*", "destination": "/api/captain" },
     { "source": "/for-operators", "destination": "/for-operators.html" },
     { "source": "/demo", "destination": "/demo.html" },

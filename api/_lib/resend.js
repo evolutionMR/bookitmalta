@@ -419,6 +419,31 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo,
   return result;
 }
 
+// =============================================================================
+// CAPTAIN: dashboard login magic link
+// =============================================================================
+// Sent in response to a /captain/login form submit. The recipient clicks the
+// link; captain.js verifies the token and sets a 7-day session cookie.
+function captainLoginMagicLinkEmail({ tenantConfig, magicUrl, requesterEmail, ipHashShort, expiresInMinutes }) {
+  const subject = `Sign in to ${tenantConfig.name} dashboard`;
+  const text = `
+Hi,
+
+Click the link below to sign in to the ${tenantConfig.name} captain dashboard.
+
+  ${magicUrl}
+
+This link expires in ${expiresInMinutes} minutes and can only be used once.
+
+If you didn't request this, you can ignore this email — no action was taken on your account.
+
+Requested from: ${requesterEmail || 'unknown'}${ipHashShort ? ` (ip hash ${ipHashShort})` : ''}
+
+BookItMalta · bookitmalta.com
+`;
+  return { subject, text };
+}
+
 module.exports = {
   sendEmail,
   captainEnquiryEmail,
@@ -430,4 +455,5 @@ module.exports = {
   customerWaitlistEmail,
   customerWaitlistOfferEmail,
   captainActionConfirmedEmail,
+  captainLoginMagicLinkEmail,
 };

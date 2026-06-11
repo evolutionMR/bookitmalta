@@ -1,15 +1,17 @@
 // api/captain.js
 //
-// GET  /api/captain?token=...&tenant=...                       → render action page
-// GET  /api/captain?token=...&tenant=...&action=confirm        → one-click confirm
-// GET  /api/captain?token=...&tenant=...&action=decline        → one-click decline
-// POST /api/captain                                            → from action page form
+// Per-enquiry magic-link (existing):
+//   GET  /api/captain?token=…&tenant=…                       → render action page
+//   POST /api/captain                                        → confirm/decline
 //
-// Magic-link auth: the captain's email contains opaque per-enquiry tokens.
-// Knowing the token grants ability to confirm/decline that enquiry. Token
-// is rotated to a single-use status by setting captain_action_at — once
-// acted, the link returns "already actioned" instead of letting the
-// captain reverse the decision via the same URL.
+// Dashboard session auth (B2.2, new):
+//   POST /api/captain?mode=login&tenant=…                    → send magic link
+//   GET  /api/captain?mode=auth&token=…&tenant=…             → set session cookie
+//   POST /api/captain?mode=logout                            → clear session cookie
+//
+// Magic-link auth: per-enquiry tokens grant single-use confirm/decline; the
+// captain dashboard uses a 7-day HttpOnly session cookie issued after a
+// 15-min one-time-use login token from the dashboard sign-in flow.
 
 const { resolveTenant, getTenantEnv, getTenantEnvOptional } = require('./_lib/tenant.js');
 const { getSupabase } = require('./_lib/supabase.js');
@@ -22,9 +24,30 @@ const {
   customerDepositLinkEmail,
   customerDeclineEmail,
   captainActionConfirmedEmail,
+  captainLoginMagicLinkEmail,
 } = require('./_lib/resend.js');
+const {
+  issueLoginToken,
+  verifyLoginToken,
+  issueSessionToken,
+  buildSessionCookie,
+  buildClearCookie,
+  getCaptainFromRequest,
+  isAllowed,
+  LOGIN_TOKEN_TTL_SECS,
+} = require('./_lib/captain-auth.js');
+const crypto = require('crypto');
 
 module.exports = async function handler(req, res) {
+  // ---------- DASHBOARD AUTH SUB-ROUTES (B2.2) ----------
+  // ?mode=login | auth | logout | me — handled before the per-enquiry token path.
+  const mode = (req.query && req.query.mode) || null;
+  if (mode === 'login')  return await handleLogin(req, res);
+  if (mode === 'auth')   return await handleAuth(req, res);
+  if (mode === 'logout') return await handleLogout(req, res);
+  if (mode === 'me')     return await handleMe(req, res);
+
+  // ---------- PER-ENQUIRY MAGIC LINK (existing) ----------
   let tenant, config;
   try {
     ({ slug: tenant, config } = resolveTenant(req));
@@ -398,5 +421,202 @@ function formatDate(isoDate) {
     });
   } catch {
     return isoDate;
+  }
+}
+
+// =============================================================================
+// B2.2 — DASHBOARD AUTH (login / auth / logout)
+// =============================================================================
+
+/**
+ * POST /api/captain?mode=login
+ * Body (JSON or x-www-form-urlencoded): { tenant, email }
+ *
+ * Validates email against tenant.captainAllowlist (case-insensitive),
+ * sends a magic-link email containing a 15-min one-time-use login token.
+ * Returns 200 even on unknown email so we don't leak which addresses are
+ * on the allowlist (anti-enumeration).
+ */
+async function handleLogin(req, res) {
+  if (req.method !== 'POST') {
+    return jsonError(res, 405, 'Method not allowed');
+  }
+
+  // Allow tenant + email from JSON OR form body (works whether the login
+  // page submits via fetch JSON or native form POST).
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch { /* leave string */ }
+  }
+  const tenant = (body && body.tenant) || (req.query && req.query.tenant);
+  const email  = (body && body.email)  || (req.query && req.query.email);
+
+  if (!tenant || typeof tenant !== 'string') {
+    return jsonError(res, 400, 'Missing tenant');
+  }
+  if (!email || typeof email !== 'string' || !/^.+@.+\..+$/.test(email)) {
+    return jsonError(res, 400, 'Invalid email');
+  }
+
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(tenant);
+  } catch (e) {
+    return jsonError(res, 400, 'Unknown tenant');
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const ipHashShort = ipHashFromReq(req);
+
+  // Anti-enumeration: always return 200 even if the email is NOT on the
+  // allowlist. Just don't actually send anything.
+  if (!isAllowed(config, normalizedEmail)) {
+    console.log('[captain-auth] login attempt for non-allowlisted email', {
+      tenant,
+      email_hash: hashEmail(normalizedEmail),
+      ipHashShort,
+    });
+    return res.status(200).json({ ok: true });
+  }
+
+  // Mint the login token + build the magic URL
+  const token = issueLoginToken({ tenant, email: normalizedEmail });
+  const baseUrl = getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+  const magicUrl = `${baseUrl}/api/captain?mode=auth&token=${encodeURIComponent(token)}&tenant=${encodeURIComponent(tenant)}`;
+
+  try {
+    const msg = captainLoginMagicLinkEmail({
+      tenantConfig: config,
+      magicUrl,
+      requesterEmail: normalizedEmail,
+      ipHashShort,
+      expiresInMinutes: Math.round(LOGIN_TOKEN_TTL_SECS / 60),
+    });
+    await sendEmail({
+      tenantSlug: tenant,
+      tenantConfig: config,
+      to: normalizedEmail,
+      subject: msg.subject,
+      text: msg.text,
+    });
+  } catch (e) {
+    console.error('[captain-auth] login email send failed:', e);
+    // Still 200 to anti-enumerate — operator can request again if no email
+    return res.status(200).json({ ok: true });
+  }
+
+  return res.status(200).json({ ok: true });
+}
+
+/**
+ * GET /api/captain?mode=auth&token=…&tenant=…
+ *
+ * Magic-link click. Verifies the login token, mints a 7-day session JWT,
+ * sets it as an HttpOnly cookie, and 302-redirects to /captain/dashboard.
+ *
+ * If the token is expired or malformed, redirects to /captain/login with
+ * an error query param so the user can request a new link.
+ */
+async function handleAuth(req, res) {
+  if (req.method !== 'GET') {
+    return jsonError(res, 405, 'Method not allowed');
+  }
+
+  const token = req.query && req.query.token;
+  if (!token) return redirectToLogin(res, 'missing_token');
+
+  let payload;
+  try {
+    payload = verifyLoginToken(token);
+  } catch (e) {
+    return redirectToLogin(res, 'expired');
+  }
+
+  // Defense in depth: re-check the allowlist at click-time, in case the
+  // allowlist changed between link-issuance and click.
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(payload.tenant);
+  } catch {
+    return redirectToLogin(res, 'unknown_tenant');
+  }
+  if (!isAllowed(config, payload.email)) {
+    return redirectToLogin(res, 'not_allowed');
+  }
+
+  const sessionToken = issueSessionToken({ tenant: payload.tenant, email: payload.email });
+  res.setHeader('Set-Cookie', buildSessionCookie(sessionToken));
+  res.setHeader('Location', '/captain/dashboard');
+  return res.status(302).end();
+}
+
+/**
+ * POST or GET /api/captain?mode=logout
+ * Clears the captain session cookie + redirects to /captain/login.
+ */
+async function handleLogout(req, res) {
+  res.setHeader('Set-Cookie', buildClearCookie());
+  res.setHeader('Location', '/captain/login');
+  return res.status(302).end();
+}
+
+/**
+ * GET /api/captain?mode=me
+ * Returns { email, tenant, tenant_name } for the current session, or 401.
+ * Used by the dashboard to render "Signed in as …" without server-side render.
+ */
+async function handleMe(req, res) {
+  const session = getCaptainFromRequest(req);
+  if (!session) return jsonError(res, 401, 'Not signed in');
+
+  // Resolve tenant name for the dashboard header. Tolerate missing tenant
+  // (returns 401-ish so the dashboard bounces back to /captain/login).
+  let tenantName = null;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    tenantName = getTenant(session.tenant).name;
+  } catch {
+    return jsonError(res, 401, 'Unknown tenant in session');
+  }
+
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  return res.status(200).json({
+    email:       session.email,
+    tenant:      session.tenant,
+    tenant_name: tenantName,
+  });
+}
+
+// -----------------------------------------------------------------------------
+// auth helpers
+// -----------------------------------------------------------------------------
+function jsonError(res, status, message) {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  return res.status(status).json({ error: message });
+}
+
+function redirectToLogin(res, errorCode) {
+  res.setHeader('Location', `/captain/login?error=${encodeURIComponent(errorCode)}`);
+  return res.status(302).end();
+}
+
+function ipHashFromReq(req) {
+  const ip = ((req.headers && req.headers['x-forwarded-for']) || '')
+    .split(',')[0].trim() || null;
+  if (!ip) return null;
+  try {
+    return crypto.createHash('sha256').update(ip).digest('hex').slice(0, 12);
+  } catch {
+    return null;
+  }
+}
+
+function hashEmail(email) {
+  try {
+    return crypto.createHash('sha256').update(email).digest('hex').slice(0, 12);
+  } catch {
+    return null;
   }
 }

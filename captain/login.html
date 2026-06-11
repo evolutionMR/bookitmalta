@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+
+<title>Sign in — BookItMalta captain dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --ink: #0B2545;
+  --ink-soft: #1C3558;
+  --paper: #F4EBD9;
+  --paper-deep: #EBDFC6;
+  --terracotta: #C85C2E;
+  --terracotta-deep: #A64620;
+  --mute: rgba(11, 37, 69, 0.55);
+  --rule: rgba(11, 37, 69, 0.15);
+  --rule-strong: rgba(11, 37, 69, 0.35);
+  --err: #B3261E;
+  --err-soft: rgba(179, 38, 30, 0.08);
+  --ok-bg: #D8F3DC;
+  --ok: #1B4332;
+  --serif: "Fraunces", Georgia, serif;
+  --sans:  "Manrope", -apple-system, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(11,37,69,0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  background: #FFFAF1;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  max-width: 460px;
+  width: 100%;
+  padding: 2.4rem 2rem 2rem;
+  box-shadow: 0 24px 80px rgba(11, 37, 69, 0.12);
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 0.6rem;
+}
+
+h1 {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 380;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.6rem;
+}
+
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.tenant-toggle {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+.tenant-btn {
+  flex: 1;
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tenant-btn[aria-selected="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 0.4rem;
+}
+
+input[type="email"] {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+input[type="email"]:focus {
+  outline: none;
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px rgba(200, 92, 46, 0.15);
+}
+
+button.submit {
+  width: 100%;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 999px;
+  padding: 0.95rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+button.submit:hover { background: var(--terracotta); transform: translateY(-1px); }
+button.submit:disabled { opacity: 0.5; cursor: wait; }
+
+.notice {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+.notice.err {
+  background: var(--err-soft);
+  color: var(--err);
+  border: 1px solid rgba(179, 38, 30, 0.25);
+}
+.notice.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border: 1px solid rgba(27, 67, 50, 0.2);
+}
+.notice strong { font-weight: 600; }
+
+.footer {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85rem;
+  color: var(--mute);
+  line-height: 1.5;
+}
+.footer a { color: var(--terracotta); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="eyebrow">Captain dashboard</div>
+  <h1>Sign in</h1>
+  <p class="subtitle">Enter the email address on your operator account. We'll send a one-time sign-in link.</p>
+
+  <div id="notice"></div>
+
+  <form id="loginForm" novalidate>
+    <label for="tenant-select">Which operator?</label>
+    <div class="tenant-toggle" role="tablist" id="tenantToggle">
+      <button type="button" class="tenant-btn" data-slug="adventure-cruises" role="tab">Adventure Cruises</button>
+      <button type="button" class="tenant-btn" data-slug="bandama" role="tab">Bandama</button>
+    </div>
+
+    <label for="email">Email address</label>
+    <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@operator.com" />
+
+    <button type="submit" class="submit" id="submitBtn">Send sign-in link</button>
+  </form>
+
+  <div class="footer">
+    Not on your operator's allowlist? Reach out to BookItMalta and we'll add you. The link expires in 15 minutes and can only be used once.
+  </div>
+</div>
+
+<script>
+// ---- tenant toggle ----
+let selectedTenant = 'adventure-cruises'; // default
+const toggle = document.getElementById('tenantToggle');
+toggle.querySelectorAll('.tenant-btn').forEach((btn) => {
+  if (btn.dataset.slug === selectedTenant) btn.setAttribute('aria-selected', 'true');
+  btn.addEventListener('click', () => {
+    selectedTenant = btn.dataset.slug;
+    toggle.querySelectorAll('.tenant-btn').forEach((b) =>
+      b.setAttribute('aria-selected', b === btn ? 'true' : 'false')
+    );
+  });
+});
+
+// ---- error from URL (?error=expired / not_allowed / missing_token) ----
+const params = new URLSearchParams(window.location.search);
+const errMap = {
+  expired:        'The sign-in link expired or had been used already. Request a new one below.',
+  missing_token:  'That sign-in link looked invalid. Request a new one below.',
+  not_allowed:    'That email isn\'t on the allowlist for this operator. If this is unexpected, contact BookItMalta.',
+  unknown_tenant: 'Unknown operator. Pick one above and try again.',
+};
+if (params.get('error') && errMap[params.get('error')]) {
+  showNotice('err', errMap[params.get('error')]);
+}
+
+// ---- form submit ----
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  if (!email) return showNotice('err', 'Please enter an email address.');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('/api/captain?mode=login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenant: selectedTenant, email }),
+    });
+    if (!res.ok) {
+      let msg = 'Could not send the sign-in link. Please try again.';
+      try { msg = (await res.json()).error || msg; } catch {}
+      showNotice('err', msg);
+      btn.disabled = false;
+      btn.textContent = 'Send sign-in link';
+      return;
+    }
+    showNotice(
+      'ok',
+      '<strong>Check your inbox.</strong> If <code>' + escapeHtml(email) + '</code> is on the operator allowlist, a sign-in link will arrive shortly. Expires in 15 minutes.'
+    );
+    btn.textContent = 'Link sent ✓';
+  } catch (err) {
+    showNotice('err', 'Network error — please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Send sign-in link';
+  }
+});
+
+function showNotice(kind, html) {
+  const el = document.getElementById('notice');
+  el.innerHTML = '<div class="notice ' + kind + '">' + html + '</div>';
+}
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+</script>
+
+</body>
+</html>
