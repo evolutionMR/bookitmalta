@@ -30,22 +30,34 @@ header { padding-bottom: .9rem; border-bottom: 1px solid var(--rule); margin-bot
 h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spacing: -.015em; line-height: 1.15; }
 .sub { font-size: .8rem; color: var(--mute); margin-top: .15rem; }
 
-/* date strip */
 .dates { display: flex; gap: .45rem; overflow-x: auto; padding: .2rem 0 .8rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .dates::-webkit-scrollbar { display: none; }
 .date-chip { flex: 0 0 auto; border: 1px solid var(--rule-strong); background: var(--card); border-radius: 999px; padding: .45rem .85rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; cursor: pointer; white-space: nowrap; color: var(--ink); }
 .date-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
-.slot-h { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 1.1rem 0 .5rem; display:flex; justify-content: space-between; }
-.slot-h .tot { color: var(--ink); }
+.slot-h { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 1.1rem 0 .5rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.slot-h .tot { color: var(--ink); margin-left: auto; }
+.slot-h .menu-btn { border: 1px solid var(--rule-strong); background: var(--card); color: var(--ink); border-radius: 6px; width: 30px; height: 26px; font-size: .9rem; cursor: pointer; line-height: 1; }
+.slot-cancelled { font-family: var(--mono); font-size: .68rem; color: var(--err); background: var(--err-bg); border: 1px solid var(--err); border-radius: 8px; padding: .5rem .7rem; margin-bottom: .65rem; }
 
-/* departure card */
+/* slot action panel */
+.slot-panel { background: var(--card); border: 1px solid var(--rule-strong); border-radius: 10px; padding: .8rem .9rem; margin-bottom: .65rem; }
+.slot-panel .t { font-family: var(--serif); font-size: 1.02rem; margin-bottom: .45rem; }
+.slot-panel label { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .45rem 0 .25rem; }
+.slot-panel input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 8px; padding: .55rem .65rem; font-family: var(--sans); font-size: .95rem; background: #fff; color: var(--ink); }
+.panel-row { display: flex; gap: .45rem; margin-top: .6rem; }
+.pbtn { flex: 1; border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 8px; padding: .55rem .4rem; font-family: var(--mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.pbtn.danger { background: var(--err); color: #fff; border-color: var(--err); }
+.pbtn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+
 .dep { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .85rem .9rem; margin-bottom: .65rem; }
 .dep.full { border-color: var(--err); }
+.dep.closed { opacity: .85; border-style: dashed; border-color: var(--rule-strong); }
 .dep-top { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
 .boat { font-family: var(--serif); font-size: 1.08rem; font-weight: 450; }
 .count { font-family: var(--mono); font-size: .92rem; font-weight: 600; }
 .count .cap { color: var(--mute); font-weight: 400; }
+.closed-badge { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; background: var(--ink); color: var(--paper); border-radius: 999px; padding: .2rem .6rem; display: inline-block; margin-top: .45rem; }
 .bar { height: 7px; background: var(--paper-deep); border-radius: 99px; margin: .5rem 0 .55rem; overflow: hidden; }
 .bar i { display: block; height: 100%; border-radius: 99px; background: var(--ok); }
 .bar.warn i { background: #C99700; }
@@ -54,42 +66,52 @@ h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spa
 .chip { font-family: var(--mono); font-size: .62rem; letter-spacing: .04em; border: 1px solid var(--rule); border-radius: 999px; padding: .18rem .55rem; color: var(--ink-soft); background: #fff; }
 .chip b { font-weight: 600; }
 .dep-actions { display: flex; gap: .45rem; margin-top: .7rem; }
-.btn { flex: 1; border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 8px; padding: .55rem .4rem; font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; text-align: center; }
+.btn { flex: 1; border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 8px; padding: .55rem .3rem; font-family: var(--mono); font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; text-align: center; }
 .btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .btn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+.btn.icon { flex: 0 0 44px; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 
 /* manifest */
 .manifest { margin-top: .7rem; border-top: 1px dashed var(--rule); padding-top: .55rem; display: none; }
 .manifest.open { display: block; }
-.mrow { display: flex; justify-content: space-between; align-items: center; padding: .42rem .1rem; border-bottom: 1px solid var(--rule); font-size: .88rem; cursor: pointer; }
+.mrow { padding: .42rem .1rem; border-bottom: 1px solid var(--rule); font-size: .88rem; }
 .mrow:last-child { border-bottom: 0; }
+.mrow .line1 { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 .mrow .src { font-family: var(--mono); font-size: .58rem; letter-spacing: .04em; border-radius: 999px; padding: .1rem .45rem; background: var(--paper-deep); color: var(--ink-soft); margin-left: .4rem; }
 .mrow .pax { font-family: var(--mono); font-weight: 600; }
-.mrow .tel { display: none; width: 100%; font-family: var(--mono); font-size: .72rem; color: var(--mute); padding-top: .15rem; }
-.mrow.open { flex-wrap: wrap; }
-.mrow.open .tel { display: block; }
+.mrow.cancelled .line1 span:first-child { text-decoration: line-through; color: var(--mute); }
+.mrow .cnote { font-family: var(--mono); font-size: .64rem; color: var(--err); padding-top: .1rem; }
+.mrow .detail { padding: .45rem 0 .2rem; }
+.mrow .tel { font-family: var(--mono); font-size: .72rem; color: var(--mute); margin-bottom: .45rem; }
+.mrow .acts { display: flex; gap: .4rem; }
+.sbtn { border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 7px; padding: .4rem .7rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.sbtn.danger { color: var(--err); border-color: var(--err); }
+.sbtn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+
+/* inline edit / cancel forms */
+.iform { background: #fff; border: 1px solid var(--rule-strong); border-radius: 8px; padding: .6rem .7rem; margin-top: .4rem; }
+.iform label { font-family: var(--mono); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .4rem 0 .2rem; }
+.iform input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 7px; padding: .5rem .6rem; font-family: var(--sans); font-size: .95rem; background: #fff; color: var(--ink); }
+.stepper { display: flex; align-items: center; gap: .7rem; }
+.stepper button { width: 40px; height: 40px; border-radius: 9px; border: 1px solid var(--rule-strong); background: #fff; font-size: 1.25rem; color: var(--ink); cursor: pointer; }
+.stepper .n { font-family: var(--mono); font-size: 1.3rem; font-weight: 600; min-width: 2rem; text-align: center; }
+.srcpick { display: flex; gap: .35rem; flex-wrap: wrap; }
+.srcpick .sp { border: 1px solid var(--rule-strong); background: #fff; border-radius: 999px; padding: .38rem .7rem; font-family: var(--mono); font-size: .64rem; cursor: pointer; color: var(--ink); }
+.srcpick .sp.on { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+.guard { margin-top: .5rem; font-size: .78rem; border-radius: 8px; padding: .45rem .6rem; display: none; }
+.guard.err { display: block; background: var(--err-bg); color: var(--err); border: 1px solid var(--err); }
 
 /* add form */
 .addf { margin-top: .7rem; border-top: 1px dashed var(--rule); padding-top: .65rem; display: none; }
 .addf.open { display: block; }
 .addf label { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .5rem 0 .25rem; }
 .addf input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 8px; padding: .6rem .7rem; font-family: var(--sans); font-size: 1rem; background: #fff; color: var(--ink); }
-.stepper { display: flex; align-items: center; gap: .8rem; }
-.stepper button { width: 46px; height: 46px; border-radius: 10px; border: 1px solid var(--rule-strong); background: #fff; font-size: 1.4rem; color: var(--ink); cursor: pointer; }
-.stepper .n { font-family: var(--mono); font-size: 1.5rem; font-weight: 600; min-width: 2.2rem; text-align: center; }
-.srcpick { display: flex; gap: .4rem; flex-wrap: wrap; }
-.srcpick .sp { border: 1px solid var(--rule-strong); background: #fff; border-radius: 999px; padding: .45rem .8rem; font-family: var(--mono); font-size: .68rem; cursor: pointer; color: var(--ink); }
-.srcpick .sp.on { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
-.guard { margin-top: .55rem; font-size: .8rem; border-radius: 8px; padding: .5rem .65rem; display: none; }
-.guard.err { display: block; background: var(--err-bg); color: var(--err); border: 1px solid var(--err); }
-.guard.ok { display: block; background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
-.addf .save { margin-top: .65rem; width: 100%; }
+.addf .save { margin-top: .65rem; width: 100%; border-radius: 8px; border: 0; background: var(--terracotta); color: #fff; padding: .65rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
 
-/* dock mode overlay */
+/* dock overlay */
 #dock { position: fixed; inset: 0; background: var(--ink); color: var(--paper); z-index: 50; display: none; flex-direction: column; padding: 1rem; overflow-y: auto; }
 #dock.open { display: flex; }
-#dock .d-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .6rem; }
 #dock .d-title { font-family: var(--serif); font-size: 1.5rem; }
 #dock .d-sub { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: rgba(244,235,217,.65); text-transform: uppercase; }
 #dock .d-count { font-family: var(--mono); font-size: 2.4rem; font-weight: 600; text-align: center; margin: .6rem 0 .9rem; }
@@ -106,7 +128,8 @@ h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spa
 .votebar .back { border: 1px solid var(--rule-strong); color: var(--ink); background: #fff; }
 .votebar .vote { background: #25D366; color: #fff; border: 0; font-weight: 600; }
 .reset { display: block; text-align: center; font-family: var(--mono); font-size: .62rem; color: var(--mute); margin-top: 1.2rem; cursor: pointer; text-decoration: underline; background: none; border: 0; width: 100%; }
-.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; }
+.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; max-width: 90vw; text-align: center; }
+.toast.err { background: var(--err); }
 </style>
 </head>
 <body>
@@ -115,7 +138,7 @@ h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spa
   <header>
     <span class="eyebrow">Adventure Cruises · Version 1</span>
     <h1>Departure Board</h1>
-    <div class="sub">Every boat, every departure — capacity always in view. Tap a boat to see its list or add a booking to it.</div>
+    <div class="sub">Every boat, every departure — capacity always in view. Tap a name to edit or cancel it. The ⋯ buttons close a boat or move a whole departure.</div>
   </header>
 
   <div class="dates" id="dates"></div>
@@ -134,15 +157,19 @@ h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spa
 
 <script src="../shared/data.js"></script>
 <script>
-let bookings = AC.load("v1");
+let store = AC.load("v1");
 let selDate = AC.dayOffset(0);
-let openManifest = null, openAdd = null;
-let addState = { pax: 2, source: null };
+let openManifest = null, openAdd = null, openSlotMenu = null;
+let rowOpen = null, rowEdit = null, rowCancel = null;
+let addState = { pax: 2, source: null, name: "" };
+let editState = null;
+let moveMode = false;
 
-function toast(msg) {
+function persist() { AC.save("v1", store); }
+function toast(msg, isErr) {
   const t = document.getElementById("toast");
-  t.textContent = msg; t.style.display = "block";
-  setTimeout(() => t.style.display = "none", 2200);
+  t.textContent = msg; t.className = "toast" + (isErr ? " err" : ""); t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2600);
 }
 
 function renderDates() {
@@ -153,87 +180,274 @@ function renderDates() {
     const c = document.createElement("button");
     c.className = "date-chip" + (d === selDate ? " active" : "");
     c.textContent = AC.fmtDay(d);
-    c.onclick = () => { selDate = d; openManifest = openAdd = null; render(); };
+    c.onclick = () => { selDate = d; closeAll(); render(); };
     el.appendChild(c);
   }
 }
-
+function closeAll() { openManifest = openAdd = openSlotMenu = rowOpen = rowEdit = rowCancel = null; moveMode = false; }
 function depKey(slot, boat) { return selDate + "|" + slot + "|" + boat; }
 
 function renderBoard() {
   const el = document.getElementById("board");
   el.innerHTML = "";
   AC.SLOTS.forEach(slot => {
-    const slotList = AC.forDeparture(bookings, selDate, slot);
+    const slotList = AC.forDeparture(store, selDate, slot);
+    const cancelled = AC.slotCancelled(store, selDate, slot);
+
     const h = document.createElement("div");
     h.className = "slot-h";
-    h.innerHTML = "<span>" + slot + " departure</span><span class='tot'>" + AC.seats(slotList) + " / 80 seats</span>";
+    h.innerHTML = "<span>" + slot + " departure</span>" +
+      "<span class='tot'>" + AC.seats(slotList) + " / 80 seats</span>" +
+      "<button class='menu-btn' title='Departure actions'>⋯</button>";
+    h.querySelector(".menu-btn").onclick = () => { openSlotMenu = openSlotMenu === slot ? null : slot; moveMode = false; render(); };
     el.appendChild(h);
 
-    AC.BOATS.forEach(boat => {
-      const list = AC.forDeparture(bookings, selDate, slot, boat.id);
-      const sold = AC.seats(list);
-      const left = boat.cap - sold;
-      const pct = Math.min(100, Math.round(sold / boat.cap * 100));
-      const state = sold >= boat.cap ? "full" : (sold >= boat.cap * 0.75 ? "warn" : "ok");
-      const srcs = AC.bySource(list);
-      const key = depKey(slot, boat.id);
+    if (cancelled) {
+      const c1 = AC.getClosure(store, selDate, slot, AC.BOATS[0].id);
+      const note = document.createElement("div");
+      note.className = "slot-cancelled";
+      note.textContent = "⛔ Departure off — " + (c1 ? c1.reason : "cancelled");
+      el.appendChild(note);
+    }
 
-      const card = document.createElement("div");
-      card.className = "dep" + (state === "full" ? " full" : "");
-      card.innerHTML =
-        "<div class='dep-top'><span class='boat'>" + boat.name + "</span>" +
-        "<span class='count'>" + sold + "<span class='cap'> / " + boat.cap + "</span></span></div>" +
-        "<div class='bar " + state + "'><i style='width:" + pct + "%'></i></div>" +
-        "<div class='chips'>" + AC.SOURCES.map(s => "<span class='chip'>" + s.short + " <b>" + (srcs[s.id] || 0) + "</b></span>").join("") + "</div>" +
-        "<div class='dep-actions'>" +
-          "<button class='btn' data-act='man'>List (" + list.length + ")</button>" +
-          "<button class='btn tc' data-act='add'" + (left <= 0 ? " disabled" : "") + ">+ Add</button>" +
-          "<button class='btn primary' data-act='dock'>Dock</button>" +
-        "</div>" +
-        "<div class='manifest" + (openManifest === key ? " open" : "") + "' data-man></div>" +
-        "<div class='addf" + (openAdd === key ? " open" : "") + "' data-add></div>";
+    if (openSlotMenu === slot) el.appendChild(buildSlotPanel(slot));
 
-      card.querySelector("[data-act=man]").onclick = () => { openManifest = openManifest === key ? null : key; openAdd = null; render(); };
-      card.querySelector("[data-act=add]").onclick = () => { openAdd = openAdd === key ? null : key; openManifest = null; addState = { pax: 2, source: null, name: "" }; render(); };
-      card.querySelector("[data-act=dock]").onclick = () => openDock(slot, boat);
-
-      if (openManifest === key) renderManifest(card.querySelector("[data-man]"), list);
-      if (openAdd === key) renderAdd(card.querySelector("[data-add]"), slot, boat, left);
-      el.appendChild(card);
-    });
+    AC.BOATS.forEach(boat => el.appendChild(buildCard(slot, boat)));
   });
 }
 
-function renderManifest(el, list) {
+/* ---------- slot panel: cancel / move whole departure ---------- */
+function buildSlotPanel(slot) {
+  const p = document.createElement("div");
+  p.className = "slot-panel";
+  if (!moveMode) {
+    p.innerHTML = "<div class='t'>" + slot + " — whole departure</div>" +
+      "<label>Reason (weather, mechanical…)</label>" +
+      "<input type='text' id='sp-reason' placeholder='e.g. Force 6 westerly' />" +
+      "<div class='panel-row'>" +
+        "<button class='pbtn tc' id='sp-move'>Move to another date</button>" +
+        "<button class='pbtn danger' id='sp-cancel'>Cancel departure</button>" +
+      "</div>" +
+      "<div class='panel-row'><button class='pbtn' id='sp-close'>Close</button></div>";
+    p.querySelector("#sp-close").onclick = () => { openSlotMenu = null; render(); };
+    p.querySelector("#sp-move").onclick = () => {
+      moveMode = p.querySelector("#sp-reason").value || "weather"; render();
+    };
+    p.querySelector("#sp-cancel").onclick = () => {
+      const reason = p.querySelector("#sp-reason").value || "cancelled by operator";
+      const n = AC.forDeparture(store, selDate, slot).length;
+      AC.cancelDeparture(store, selDate, slot, reason);
+      persist(); openSlotMenu = null;
+      toast("⛔ " + slot + " cancelled — " + n + " bookings marked, reason saved");
+      render();
+    };
+  } else {
+    let chips = "";
+    for (let i = 0; i < 7; i++) {
+      const d = AC.dayOffset(i);
+      if (d === selDate) continue;
+      chips += "<button class='date-chip' data-d='" + d + "'>" + AC.fmtDay(d) + " · " + AC.slotLeft(store, d, slot) + " free</button>";
+    }
+    p.innerHTML = "<div class='t'>Move " + slot + " (" + AC.seats(AC.forDeparture(store, selDate, slot)) + " pax) to…</div>" +
+      "<div class='dates' style='padding:.4rem 0'>" + chips + "</div>" +
+      "<div class='guard err' id='sp-guard' style='display:none'></div>" +
+      "<div class='panel-row'><button class='pbtn' id='sp-back'>← Back</button></div>";
+    p.querySelector("#sp-back").onclick = () => { moveMode = false; render(); };
+    p.querySelectorAll("[data-d]").forEach(c => c.onclick = () => {
+      const err = AC.moveDeparture(store, selDate, slot, c.dataset.d, moveMode);
+      if (err) {
+        const g = p.querySelector("#sp-guard"); g.style.display = "block"; g.textContent = "⛔ " + err;
+        return;
+      }
+      persist();
+      const target = c.dataset.d;
+      openSlotMenu = null; moveMode = false;
+      toast("✓ Moved to " + AC.fmtDay(target) + " — same boats, same time");
+      render();
+    });
+  }
+  return p;
+}
+
+/* ---------- departure card ---------- */
+function buildCard(slot, boat) {
+  const closure = AC.getClosure(store, selDate, slot, boat.id);
+  const list = AC.forDeparture(store, selDate, slot, boat.id, true);
+  const active = list.filter(x => x.status === "active");
+  const sold = AC.seats(active);
+  const left = boat.cap - sold;
+  const pct = Math.min(100, Math.round(sold / boat.cap * 100));
+  const state = sold >= boat.cap ? "full" : (sold >= boat.cap * 0.75 ? "warn" : "ok");
+  const srcs = AC.bySource(active);
+  const key = depKey(slot, boat.id);
+
+  const card = document.createElement("div");
+  card.className = "dep" + (state === "full" && !closure ? " full" : "") + (closure ? " closed" : "");
+  card.innerHTML =
+    "<div class='dep-top'><span class='boat'>" + boat.name + "</span>" +
+    "<span class='count'>" + sold + "<span class='cap'> / " + boat.cap + "</span></span></div>" +
+    (closure ? "<span class='closed-badge'>Closed — " + closure.reason + "</span>" :
+      "<div class='bar " + state + "'><i style='width:" + pct + "%'></i></div>" +
+      "<div class='chips'>" + AC.SOURCES.map(s => "<span class='chip'>" + s.short + " <b>" + (srcs[s.id] || 0) + "</b></span>").join("") + "</div>") +
+    "<div class='dep-actions'>" +
+      "<button class='btn' data-act='man'>List (" + active.length + (list.length > active.length ? "+" + (list.length - active.length) : "") + ")</button>" +
+      "<button class='btn tc' data-act='add'" + (closure || left <= 0 ? " disabled" : "") + ">+ Add</button>" +
+      "<button class='btn primary' data-act='dock'>Dock</button>" +
+      "<button class='btn icon' data-act='boat'>" + (closure ? "▶" : "⏸") + "</button>" +
+    "</div>" +
+    "<div class='manifest" + (openManifest === key ? " open" : "") + "' data-man></div>" +
+    "<div class='addf" + (openAdd === key ? " open" : "") + "' data-add></div>";
+
+  card.querySelector("[data-act=man]").onclick = () => { openManifest = openManifest === key ? null : key; openAdd = null; rowOpen = rowEdit = rowCancel = null; render(); };
+  card.querySelector("[data-act=add]").onclick = () => { openAdd = openAdd === key ? null : key; openManifest = null; addState = { pax: 2, source: null, name: "" }; render(); };
+  card.querySelector("[data-act=dock]").onclick = () => openDock(slot, boat);
+  card.querySelector("[data-act=boat]").onclick = () => toggleBoat(slot, boat, closure);
+
+  if (openManifest === key) renderManifest(card.querySelector("[data-man]"), list, slot, boat);
+  if (openAdd === key) renderAdd(card.querySelector("[data-add]"), slot, boat, left);
+  return card;
+}
+
+/* ---------- close / reopen one boat ---------- */
+function toggleBoat(slot, boat, closure) {
+  if (closure) {
+    AC.clearClosure(store, selDate, slot, boat.id);
+    persist(); toast("▶ " + boat.name + " " + slot + " reopened"); render();
+    return;
+  }
+  const mine = AC.forDeparture(store, selDate, slot, boat.id);
+  const other = AC.BOATS.find(b2 => b2.id !== boat.id);
+  const movingPax = AC.seats(mine);
+  const otherRoom = AC.boatLeft(store, selDate, slot, other.id);
+  let msg = "Close " + boat.name + " for " + slot + "?";
+  if (movingPax > 0 && otherRoom >= movingPax) {
+    if (confirm(msg + "\n\nMove its " + movingPax + " pax to " + other.name + " (" + otherRoom + " free)?\nOK = move them · Cancel = keep here")) {
+      mine.forEach(x => x.boat = other.id);
+      toast("✓ " + movingPax + " pax moved to " + other.name);
+    }
+  } else if (movingPax > 0) {
+    if (!confirm(msg + "\n\n⚠ It has " + movingPax + " pax and " + other.name + " only has " + otherRoom + " free — bookings stay put for manual sorting.")) return;
+  } else {
+    if (!confirm(msg)) return;
+  }
+  AC.setClosure(store, selDate, slot, boat.id, "only one boat running");
+  persist(); render();
+}
+
+/* ---------- manifest with edit / cancel ---------- */
+function renderManifest(el, list, slot, boat) {
   if (!list.length) { el.innerHTML = "<div style='font-size:.82rem;color:var(--mute);padding:.3rem 0'>No bookings yet.</div>"; return; }
   el.innerHTML = "";
   list.forEach(x => {
     const r = document.createElement("div");
-    r.className = "mrow";
+    r.className = "mrow" + (x.status === "cancelled" ? " cancelled" : "");
     const src = AC.SOURCES.find(s => s.id === x.source);
-    r.innerHTML = "<span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span>" +
-      "<span class='tel'>" + (x.phone || "no phone on file") + "</span>";
-    r.onclick = () => r.classList.toggle("open");
+    let html = "<div class='line1'><span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span></div>";
+    if (x.status === "cancelled") html += "<div class='cnote'>cancelled — " + (x.note || "no note") + "</div>";
+    r.innerHTML = html;
+
+    r.querySelector(".line1").onclick = () => { rowOpen = rowOpen === x.id ? null : x.id; rowEdit = rowCancel = null; render(); };
+
+    if (rowOpen === x.id) {
+      const d = document.createElement("div");
+      d.className = "detail";
+      if (x.status === "cancelled") {
+        d.innerHTML = "<div class='tel'>" + (x.phone || "no phone on file") + "</div>" +
+          "<div class='acts'><button class='sbtn tc' data-a='restore'>Restore booking</button></div>";
+        d.querySelector("[data-a=restore]").onclick = () => {
+          const err = AC.restoreBooking(store, x.id);
+          if (err) { toast("⛔ " + err, true); return; }
+          persist(); toast("✓ Restored"); render();
+        };
+      } else if (rowEdit === x.id) {
+        d.appendChild(buildEditForm(x, slot, boat));
+      } else if (rowCancel === x.id) {
+        d.innerHTML = "<div class='iform'><label>Why? (kept on record)</label>" +
+          "<input type='text' id='cx-note' placeholder='e.g. customer cancelled by phone' />" +
+          "<div class='acts' style='margin-top:.5rem'>" +
+          "<button class='sbtn danger' data-a='confirm'>Confirm cancel</button>" +
+          "<button class='sbtn' data-a='back'>Keep booking</button></div></div>";
+        d.querySelector("[data-a=confirm]").onclick = () => {
+          AC.cancelBooking(store, x.id, d.querySelector("#cx-note").value || "no note");
+          persist(); rowCancel = rowOpen = null;
+          toast("✓ Cancelled — " + x.pax + " seats freed, note saved");
+          render();
+        };
+        d.querySelector("[data-a=back]").onclick = () => { rowCancel = null; render(); };
+      } else {
+        d.innerHTML = "<div class='tel'>" + (x.phone || "no phone on file") + "</div>" +
+          "<div class='acts'>" +
+          "<button class='sbtn' data-a='edit'>✎ Edit</button>" +
+          "<button class='sbtn danger' data-a='cancel'>Cancel booking</button></div>";
+        d.querySelector("[data-a=edit]").onclick = () => {
+          rowEdit = x.id;
+          editState = { name: x.name, pax: x.pax, source: x.source };
+          render();
+        };
+        d.querySelector("[data-a=cancel]").onclick = () => { rowCancel = x.id; render(); };
+      }
+      r.appendChild(d);
+    }
     el.appendChild(r);
   });
 }
 
+function buildEditForm(x, slot, boat) {
+  const f = document.createElement("div");
+  f.className = "iform";
+  const left = AC.boatLeft(store, selDate, slot, boat.id) + x.pax; /* room incl. own seats */
+  f.innerHTML =
+    "<label>Name / group</label><input type='text' id='ef-name' value='" + editState.name.replace(/'/g, "&#39;") + "' />" +
+    "<label>Seats</label><div class='stepper'>" +
+      "<button id='ef-minus'>−</button><span class='n' id='ef-n'>" + editState.pax + "</span><button id='ef-plus'>+</button>" +
+      "<span style='font-family:var(--mono);font-size:.66rem;color:var(--mute)'>max " + left + "</span></div>" +
+    "<label>Who's it from</label><div class='srcpick'>" +
+      AC.SOURCES.map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
+    "<div class='guard' id='ef-guard'></div>" +
+    "<div class='acts' style='margin-top:.55rem'>" +
+      "<button class='sbtn tc' id='ef-save'>Save changes</button>" +
+      "<button class='sbtn' id='ef-back'>Discard</button></div>";
+  function check() {
+    const g = f.querySelector("#ef-guard");
+    if (editState.pax > left) { g.className = "guard err"; g.textContent = "⛔ Only " + left + " seats possible on " + boat.name + "."; return false; }
+    g.className = "guard"; return true;
+  }
+  f.querySelector("#ef-minus").onclick = () => { editState.pax = Math.max(1, editState.pax - 1); f.querySelector("#ef-n").textContent = editState.pax; check(); };
+  f.querySelector("#ef-plus").onclick = () => { editState.pax++; f.querySelector("#ef-n").textContent = editState.pax; check(); };
+  f.querySelectorAll("[data-src]").forEach(b2 => b2.onclick = () => {
+    editState.source = b2.dataset.src;
+    f.querySelectorAll("[data-src]").forEach(o => o.classList.toggle("on", o.dataset.src === editState.source));
+  });
+  f.querySelector("#ef-name").oninput = e => editState.name = e.target.value;
+  f.querySelector("#ef-save").onclick = () => {
+    if (!check()) return;
+    x.name = (editState.name || "").trim() || x.name;
+    x.pax = editState.pax;
+    x.source = editState.source;
+    persist(); rowEdit = rowOpen = null;
+    toast("✓ Booking updated");
+    render();
+  };
+  f.querySelector("#ef-back").onclick = () => { rowEdit = null; render(); };
+  return f;
+}
+
+/* ---------- add ---------- */
 function renderAdd(el, slot, boat, left) {
   el.innerHTML =
     "<label>Name / group</label><input type='text' id='af-name' placeholder='e.g. Lync group (Rossi)' value='" + (addState.name || "") + "' />" +
     "<label>Seats</label><div class='stepper'>" +
       "<button id='af-minus'>−</button><span class='n' id='af-n'>" + addState.pax + "</span><button id='af-plus'>+</button>" +
       "<span style='font-family:var(--mono);font-size:.7rem;color:var(--mute)'>" + left + " left on " + boat.name + "</span></div>" +
-    "<label>Source</label><div class='srcpick'>" +
+    "<label>Who's it from</label><div class='srcpick'>" +
       AC.SOURCES.map(s => "<button class='sp" + (addState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
     "<div class='guard' id='af-guard'></div>" +
-    "<button class='btn tc save' id='af-save'>Save booking</button>";
+    "<button class='save' id='af-save'>Save booking</button>";
 
   const guard = el.querySelector("#af-guard");
   function check() {
     const other = AC.BOATS.find(b2 => b2.id !== boat.id);
-    const otherLeft = other.cap - AC.seats(AC.forDeparture(bookings, selDate, slot, other.id));
+    const otherLeft = AC.boatLeft(store, selDate, slot, other.id);
     if (addState.pax > left) {
       guard.className = "guard err";
       guard.textContent = "⛔ Only " + left + " seats left on " + boat.name + (otherLeft >= addState.pax ? " — " + other.name + " has " + otherLeft + " free." : " — both boats can't fit this group.");
@@ -253,30 +467,30 @@ function renderAdd(el, slot, boat, left) {
     if (!check()) return;
     if (!addState.source) { guard.className = "guard err"; guard.textContent = "Pick a source — that's how the week reconciles itself."; return; }
     const name = (addState.name || "").trim() || "Unnamed group";
-    bookings.push({ id: "bk" + Date.now(), date: selDate, slot, boat: boat.id, name, pax: addState.pax, source: addState.source, phone: "", boarded: false });
-    AC.save("v1", bookings);
+    store.bookings.push({ id: "bk" + Date.now(), date: selDate, slot, boat: boat.id, name, pax: addState.pax, source: addState.source, phone: "", boarded: false, status: "active", note: "" });
+    persist();
     openAdd = null;
     toast("✓ " + addState.pax + " seats added to " + boat.name + " " + slot);
     render();
   };
 }
 
-/* ---- dock mode ---- */
+/* ---------- dock mode ---------- */
 function openDock(slot, boat) {
   const dock = document.getElementById("dock");
   function paint() {
-    const list = AC.forDeparture(bookings, selDate, slot, boat.id);
+    const list = AC.forDeparture(store, selDate, slot, boat.id);
     const aboard = list.filter(x => x.boarded).reduce((s, x) => s + x.pax, 0);
     dock.innerHTML =
-      "<div class='d-head'><div><div class='d-sub'>Dock mode · " + AC.fmtDay(selDate) + "</div>" +
-      "<div class='d-title'>" + boat.name + " — " + slot + "</div></div></div>" +
+      "<div><div class='d-sub'>Dock mode · " + AC.fmtDay(selDate) + "</div>" +
+      "<div class='d-title'>" + boat.name + " — " + slot + "</div></div>" +
       "<div class='d-count'>" + aboard + " / " + AC.seats(list) + "<small>aboard / expected</small></div>" +
       list.map(x => "<div class='drow" + (x.boarded ? " on" : "") + "' data-id='" + x.id + "'><span>" + x.name + "</span><span class='pax'>" + x.pax + "</span></div>").join("") +
       (list.length ? "" : "<div style='text-align:center;opacity:.6;padding:2rem 0'>No bookings for this departure.</div>") +
       "<button class='exit'>Exit dock mode</button>";
     dock.querySelectorAll(".drow").forEach(r => r.onclick = () => {
-      const bk = bookings.find(x => x.id === r.dataset.id);
-      bk.boarded = !bk.boarded; AC.save("v1", bookings); paint();
+      const bk = store.bookings.find(x => x.id === r.dataset.id);
+      bk.boarded = !bk.boarded; persist(); paint();
     });
     dock.querySelector(".exit").onclick = () => { dock.classList.remove("open"); render(); };
   }

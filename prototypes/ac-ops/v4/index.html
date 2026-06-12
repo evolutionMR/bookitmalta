@@ -30,7 +30,6 @@ header { padding-bottom: .9rem; border-bottom: 1px solid var(--rule); margin-bot
 h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spacing: -.015em; line-height: 1.15; }
 .sub { font-size: .8rem; color: var(--mute); margin-top: .15rem; }
 
-/* summary tile */
 .sum { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .8rem .9rem; margin-bottom: 1rem; }
 .sum .big { font-family: var(--mono); font-size: 1.7rem; font-weight: 600; }
 .sum .big .cap { color: var(--mute); font-weight: 400; font-size: 1.1rem; }
@@ -38,7 +37,6 @@ h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spa
 .sum .mini { display: flex; gap: 1rem; margin-top: .45rem; font-family: var(--mono); font-size: .72rem; color: var(--ink-soft); }
 .sum .mini b { font-weight: 600; }
 
-/* wizard */
 .q { font-family: var(--serif); font-size: 1.2rem; margin: 1.1rem 0 .6rem; }
 .bigbtns { display: grid; gap: .6rem; }
 .bigbtn { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--rule-strong); border-radius: 12px; padding: 1rem .95rem; cursor: pointer; font-size: 1.05rem; color: var(--ink); text-align: left; width: 100%; }
@@ -61,19 +59,60 @@ input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-rad
 .steps i { flex: 1; height: 4px; border-radius: 99px; background: var(--paper-deep); }
 .steps i.on { background: var(--terracotta); }
 
-/* confirm card */
-.confirm { background: var(--ok-bg); border: 1px solid var(--ok); color: var(--ok); border-radius: 12px; padding: 1rem; text-align: center; margin-top: 1rem; }
-.confirm .t { font-family: var(--serif); font-size: 1.25rem; margin-bottom: .2rem; }
-.confirm .d { font-family: var(--mono); font-size: .78rem; }
-
-/* overview tab */
+/* overview */
 .ov-day { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 1rem 0 .45rem; }
-.ov-row { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .7rem .85rem; margin-bottom: .5rem; }
+.slot-strip { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: .55rem 0 .35rem; }
+.slot-strip button { border: 1px solid var(--rule-strong); background: var(--card); color: var(--ink); border-radius: 6px; padding: .2rem .55rem; font-family: var(--mono); font-size: .6rem; cursor: pointer; }
+.slot-cancelled { font-family: var(--mono); font-size: .66rem; color: var(--err); background: var(--err-bg); border: 1px solid var(--err); border-radius: 8px; padding: .45rem .6rem; margin-bottom: .45rem; }
+.ov-row { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .7rem .85rem; margin-bottom: .5rem; }
 .ov-row.full { border-color: var(--err); }
+.ov-row.closed { border-style: dashed; opacity: .85; }
+.ov-row .line1 { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 .ov-row .nm { font-size: .95rem; }
 .ov-row .nm small { display: block; font-family: var(--mono); font-size: .62rem; color: var(--mute); }
 .ov-row .ct { font-family: var(--mono); font-weight: 600; }
 .ov-row .ct.ok { color: var(--ok); } .ov-row .ct.warn { color: var(--warn); } .ov-row .ct.full { color: var(--err); }
+.ov-row .ct.closed { color: var(--mute); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; }
+.ov-detail { border-top: 1px dashed var(--rule); margin-top: .55rem; padding-top: .45rem; }
+.boat-acts { display: flex; gap: .4rem; margin: .45rem 0 .2rem; }
+
+/* manifest rows (shared look with v1) */
+.mrow { padding: .42rem .1rem; border-bottom: 1px solid var(--rule); font-size: .88rem; }
+.mrow:last-child { border-bottom: 0; }
+.mrow .line1 { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.mrow .src { font-family: var(--mono); font-size: .58rem; border-radius: 999px; padding: .1rem .45rem; background: var(--paper-deep); color: var(--ink-soft); margin-left: .4rem; }
+.mrow .pax { font-family: var(--mono); font-weight: 600; }
+.mrow.cancelled .line1 span:first-child { text-decoration: line-through; color: var(--mute); }
+.mrow .cnote { font-family: var(--mono); font-size: .64rem; color: var(--err); padding-top: .1rem; }
+.mrow .detail { padding: .45rem 0 .2rem; }
+.mrow .tel { font-family: var(--mono); font-size: .72rem; color: var(--mute); margin-bottom: .45rem; }
+.acts { display: flex; gap: .4rem; }
+.sbtn { border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 7px; padding: .4rem .7rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.sbtn.danger { color: var(--err); border-color: var(--err); }
+.sbtn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+.iform { background: #fff; border: 1px solid var(--rule-strong); border-radius: 8px; padding: .6rem .7rem; margin-top: .4rem; }
+.iform label { font-family: var(--mono); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .4rem 0 .2rem; }
+.iform input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 7px; padding: .5rem .6rem; font-family: var(--sans); font-size: .95rem; background: #fff; color: var(--ink); }
+.iform .stepper button { width: 40px; height: 40px; font-size: 1.25rem; }
+.iform .stepper .n { font-size: 1.3rem; min-width: 2rem; }
+.iform .stepper { justify-content: flex-start; gap: .7rem; }
+.srcpick { display: flex; gap: .35rem; flex-wrap: wrap; }
+.srcpick .sp { border: 1px solid var(--rule-strong); background: #fff; border-radius: 999px; padding: .38rem .7rem; font-family: var(--mono); font-size: .64rem; cursor: pointer; color: var(--ink); }
+.srcpick .sp.on { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+
+/* slot panel (cancel / move) */
+.slot-panel { background: var(--card); border: 1px solid var(--rule-strong); border-radius: 10px; padding: .8rem .9rem; margin-bottom: .55rem; }
+.slot-panel .t { font-family: var(--serif); font-size: 1.02rem; margin-bottom: .45rem; }
+.slot-panel label { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .45rem 0 .25rem; }
+.slot-panel input[type=text] { background: #fff; font-size: .95rem; padding: .55rem .65rem; border-radius: 8px; }
+.panel-row { display: flex; gap: .45rem; margin-top: .6rem; }
+.pbtn { flex: 1; border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 8px; padding: .55rem .4rem; font-family: var(--mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.pbtn.danger { background: var(--err); color: #fff; border-color: var(--err); }
+.pbtn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
+.dates { display: flex; gap: .45rem; overflow-x: auto; padding: .2rem 0 .6rem; scrollbar-width: none; }
+.dates::-webkit-scrollbar { display: none; }
+.date-chip { flex: 0 0 auto; border: 1px solid var(--rule-strong); background: var(--card); border-radius: 999px; padding: .45rem .85rem; font-family: var(--mono); font-size: .68rem; cursor: pointer; white-space: nowrap; color: var(--ink); }
+.date-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
 /* dock */
 #dock { position: fixed; inset: 0; background: var(--ink); color: var(--paper); z-index: 50; display: none; flex-direction: column; padding: 1rem; overflow-y: auto; }
@@ -98,11 +137,8 @@ input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-rad
 .votebar .back { border: 1px solid var(--rule-strong); color: var(--ink); background: #fff; }
 .votebar .vote { background: #25D366; color: #fff; border: 0; font-weight: 600; }
 .reset { display: block; text-align: center; font-family: var(--mono); font-size: .62rem; color: var(--mute); margin-top: 1.2rem; cursor: pointer; text-decoration: underline; background: none; border: 0; width: 100%; }
-.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; }
-.dates { display: flex; gap: .45rem; overflow-x: auto; padding: .2rem 0 .6rem; scrollbar-width: none; }
-.dates::-webkit-scrollbar { display: none; }
-.date-chip { flex: 0 0 auto; border: 1px solid var(--rule-strong); background: var(--card); border-radius: 999px; padding: .45rem .85rem; font-family: var(--mono); font-size: .68rem; cursor: pointer; white-space: nowrap; color: var(--ink); }
-.date-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; max-width: 90vw; text-align: center; }
+.toast.err { background: var(--err); }
 </style>
 </head>
 <body>
@@ -111,7 +147,7 @@ input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-rad
   <header>
     <span class="eyebrow">Adventure Cruises · Version 2</span>
     <h1>Add First</h1>
-    <div class="sub">One big button. Capacity lives inside it — you can never oversell by accident. Built for the dock and the phone call.</div>
+    <div class="sub">One big button to sell. The Overview tab manages everything else — edit, cancel, close a boat, move a departure.</div>
   </header>
 
   <div id="view"></div>
@@ -133,21 +169,20 @@ input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-rad
 
 <script src="../shared/data.js"></script>
 <script>
-let bookings = AC.load("v4");
+let store = AC.load("v4");
 let tab = "add";
-let wiz = null; // {step, date, slot, pax, source, name, boat}
+let wiz = null;
+let ovOpen = null;        /* "date|slot|boat" expanded row */
+let rowOpen = null, rowEdit = null, rowCancel = null;
+let slotMenu = null;      /* "date|slot" */
+let moveMode = false;
+let editState = null;
 
-function toast(msg) {
+function persist() { AC.save("v4", store); }
+function toast(msg, isErr) {
   const t = document.getElementById("toast");
-  t.textContent = msg; t.style.display = "block";
-  setTimeout(() => t.style.display = "none", 2400);
-}
-function slotLeft(date, slot) {
-  return 80 - AC.seats(AC.forDeparture(bookings, date, slot));
-}
-function boatLeft(date, slot, boatId) {
-  const cap = AC.BOATS.find(x => x.id === boatId).cap;
-  return cap - AC.seats(AC.forDeparture(bookings, date, slot, boatId));
+  t.textContent = msg; t.className = "toast" + (isErr ? " err" : ""); t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2600);
 }
 function setTab(t) {
   tab = t;
@@ -160,15 +195,15 @@ document.getElementById("tab-add").onclick = () => { wiz = null; setTab("add"); 
 document.getElementById("tab-today").onclick = () => setTab("today");
 document.getElementById("tab-dock").onclick = () => setTab("dock");
 
-/* ============ ADD TAB ============ */
+/* ============ ADD TAB (wizard) ============ */
 function renderAdd(el) {
   if (!wiz) {
     const today = AC.dayOffset(0);
-    const sold = AC.seats(bookings.filter(x => x.date === today));
+    const sold = AC.seats(store.bookings.filter(x => x.date === today));
     el.innerHTML =
       "<div class='sum'><div class='lbl'>Today — seats sold</div>" +
       "<div class='big'>" + sold + "<span class='cap'> / 160</span></div>" +
-      "<div class='mini'><span>09:30 · <b>" + slotLeft(today, "09:30") + " left</b></span><span>14:30 · <b>" + slotLeft(today, "14:30") + " left</b></span></div></div>" +
+      "<div class='mini'><span>09:30 · <b>" + AC.slotLeft(store, today, "09:30") + " left</b></span><span>14:30 · <b>" + AC.slotLeft(store, today, "14:30") + " left</b></span></div></div>" +
       "<button class='cta' id='start'>＋ Add a booking</button>" +
       "<div class='hint' style='text-align:center;margin-top:.5rem'>Lync call · walk-up · phone — everything lands here, three taps.</div>";
     el.querySelector("#start").onclick = () => { wiz = { step: 1, date: AC.dayOffset(0), pax: 2, source: null, name: "", slot: null, boat: null }; render(); };
@@ -177,7 +212,6 @@ function renderAdd(el) {
 
   const steps = "<div class='steps'>" + [1,2,3,4].map(i => "<i class='" + (wiz.step >= i ? "on" : "") + "'></i>").join("") + "</div>";
 
-  /* step 1 — day + slot, capacity inside the buttons */
   if (wiz.step === 1) {
     let dateChips = "<div class='dates'>";
     for (let i = 0; i < 7; i++) {
@@ -187,21 +221,22 @@ function renderAdd(el) {
     dateChips += "</div>";
     el.innerHTML = steps + "<div class='q'>Which departure?</div>" + dateChips +
       "<div class='bigbtns'>" + AC.SLOTS.map(s => {
-        const left = slotLeft(wiz.date, s);
-        const cls = left <= 0 ? "full" : (left <= 20 ? "warn" : "ok");
-        return "<button class='bigbtn' data-slot='" + s + "'" + (left <= 0 ? " disabled" : "") + "><span>" + s + "</span><span class='left " + cls + "'>" + (left <= 0 ? "FULL" : left + " seats left") + "</span></button>";
+        const cancelled = AC.slotCancelled(store, wiz.date, s);
+        const left = AC.slotLeft(store, wiz.date, s);
+        const cls = (cancelled || left <= 0) ? "full" : (left <= 20 ? "warn" : "ok");
+        const lbl = cancelled ? "OFF" : (left <= 0 ? "FULL" : left + " seats left");
+        return "<button class='bigbtn' data-slot='" + s + "'" + (cancelled || left <= 0 ? " disabled" : "") + "><span>" + s + "</span><span class='left " + cls + "'>" + lbl + "</span></button>";
       }).join("") + "</div>";
     el.querySelectorAll("[data-d]").forEach(c => c.onclick = () => { wiz.date = c.dataset.d; render(); });
     el.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { wiz.slot = b.dataset.slot; wiz.step = 2; render(); });
     return;
   }
 
-  /* step 2 — pax */
   if (wiz.step === 2) {
-    const left = slotLeft(wiz.date, wiz.slot);
+    const left = AC.slotLeft(store, wiz.date, wiz.slot);
     el.innerHTML = steps + "<div class='q'>How many seats?</div>" +
       "<div class='stepper'><button id='mi'>−</button><span class='n'>" + wiz.pax + "</span><button id='pl'>+</button></div>" +
-      "<div class='hint' style='text-align:center'>" + left + " seats left across both boats at " + wiz.slot + "</div>" +
+      "<div class='hint' style='text-align:center'>" + left + " seats left at " + wiz.slot + "</div>" +
       "<div class='guard" + (wiz.pax > left ? " err" : "") + "'>⛔ Only " + left + " seats left at " + wiz.slot + " — can't take " + wiz.pax + ".</div>" +
       "<button class='cta' id='next'" + (wiz.pax > left ? " disabled style='opacity:.45'" : "") + ">Next</button>" +
       "<button class='cta ghost' id='bk'>← Back</button>";
@@ -212,7 +247,6 @@ function renderAdd(el) {
     return;
   }
 
-  /* step 3 — source + name */
   if (wiz.step === 3) {
     el.innerHTML = steps + "<div class='q'>Who's it from?</div>" +
       "<div class='bigbtns'>" + AC.SOURCES.map(s =>
@@ -223,24 +257,24 @@ function renderAdd(el) {
     el.querySelectorAll("[data-src]").forEach(b => b.onclick = () => { wiz.source = b.dataset.src; render(); });
     el.querySelector("#nm").oninput = e => wiz.name = e.target.value;
     el.querySelector("#next").onclick = () => {
-      if (!wiz.source) { toast("Pick a source first"); return; }
+      if (!wiz.source) { toast("Pick a source first", true); return; }
       wiz.step = 4; render();
     };
     el.querySelector("#bk").onclick = () => { wiz.step = 2; render(); };
     return;
   }
 
-  /* step 4 — boat assignment, suggested boat preselected */
   if (wiz.step === 4) {
-    const lefts = AC.BOATS.map(b => ({ b, left: boatLeft(wiz.date, wiz.slot, b.id) }));
-    const suggested = lefts.filter(x => x.left >= wiz.pax).sort((a, b2) => b2.left - a.left)[0];
+    const lefts = AC.BOATS.map(b => ({ b, closed: !!AC.getClosure(store, wiz.date, wiz.slot, b.id), left: AC.boatLeft(store, wiz.date, wiz.slot, b.id) }));
+    const open = lefts.filter(x => !x.closed && x.left >= wiz.pax).sort((a, b2) => b2.left - a.left);
+    const suggested = open[0];
     if (!wiz.boat && suggested) wiz.boat = suggested.b.id;
     el.innerHTML = steps + "<div class='q'>Which boat?</div>" +
       "<div class='bigbtns'>" + lefts.map(x =>
-        "<button class='bigbtn" + (wiz.boat === x.b.id ? " on" : "") + "' data-boat='" + x.b.id + "'" + (x.left < wiz.pax ? " disabled" : "") + ">" +
+        "<button class='bigbtn" + (wiz.boat === x.b.id ? " on" : "") + "' data-boat='" + x.b.id + "'" + (x.closed || x.left < wiz.pax ? " disabled" : "") + ">" +
         "<span>" + x.b.name + (suggested && suggested.b.id === x.b.id ? "<span class='sug'>suggested</span>" : "") + "</span>" +
-        "<span class='left " + (x.left < wiz.pax ? "full" : "ok") + "'>" + x.left + " left</span></button>").join("") + "</div>" +
-      (suggested ? "" : "<div class='guard err'>⛔ Neither boat can fit " + wiz.pax + " at " + wiz.slot + ".</div>") +
+        "<span class='left " + (x.closed || x.left < wiz.pax ? "full" : "ok") + "'>" + (x.closed ? "CLOSED" : x.left + " left") + "</span></button>").join("") + "</div>" +
+      (suggested ? "" : "<div class='guard err'>⛔ No boat can fit " + wiz.pax + " at " + wiz.slot + ".</div>") +
       "<button class='cta' id='save'" + (suggested ? "" : " disabled style='opacity:.45'") + ">Confirm booking</button>" +
       "<button class='cta ghost' id='bk'>← Back</button>";
     el.querySelectorAll("[data-boat]").forEach(b => b.onclick = () => { wiz.boat = b.dataset.boat; render(); });
@@ -248,10 +282,10 @@ function renderAdd(el) {
     el.querySelector("#save").onclick = () => {
       if (!wiz.boat) return;
       const name = (wiz.name || "").trim() || "Unnamed group";
-      bookings.push({ id: "bk" + Date.now(), date: wiz.date, slot: wiz.slot, boat: wiz.boat, name, pax: wiz.pax, source: wiz.source, phone: "", boarded: false });
-      AC.save("v4", bookings);
+      store.bookings.push({ id: "bk" + Date.now(), date: wiz.date, slot: wiz.slot, boat: wiz.boat, name, pax: wiz.pax, source: wiz.source, phone: "", boarded: false, status: "active", note: "" });
+      persist();
       const boatName = AC.BOATS.find(x => x.id === wiz.boat).name;
-      const done = { pax: wiz.pax, slot: wiz.slot, boat: boatName, date: wiz.date };
+      const done = { pax: wiz.pax, slot: wiz.slot, boat: boatName };
       wiz = null; render();
       toast("✓ " + done.pax + " seats — " + done.boat + " " + done.slot);
     };
@@ -259,7 +293,7 @@ function renderAdd(el) {
   }
 }
 
-/* ============ OVERVIEW TAB ============ */
+/* ============ OVERVIEW TAB — the management hub ============ */
 function renderToday(el) {
   el.innerHTML = "";
   for (let i = 0; i < 3; i++) {
@@ -267,18 +301,235 @@ function renderToday(el) {
     const h = document.createElement("div");
     h.className = "ov-day"; h.textContent = AC.fmtDay(d);
     el.appendChild(h);
-    AC.SLOTS.forEach(slot => AC.BOATS.forEach(boat => {
-      const sold = AC.seats(AC.forDeparture(bookings, d, slot, boat.id));
-      const cls = sold >= boat.cap ? "full" : (sold >= boat.cap * .75 ? "warn" : "ok");
-      const srcs = AC.bySource(AC.forDeparture(bookings, d, slot, boat.id));
-      const row = document.createElement("div");
-      row.className = "ov-row" + (cls === "full" ? " full" : "");
-      row.innerHTML = "<span class='nm'>" + slot + " — " + boat.name +
-        "<small>BIM " + srcs.bim + " · Lync " + srcs.lync + " · Walk " + srcs.walkup + " · Tel " + srcs.phone + "</small></span>" +
-        "<span class='ct " + cls + "'>" + sold + "/" + boat.cap + "</span>";
-      el.appendChild(row);
-    }));
+
+    AC.SLOTS.forEach(slot => {
+      const sk = d + "|" + slot;
+      const strip = document.createElement("div");
+      strip.className = "slot-strip";
+      strip.innerHTML = "<span>" + slot + " · " + AC.seats(AC.forDeparture(store, d, slot)) + "/80</span>" +
+        "<button>⋯ departure</button>";
+      strip.querySelector("button").onclick = () => { slotMenu = slotMenu === sk ? null : sk; moveMode = false; render(); };
+      el.appendChild(strip);
+
+      if (AC.slotCancelled(store, d, slot)) {
+        const c1 = AC.getClosure(store, d, slot, AC.BOATS[0].id);
+        const note = document.createElement("div");
+        note.className = "slot-cancelled";
+        note.textContent = "⛔ Departure off — " + (c1 ? c1.reason : "cancelled");
+        el.appendChild(note);
+      }
+      if (slotMenu === sk) el.appendChild(buildSlotPanel(d, slot));
+
+      AC.BOATS.forEach(boat => el.appendChild(buildOvRow(d, slot, boat)));
+    });
   }
+}
+
+function buildSlotPanel(date, slot) {
+  const p = document.createElement("div");
+  p.className = "slot-panel";
+  if (!moveMode) {
+    p.innerHTML = "<div class='t'>" + slot + " — whole departure</div>" +
+      "<label>Reason (weather, mechanical…)</label>" +
+      "<input type='text' id='sp-reason' placeholder='e.g. Force 6 westerly' />" +
+      "<div class='panel-row'>" +
+        "<button class='pbtn tc' id='sp-move'>Move to another date</button>" +
+        "<button class='pbtn danger' id='sp-cancel'>Cancel departure</button>" +
+      "</div>" +
+      "<div class='panel-row'><button class='pbtn' id='sp-close'>Close</button></div>";
+    p.querySelector("#sp-close").onclick = () => { slotMenu = null; render(); };
+    p.querySelector("#sp-move").onclick = () => { moveMode = p.querySelector("#sp-reason").value || "weather"; render(); };
+    p.querySelector("#sp-cancel").onclick = () => {
+      const reason = p.querySelector("#sp-reason").value || "cancelled by operator";
+      const n = AC.forDeparture(store, date, slot).length;
+      AC.cancelDeparture(store, date, slot, reason);
+      persist(); slotMenu = null;
+      toast("⛔ " + slot + " cancelled — " + n + " bookings marked, reason saved");
+      render();
+    };
+  } else {
+    let chips = "";
+    for (let i = 0; i < 7; i++) {
+      const d2 = AC.dayOffset(i);
+      if (d2 === date) continue;
+      chips += "<button class='date-chip' data-d='" + d2 + "'>" + AC.fmtDay(d2) + " · " + AC.slotLeft(store, d2, slot) + " free</button>";
+    }
+    p.innerHTML = "<div class='t'>Move " + slot + " (" + AC.seats(AC.forDeparture(store, date, slot)) + " pax) to…</div>" +
+      "<div class='dates' style='padding:.4rem 0'>" + chips + "</div>" +
+      "<div class='guard err' id='sp-guard' style='display:none'></div>" +
+      "<div class='panel-row'><button class='pbtn' id='sp-back'>← Back</button></div>";
+    p.querySelector("#sp-back").onclick = () => { moveMode = false; render(); };
+    p.querySelectorAll("[data-d]").forEach(c => c.onclick = () => {
+      const err = AC.moveDeparture(store, date, slot, c.dataset.d, moveMode);
+      if (err) { const g = p.querySelector("#sp-guard"); g.style.display = "block"; g.textContent = "⛔ " + err; return; }
+      persist(); slotMenu = null; moveMode = false;
+      toast("✓ Moved to " + AC.fmtDay(c.dataset.d) + " — same boats, same time");
+      render();
+    });
+  }
+  return p;
+}
+
+function buildOvRow(date, slot, boat) {
+  const key = date + "|" + slot + "|" + boat.id;
+  const closure = AC.getClosure(store, date, slot, boat.id);
+  const all = AC.forDeparture(store, date, slot, boat.id, true);
+  const active = all.filter(x => x.status === "active");
+  const sold = AC.seats(active);
+  const cls = sold >= boat.cap ? "full" : (sold >= boat.cap * .75 ? "warn" : "ok");
+  const srcs = AC.bySource(active);
+
+  const row = document.createElement("div");
+  row.className = "ov-row" + (cls === "full" && !closure ? " full" : "") + (closure ? " closed" : "");
+  row.innerHTML = "<div class='line1'><span class='nm'>" + boat.name +
+    "<small>" + (closure ? "closed — " + closure.reason : "BIM " + srcs.bim + " · Lync " + srcs.lync + " · Walk " + srcs.walkup + " · Tel " + srcs.phone) + "</small></span>" +
+    (closure ? "<span class='ct closed'>Closed</span>" : "<span class='ct " + cls + "'>" + sold + "/" + boat.cap + "</span>") + "</div>";
+
+  row.querySelector(".line1").onclick = () => { ovOpen = ovOpen === key ? null : key; rowOpen = rowEdit = rowCancel = null; render(); };
+
+  if (ovOpen === key) {
+    const det = document.createElement("div");
+    det.className = "ov-detail";
+
+    /* boat-level actions */
+    const acts = document.createElement("div");
+    acts.className = "boat-acts";
+    const tbtn = document.createElement("button");
+    tbtn.className = "sbtn" + (closure ? " tc" : "");
+    tbtn.textContent = closure ? "▶ Reopen boat" : "⏸ Close this boat";
+    tbtn.onclick = () => toggleBoat(date, slot, boat, closure);
+    acts.appendChild(tbtn);
+    det.appendChild(acts);
+
+    /* manifest with edit/cancel */
+    if (!all.length) {
+      const empty = document.createElement("div");
+      empty.style.cssText = "font-size:.82rem;color:var(--mute);padding:.3rem 0";
+      empty.textContent = "No bookings yet.";
+      det.appendChild(empty);
+    } else {
+      all.forEach(x => det.appendChild(buildMRow(x, date, slot, boat)));
+    }
+    row.appendChild(det);
+  }
+  return row;
+}
+
+function toggleBoat(date, slot, boat, closure) {
+  if (closure) {
+    AC.clearClosure(store, date, slot, boat.id);
+    persist(); toast("▶ " + boat.name + " " + slot + " reopened"); render();
+    return;
+  }
+  const mine = AC.forDeparture(store, date, slot, boat.id);
+  const other = AC.BOATS.find(b2 => b2.id !== boat.id);
+  const movingPax = AC.seats(mine);
+  const otherRoom = AC.boatLeft(store, date, slot, other.id);
+  let msg = "Close " + boat.name + " for " + slot + "?";
+  if (movingPax > 0 && otherRoom >= movingPax) {
+    if (confirm(msg + "\n\nMove its " + movingPax + " pax to " + other.name + " (" + otherRoom + " free)?\nOK = move them · Cancel = keep here")) {
+      mine.forEach(x => x.boat = other.id);
+      toast("✓ " + movingPax + " pax moved to " + other.name);
+    }
+  } else if (movingPax > 0) {
+    if (!confirm(msg + "\n\n⚠ It has " + movingPax + " pax and " + other.name + " only has " + otherRoom + " free — bookings stay put for manual sorting.")) return;
+  } else {
+    if (!confirm(msg)) return;
+  }
+  AC.setClosure(store, date, slot, boat.id, "only one boat running");
+  persist(); render();
+}
+
+function buildMRow(x, date, slot, boat) {
+  const r = document.createElement("div");
+  r.className = "mrow" + (x.status === "cancelled" ? " cancelled" : "");
+  const src = AC.SOURCES.find(s => s.id === x.source);
+  let html = "<div class='line1'><span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span></div>";
+  if (x.status === "cancelled") html += "<div class='cnote'>cancelled — " + (x.note || "no note") + "</div>";
+  r.innerHTML = html;
+  r.querySelector(".line1").onclick = (e) => { e.stopPropagation(); rowOpen = rowOpen === x.id ? null : x.id; rowEdit = rowCancel = null; render(); };
+
+  if (rowOpen === x.id) {
+    const d = document.createElement("div");
+    d.className = "detail";
+    if (x.status === "cancelled") {
+      d.innerHTML = "<div class='tel'>" + (x.phone || "no phone on file") + "</div>" +
+        "<div class='acts'><button class='sbtn tc' data-a='restore'>Restore booking</button></div>";
+      d.querySelector("[data-a=restore]").onclick = () => {
+        const err = AC.restoreBooking(store, x.id);
+        if (err) { toast("⛔ " + err, true); return; }
+        persist(); toast("✓ Restored"); render();
+      };
+    } else if (rowEdit === x.id) {
+      d.appendChild(buildEditForm(x, date, slot, boat));
+    } else if (rowCancel === x.id) {
+      d.innerHTML = "<div class='iform'><label>Why? (kept on record)</label>" +
+        "<input type='text' id='cx-note' placeholder='e.g. customer cancelled by phone' />" +
+        "<div class='acts' style='margin-top:.5rem'>" +
+        "<button class='sbtn danger' data-a='confirm'>Confirm cancel</button>" +
+        "<button class='sbtn' data-a='back'>Keep booking</button></div></div>";
+      d.querySelector("[data-a=confirm]").onclick = () => {
+        AC.cancelBooking(store, x.id, d.querySelector("#cx-note").value || "no note");
+        persist(); rowCancel = rowOpen = null;
+        toast("✓ Cancelled — " + x.pax + " seats freed, note saved");
+        render();
+      };
+      d.querySelector("[data-a=back]").onclick = () => { rowCancel = null; render(); };
+    } else {
+      d.innerHTML = "<div class='tel'>" + (x.phone || "no phone on file") + "</div>" +
+        "<div class='acts'>" +
+        "<button class='sbtn' data-a='edit'>✎ Edit</button>" +
+        "<button class='sbtn danger' data-a='cancel'>Cancel booking</button></div>";
+      d.querySelector("[data-a=edit]").onclick = () => {
+        rowEdit = x.id;
+        editState = { name: x.name, pax: x.pax, source: x.source };
+        render();
+      };
+      d.querySelector("[data-a=cancel]").onclick = () => { rowCancel = x.id; render(); };
+    }
+    r.appendChild(d);
+  }
+  return r;
+}
+
+function buildEditForm(x, date, slot, boat) {
+  const f = document.createElement("div");
+  f.className = "iform";
+  const left = AC.boatLeft(store, date, slot, boat.id) + x.pax;
+  f.innerHTML =
+    "<label>Name / group</label><input type='text' id='ef-name' value='" + editState.name.replace(/'/g, "&#39;") + "' />" +
+    "<label>Seats</label><div class='stepper'>" +
+      "<button id='ef-minus'>−</button><span class='n' id='ef-n'>" + editState.pax + "</span><button id='ef-plus'>+</button>" +
+      "<span style='font-family:var(--mono);font-size:.66rem;color:var(--mute)'>max " + left + "</span></div>" +
+    "<label>Who's it from</label><div class='srcpick'>" +
+      AC.SOURCES.map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
+    "<div class='guard' id='ef-guard'></div>" +
+    "<div class='acts' style='margin-top:.55rem'>" +
+      "<button class='sbtn tc' id='ef-save'>Save changes</button>" +
+      "<button class='sbtn' id='ef-back'>Discard</button></div>";
+  function check() {
+    const g = f.querySelector("#ef-guard");
+    if (editState.pax > left) { g.className = "guard err"; g.textContent = "⛔ Only " + left + " seats possible on " + boat.name + "."; return false; }
+    g.className = "guard"; return true;
+  }
+  f.querySelector("#ef-minus").onclick = () => { editState.pax = Math.max(1, editState.pax - 1); f.querySelector("#ef-n").textContent = editState.pax; check(); };
+  f.querySelector("#ef-plus").onclick = () => { editState.pax++; f.querySelector("#ef-n").textContent = editState.pax; check(); };
+  f.querySelectorAll("[data-src]").forEach(b2 => b2.onclick = () => {
+    editState.source = b2.dataset.src;
+    f.querySelectorAll("[data-src]").forEach(o => o.classList.toggle("on", o.dataset.src === editState.source));
+  });
+  f.querySelector("#ef-name").oninput = e => editState.name = e.target.value;
+  f.querySelector("#ef-save").onclick = () => {
+    if (!check()) return;
+    x.name = (editState.name || "").trim() || x.name;
+    x.pax = editState.pax;
+    x.source = editState.source;
+    persist(); rowEdit = rowOpen = null;
+    toast("✓ Booking updated");
+    render();
+  };
+  f.querySelector("#ef-back").onclick = () => { rowEdit = null; render(); };
+  return f;
 }
 
 /* ============ DOCK TAB ============ */
@@ -286,11 +537,13 @@ function renderDockPick(el) {
   const today = AC.dayOffset(0);
   el.innerHTML = "<div class='q'>Boarding which departure?</div>";
   AC.SLOTS.forEach(slot => AC.BOATS.forEach(boat => {
-    const list = AC.forDeparture(bookings, today, slot, boat.id);
+    const list = AC.forDeparture(store, today, slot, boat.id);
+    const closure = AC.getClosure(store, today, slot, boat.id);
     const btn = document.createElement("button");
     btn.className = "bigbtn";
     btn.style.marginBottom = ".55rem"; btn.style.width = "100%";
-    btn.innerHTML = "<span>" + slot + " — " + boat.name + "</span><span class='left ok'>" + AC.seats(list) + " expected</span>";
+    btn.innerHTML = "<span>" + slot + " — " + boat.name + "</span><span class='left " + (closure ? "full" : "ok") + "'>" + (closure ? "CLOSED" : AC.seats(list) + " expected") + "</span>";
+    if (closure) btn.disabled = true;
     btn.onclick = () => openDock(today, slot, boat);
     el.appendChild(btn);
   }));
@@ -299,7 +552,7 @@ function renderDockPick(el) {
 function openDock(date, slot, boat) {
   const dock = document.getElementById("dock");
   function paint() {
-    const list = AC.forDeparture(bookings, date, slot, boat.id);
+    const list = AC.forDeparture(store, date, slot, boat.id);
     const aboard = list.filter(x => x.boarded).reduce((s, x) => s + x.pax, 0);
     dock.innerHTML =
       "<div><div class='d-sub'>Dock mode · " + AC.fmtDay(date) + "</div>" +
@@ -309,8 +562,8 @@ function openDock(date, slot, boat) {
       (list.length ? "" : "<div style='text-align:center;opacity:.6;padding:2rem 0'>No bookings for this departure.</div>") +
       "<button class='exit'>Exit dock mode</button>";
     dock.querySelectorAll(".drow").forEach(r => r.onclick = () => {
-      const bk = bookings.find(x => x.id === r.dataset.id);
-      bk.boarded = !bk.boarded; AC.save("v4", bookings); paint();
+      const bk = store.bookings.find(x => x.id === r.dataset.id);
+      bk.boarded = !bk.boarded; persist(); paint();
     });
     dock.querySelector(".exit").onclick = () => { dock.classList.remove("open"); render(); };
   }
