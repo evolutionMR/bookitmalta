@@ -13,7 +13,7 @@ const AC = (() => {
     { id: "adventure-1", name: "Adventure 1", cap: 40 },
   ];
   const SLOTS = ["09:30", "14:30"];
-  const SOURCES = [
+  const DEFAULT_SOURCES = [
     { id: "bim",    label: "BookItMalta", short: "BIM" },
     { id: "lync",   label: "Lync",        short: "Lync" },
     { id: "walkup", label: "Walk-up",     short: "Walk" },
@@ -44,6 +44,7 @@ const AC = (() => {
     _id = 1;
     return {
       closures: {},   /* key "date|slot|boatId" → { reason } */
+      sources: DEFAULT_SOURCES.map(s => ({ ...s })),
       bookings: [
         /* today 09:30 — Albert V busy (34/40), Adventure 1 light (22/40) */
         b(0, "09:30", "albert-v", "Smith family", 6, "bim", "+44 7700 900123"),
@@ -87,6 +88,7 @@ const AC = (() => {
         const s = JSON.parse(raw);
         if (s && Array.isArray(s.bookings)) {
           s.closures = s.closures || {};
+          if (!Array.isArray(s.sources) || !s.sources.length) s.sources = DEFAULT_SOURCES.map(x => ({ ...x }));
           s.bookings.forEach(x => { x.status = x.status || "active"; x.note = x.note || ""; });
           return s;
         }
@@ -109,11 +111,41 @@ const AC = (() => {
       (includeCancelled || x.status === "active"));
   }
   function seats(list) { return list.reduce((s, x) => s + (x.status === "cancelled" ? 0 : x.pax), 0); }
-  function bySource(list) {
+  function bySource(store, list) {
     const out = {};
-    SOURCES.forEach(s => out[s.id] = 0);
+    store.sources.forEach(s => out[s.id] = 0);
     list.forEach(x => { if (x.status !== "cancelled") out[x.source] = (out[x.source] || 0) + x.pax; });
     return out;
+  }
+
+  /* ---- editable source labels ---- */
+  function sourcesOf(store) { return store.sources; }
+  function srcOf(store, id) {
+    return store.sources.find(s => s.id === id) || { id, label: "Unknown", short: "?" };
+  }
+  function shortOf(label) {
+    label = (label || "").trim();
+    return label.length <= 5 ? label : label.slice(0, 4);
+  }
+  function addSource(store, label) {
+    const l = (label || "").trim();
+    if (!l) return "Give it a name first.";
+    if (store.sources.some(s => s.label.toLowerCase() === l.toLowerCase())) return "\"" + l + "\" already exists.";
+    store.sources.push({ id: "src" + Date.now(), label: l, short: shortOf(l) });
+    return null;
+  }
+  function renameSource(store, id, label) {
+    const s = store.sources.find(x => x.id === id);
+    const l = (label || "").trim();
+    if (s && l) { s.label = l; s.short = shortOf(l); }
+  }
+  function deleteSource(store, id) {
+    if (store.sources.length <= 1) return "Keep at least one source.";
+    if (store.bookings.some(x => x.source === id)) {
+      return "In use by bookings — edit those bookings onto another source first.";
+    }
+    store.sources = store.sources.filter(s => s.id !== id);
+    return null;
   }
 
   /* ---- closures: boat closed for a (date, slot) ---- */
@@ -182,8 +214,9 @@ const AC = (() => {
     window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
   }
 
-  return { BOATS, SLOTS, SOURCES, dayOffset, fmtDay, load, save, reset,
+  return { BOATS, SLOTS, dayOffset, fmtDay, load, save, reset,
            forDeparture, seats, bySource,
+           sourcesOf, srcOf, addSource, renameSource, deleteSource,
            getClosure, setClosure, clearClosure, slotCancelled, boatLeft, slotLeft,
            cancelBooking, restoreBooking, moveDeparture, cancelDeparture, vote };
 })();

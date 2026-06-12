@@ -142,6 +142,8 @@ h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spa
   </header>
 
   <div class="dates" id="dates"></div>
+  <div class="slot-h" style="margin-top:0"><span id="src-summary"></span><button class="menu-btn" id="src-edit" title="Edit source labels" style="width:auto;padding:0 .5rem">✎ labels</button></div>
+  <div id="src-editor"></div>
   <div id="board"></div>
 
   <button class="reset" onclick="AC.reset('v1')">Reset demo data</button>
@@ -164,6 +166,7 @@ let rowOpen = null, rowEdit = null, rowCancel = null;
 let addState = { pax: 2, source: null, name: "" };
 let editState = null;
 let moveMode = false;
+let srcEditorOpen = false;
 
 function persist() { AC.save("v1", store); }
 function toast(msg, isErr) {
@@ -278,7 +281,7 @@ function buildCard(slot, boat) {
   const left = boat.cap - sold;
   const pct = Math.min(100, Math.round(sold / boat.cap * 100));
   const state = sold >= boat.cap ? "full" : (sold >= boat.cap * 0.75 ? "warn" : "ok");
-  const srcs = AC.bySource(active);
+  const srcs = AC.bySource(store, active);
   const key = depKey(slot, boat.id);
 
   const card = document.createElement("div");
@@ -288,7 +291,7 @@ function buildCard(slot, boat) {
     "<span class='count'>" + sold + "<span class='cap'> / " + boat.cap + "</span></span></div>" +
     (closure ? "<span class='closed-badge'>Closed — " + closure.reason + "</span>" :
       "<div class='bar " + state + "'><i style='width:" + pct + "%'></i></div>" +
-      "<div class='chips'>" + AC.SOURCES.map(s => "<span class='chip'>" + s.short + " <b>" + (srcs[s.id] || 0) + "</b></span>").join("") + "</div>") +
+      "<div class='chips'>" + AC.sourcesOf(store).map(s => "<span class='chip'>" + s.short + " <b>" + (srcs[s.id] || 0) + "</b></span>").join("") + "</div>") +
     "<div class='dep-actions'>" +
       "<button class='btn' data-act='man'>List (" + active.length + (list.length > active.length ? "+" + (list.length - active.length) : "") + ")</button>" +
       "<button class='btn tc' data-act='add'" + (closure || left <= 0 ? " disabled" : "") + ">+ Add</button>" +
@@ -341,7 +344,7 @@ function renderManifest(el, list, slot, boat) {
   list.forEach(x => {
     const r = document.createElement("div");
     r.className = "mrow" + (x.status === "cancelled" ? " cancelled" : "");
-    const src = AC.SOURCES.find(s => s.id === x.source);
+    const src = AC.srcOf(store, x.source);
     let html = "<div class='line1'><span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span></div>";
     if (x.status === "cancelled") html += "<div class='cnote'>cancelled — " + (x.note || "no note") + "</div>";
     r.innerHTML = html;
@@ -402,7 +405,7 @@ function buildEditForm(x, slot, boat) {
       "<button id='ef-minus'>−</button><span class='n' id='ef-n'>" + editState.pax + "</span><button id='ef-plus'>+</button>" +
       "<span style='font-family:var(--mono);font-size:.66rem;color:var(--mute)'>max " + left + "</span></div>" +
     "<label>Who's it from</label><div class='srcpick'>" +
-      AC.SOURCES.map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
+      AC.sourcesOf(store).map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
     "<div class='guard' id='ef-guard'></div>" +
     "<div class='acts' style='margin-top:.55rem'>" +
       "<button class='sbtn tc' id='ef-save'>Save changes</button>" +
@@ -440,7 +443,7 @@ function renderAdd(el, slot, boat, left) {
       "<button id='af-minus'>−</button><span class='n' id='af-n'>" + addState.pax + "</span><button id='af-plus'>+</button>" +
       "<span style='font-family:var(--mono);font-size:.7rem;color:var(--mute)'>" + left + " left on " + boat.name + "</span></div>" +
     "<label>Who's it from</label><div class='srcpick'>" +
-      AC.SOURCES.map(s => "<button class='sp" + (addState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
+      AC.sourcesOf(store).map(s => "<button class='sp" + (addState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
     "<div class='guard' id='af-guard'></div>" +
     "<button class='save' id='af-save'>Save booking</button>";
 
@@ -498,7 +501,50 @@ function openDock(slot, boat) {
   dock.classList.add("open");
 }
 
-function render() { renderDates(); renderBoard(); }
+/* ---------- editable source labels ---------- */
+function renderSrcBar() {
+  document.getElementById("src-summary").textContent =
+    "Sources: " + AC.sourcesOf(store).map(s => s.short).join(" · ");
+  document.getElementById("src-edit").onclick = () => { srcEditorOpen = !srcEditorOpen; render(); };
+  const ed = document.getElementById("src-editor");
+  ed.innerHTML = "";
+  if (!srcEditorOpen) return;
+
+  const p = document.createElement("div");
+  p.className = "slot-panel";
+  p.innerHTML = "<div class='t'>Source labels — rename, add, remove</div>" +
+    AC.sourcesOf(store).map(s =>
+      "<div class='panel-row' style='align-items:center'>" +
+      "<input type='text' data-id='" + s.id + "' value='" + s.label.replace(/'/g, "&#39;") + "' style='flex:1' />" +
+      "<button class='pbtn danger' data-del='" + s.id + "' style='flex:0 0 44px'>✕</button></div>").join("") +
+    "<label style='font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);display:block;margin:.55rem 0 .25rem'>New source</label>" +
+    "<div class='panel-row' style='margin-top:0'>" +
+      "<input type='text' id='src-new' placeholder='e.g. Hotel desk' style='flex:1' />" +
+      "<button class='pbtn tc' id='src-add' style='flex:0 0 70px'>+ Add</button></div>" +
+    "<div class='guard err' id='src-guard' style='display:none'></div>" +
+    "<div class='panel-row'><button class='pbtn tc' id='src-save'>Save & close</button></div>";
+
+  function fail(msg) { const g = p.querySelector("#src-guard"); g.style.display = "block"; g.textContent = "⛔ " + msg; }
+  p.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    const err = AC.deleteSource(store, b.dataset.del);
+    if (err) { fail(err); return; }
+    persist(); render();
+  });
+  p.querySelector("#src-add").onclick = () => {
+    const err = AC.addSource(store, p.querySelector("#src-new").value);
+    if (err) { fail(err); return; }
+    persist(); render();
+  };
+  p.querySelector("#src-save").onclick = () => {
+    p.querySelectorAll("input[data-id]").forEach(inp => AC.renameSource(store, inp.dataset.id, inp.value));
+    persist(); srcEditorOpen = false;
+    toast("✓ Source labels saved");
+    render();
+  };
+  ed.appendChild(p);
+}
+
+function render() { renderDates(); renderSrcBar(); renderBoard(); }
 render();
 </script>
 </body>

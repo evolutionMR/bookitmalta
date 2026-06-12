@@ -177,6 +177,7 @@ let rowOpen = null, rowEdit = null, rowCancel = null;
 let slotMenu = null;      /* "date|slot" */
 let moveMode = false;
 let editState = null;
+let srcEditorOpen = false;
 
 function persist() { AC.save("v4", store); }
 function toast(msg, isErr) {
@@ -249,8 +250,9 @@ function renderAdd(el) {
 
   if (wiz.step === 3) {
     el.innerHTML = steps + "<div class='q'>Who's it from?</div>" +
-      "<div class='bigbtns'>" + AC.SOURCES.map(s =>
+      "<div class='bigbtns'>" + AC.sourcesOf(store).map(s =>
         "<button class='bigbtn" + (wiz.source === s.id ? " on" : "") + "' data-src='" + s.id + "'><span>" + s.label + "</span></button>").join("") + "</div>" +
+      "<div class='hint' style='text-align:center;margin-top:.4rem'>Rename or add sources in the Overview tab → ✎ labels</div>" +
       "<div class='q' style='font-size:1rem'>Name / group <span style='font-family:var(--sans);font-size:.75rem;color:var(--mute)'>(optional)</span></div>" +
       "<input type='text' id='nm' placeholder='e.g. Lync group (Rossi)' value='" + wiz.name + "' />" +
       "<button class='cta' id='next'>Next</button><button class='cta ghost' id='bk'>← Back</button>";
@@ -296,6 +298,16 @@ function renderAdd(el) {
 /* ============ OVERVIEW TAB — the management hub ============ */
 function renderToday(el) {
   el.innerHTML = "";
+
+  /* source label bar + editor */
+  const bar = document.createElement("div");
+  bar.className = "slot-strip";
+  bar.style.marginTop = "0";
+  bar.innerHTML = "<span>Sources: " + AC.sourcesOf(store).map(s => s.short).join(" · ") + "</span><button>✎ labels</button>";
+  bar.querySelector("button").onclick = () => { srcEditorOpen = !srcEditorOpen; render(); };
+  el.appendChild(bar);
+  if (srcEditorOpen) el.appendChild(buildSourceEditor());
+
   for (let i = 0; i < 3; i++) {
     const d = AC.dayOffset(i);
     const h = document.createElement("div");
@@ -323,6 +335,41 @@ function renderToday(el) {
       AC.BOATS.forEach(boat => el.appendChild(buildOvRow(d, slot, boat)));
     });
   }
+}
+
+function buildSourceEditor() {
+  const p = document.createElement("div");
+  p.className = "slot-panel";
+  p.innerHTML = "<div class='t'>Source labels — rename, add, remove</div>" +
+    AC.sourcesOf(store).map(s =>
+      "<div class='panel-row' style='align-items:center'>" +
+      "<input type='text' data-id='" + s.id + "' value='" + s.label.replace(/'/g, "&#39;") + "' style='flex:1' />" +
+      "<button class='pbtn danger' data-del='" + s.id + "' style='flex:0 0 44px'>✕</button></div>").join("") +
+    "<label>New source</label>" +
+    "<div class='panel-row' style='margin-top:0'>" +
+      "<input type='text' id='src-new' placeholder='e.g. Hotel desk' style='flex:1' />" +
+      "<button class='pbtn tc' id='src-add' style='flex:0 0 70px'>+ Add</button></div>" +
+    "<div class='guard err' id='src-guard' style='display:none'></div>" +
+    "<div class='panel-row'><button class='pbtn tc' id='src-save'>Save & close</button></div>";
+
+  function fail(msg) { const g = p.querySelector("#src-guard"); g.style.display = "block"; g.textContent = "⛔ " + msg; }
+  p.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    const err = AC.deleteSource(store, b.dataset.del);
+    if (err) { fail(err); return; }
+    persist(); render();
+  });
+  p.querySelector("#src-add").onclick = () => {
+    const err = AC.addSource(store, p.querySelector("#src-new").value);
+    if (err) { fail(err); return; }
+    persist(); render();
+  };
+  p.querySelector("#src-save").onclick = () => {
+    p.querySelectorAll("input[data-id]").forEach(inp => AC.renameSource(store, inp.dataset.id, inp.value));
+    persist(); srcEditorOpen = false;
+    toast("✓ Source labels saved");
+    render();
+  };
+  return p;
 }
 
 function buildSlotPanel(date, slot) {
@@ -377,12 +424,13 @@ function buildOvRow(date, slot, boat) {
   const active = all.filter(x => x.status === "active");
   const sold = AC.seats(active);
   const cls = sold >= boat.cap ? "full" : (sold >= boat.cap * .75 ? "warn" : "ok");
-  const srcs = AC.bySource(active);
+  const srcs = AC.bySource(store, active);
+  const srcLine = AC.sourcesOf(store).map(s => s.short + " " + (srcs[s.id] || 0)).join(" · ");
 
   const row = document.createElement("div");
   row.className = "ov-row" + (cls === "full" && !closure ? " full" : "") + (closure ? " closed" : "");
   row.innerHTML = "<div class='line1'><span class='nm'>" + boat.name +
-    "<small>" + (closure ? "closed — " + closure.reason : "BIM " + srcs.bim + " · Lync " + srcs.lync + " · Walk " + srcs.walkup + " · Tel " + srcs.phone) + "</small></span>" +
+    "<small>" + (closure ? "closed — " + closure.reason : srcLine) + "</small></span>" +
     (closure ? "<span class='ct closed'>Closed</span>" : "<span class='ct " + cls + "'>" + sold + "/" + boat.cap + "</span>") + "</div>";
 
   row.querySelector(".line1").onclick = () => { ovOpen = ovOpen === key ? null : key; rowOpen = rowEdit = rowCancel = null; render(); };
@@ -443,7 +491,7 @@ function toggleBoat(date, slot, boat, closure) {
 function buildMRow(x, date, slot, boat) {
   const r = document.createElement("div");
   r.className = "mrow" + (x.status === "cancelled" ? " cancelled" : "");
-  const src = AC.SOURCES.find(s => s.id === x.source);
+  const src = AC.srcOf(store, x.source);
   let html = "<div class='line1'><span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span></div>";
   if (x.status === "cancelled") html += "<div class='cnote'>cancelled — " + (x.note || "no note") + "</div>";
   r.innerHTML = html;
@@ -502,7 +550,7 @@ function buildEditForm(x, date, slot, boat) {
       "<button id='ef-minus'>−</button><span class='n' id='ef-n'>" + editState.pax + "</span><button id='ef-plus'>+</button>" +
       "<span style='font-family:var(--mono);font-size:.66rem;color:var(--mute)'>max " + left + "</span></div>" +
     "<label>Who's it from</label><div class='srcpick'>" +
-      AC.SOURCES.map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
+      AC.sourcesOf(store).map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
     "<div class='guard' id='ef-guard'></div>" +
     "<div class='acts' style='margin-top:.55rem'>" +
       "<button class='sbtn tc' id='ef-save'>Save changes</button>" +
