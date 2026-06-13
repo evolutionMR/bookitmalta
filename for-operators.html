@@ -72,7 +72,23 @@
       "name": "What if I don't have a website yet?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Two paths depending on how much you want to invest in your digital presence. The Founding Partner tier is the full-build option — we build you a brand-new website from scratch on your own domain, integrate the booking engine end-to-end, load your content, train your team. Premium tier, premium outcome, 4-6 weeks to launch. The Hosted Founding tier is the lightweight option — €0 setup, €0/month, your booking page lives at bookitmalta.com/charters/yourname, white-labelled to your brand, usually live within a week. Pick by how much site you want."
+        "text": "Two options. Start on Hosted — a branded booking page at bookitmalta.com/charters/you, €50/month, no setup fee, 12% per booking taken as the deposit at checkout. Or go Full Site — we build you a brand-new website you own, integrate the booking engine, load your content and train your team, live in 4–6 weeks. Full Site is €3,000 one-time build plus €350/month and a lower 10% per booking, and we actively grow your bookings with Google Ads, SEO and content."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much commission do you take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "One flat rate per tier, with no attribution step-downs. Hosted is 12% per booking, collected as the customer's deposit at checkout. Full Site is 10% per booking, taken automatically through your own Stripe account. We never hold your money."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the monthly fee cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On Hosted (€50/month) it covers hosting, the booking system and your captain portal. On Full Site (€350/month) it covers all of that plus active marketing — Google Ads management, SEO and content — ongoing development, reliability and security, and conversion work on your site. Ad spend is billed separately."
       }
     },
     {
@@ -577,9 +593,26 @@ nav.top .wrap {
 
 .tier-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   align-items: stretch;
+  max-width: 820px;
+  margin: 0 auto;
+}
+.tier-bestfor {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-soft, #1C3558);
+  border-top: 1px solid var(--rule);
+  padding-top: 0.9rem;
+  margin-top: 0.4rem;
+}
+.tier-footnote {
+  max-width: 820px;
+  margin: 1.6rem auto 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--mute, rgba(11,37,69,.55));
 }
 .tier {
   background: var(--paper);
@@ -1331,7 +1364,7 @@ footer .wordmark span { color: var(--terracotta); }
         </div>
 
         <div class="hero-meta reveal">
-          <span>Three tiers · <strong>from €0</strong>/month</span>
+          <span>Two ways to work with us · <strong>from €50</strong>/month</span>
           <span><strong>Weekly</strong> Stripe payouts</span>
           <span>You own the <strong>customer</strong></span>
           <span><strong>Cancel</strong> anytime</span>
@@ -1649,134 +1682,70 @@ footer .wordmark span { color: var(--terracotta); }
   <div class="wrap">
     <div class="head">
       <div class="eyebrow">§ 05 — Pricing</div>
-      <h2>Three tiers. <em>One question</em> decides which one's yours.</h2>
+      <h2>Two ways to <em>work with us.</em></h2>
       <p class="lead">
-        Where will your customers book? Pick the tier that matches the answer — the rest follows. Same back office, same Stripe payouts, same partner portal across all three.
+        With Hosted you rent the rails — a professional booking page and the system behind it, while you bring your own customers. With Full Site you hire the team — we build your website and actively grow your bookings. Both run on the same booking engine, captain portal, and the customer database that stays yours.
       </p>
-    </div>
-
-    <div class="tier-pathfinder">
-      <div class="pf-header">
-        <span class="pf-num">Pick by your situation</span>
-        <span class="pf-label">Where will your customers book?</span>
-      </div>
-      <div class="pf-options">
-        <div class="pf-option">
-          <strong>On a brand-new website we build for you</strong>
-          <span class="pf-arrow">→</span>
-          <span class="pf-target">Founding Partner</span>
-        </div>
-        <div class="pf-option">
-          <strong>On your existing website (we install the engine)</strong>
-          <span class="pf-arrow">→</span>
-          <span class="pf-target">Standard</span>
-        </div>
-        <div class="pf-option">
-          <strong>On bookitmalta.com (we host the page)</strong>
-          <span class="pf-arrow">→</span>
-          <span class="pf-target">Hosted Founding</span>
-        </div>
-      </div>
     </div>
 
     <div class="tier-grid">
 
-      <article class="tier tier-featured">
-        <div class="tier-ribbon">Limited · 5 spots</div>
-        <div class="tier-path">Full build · brand-new website</div>
-        <div class="tier-name">Founding Partner</div>
-        <div class="tier-tag">First 5 Malta operators · everything built for you</div>
+      <article class="tier">
+        <div class="tier-path tier-path-hosted">Rent the rails · hosted on bookitmalta.com</div>
+        <div class="tier-name">Hosted</div>
 
-        <p class="tier-desc">For operators ready to invest in their digital presence. We build you a brand-new conversion-optimised website from scratch — your domain, your brand, your photography, your story. The booking engine is integrated end-to-end, content is loaded, your team is trained. You ship a complete digital surface in 4-6 weeks, not a year of freelancer back-and-forth.</p>
-
-        <div class="tier-setup">€3,000 one-time setup</div>
+        <div class="tier-setup">12% per booking · no setup fee</div>
         <div class="tier-price">
-          <span class="tier-price-big">€250</span>
+          <span class="tier-price-big">€50</span>
           <span class="tier-price-unit">/ month</span>
         </div>
-        <div class="tier-commission"><strong>10%</strong> commission on engine-processed bookings</div>
+        <div class="tier-commission"><strong>How you get paid:</strong> the customer pays a 12% deposit at checkout — that's our fee. You collect the balance directly on the day. We never hold your money.</div>
 
         <ul class="tier-features">
-          <li class="tier-plus">Brand-new website built from scratch · the full digital surface</li>
-          <li>Custom domain · design tuned to your brand · photo direction included</li>
-          <li>Booking engine integrated end-to-end (not just bolted on)</li>
-          <li>Sanity CMS for self-service content editing — copy, photos, prices, with a written editing guide</li>
-          <li>Captain portal · calendar · multi-user logins for crew &amp; office</li>
-          <li>Review every enquiry before it confirms — no auto-confirms</li>
-          <li>Operational tools — slot-blocking, cancellations, manual bookings, capacity per sailing, stale enquiries auto-expire</li>
-          <li>Seasonal pricing — peak · shoulder · off-peak applied automatically</li>
-          <li>Waitlist + cross-sell on the fly</li>
-          <li>Analytics — revenue, channel attribution, commission tracking</li>
-          <li>Microsoft Clarity heatmaps + session recordings on your site</li>
-          <li>Customer comms — WhatsApp + email from your domain + add-to-calendar on every booking</li>
-          <li>Weekly Stripe payouts to your account</li>
-          <li>Customer list yours, exportable, GDPR-clean</li>
-          <li>Monthly call with founder — your feedback shapes the roadmap</li>
-          <li>Locked rate for 24 months</li>
+          <li>Branded booking page at bookitmalta.com/charters/you — your photos, your name</li>
+          <li>Listed in the Malta charter directory</li>
+          <li>Real-time availability — 24/7, no double-booking</li>
+          <li>Online checkout + instant booking confirmation</li>
+          <li>Your own customer database — every name, email, phone, kept for you</li>
+          <li>Captain portal — manage bookings, block dates, see revenue</li>
+          <li>We host, run and maintain it</li>
         </ul>
 
-        <a href="#demo" class="btn btn-primary">Book a 20-min demo <span class="arrow">→</span></a>
+        <p class="tier-bestfor"><strong>Best for:</strong> operators who already have an audience and just need a professional way to take bookings online, without building a site.</p>
+
+        <a href="#demo" class="btn btn-primary">Get listed <span class="arrow">→</span></a>
       </article>
 
       <article class="tier">
-        <div class="tier-path">Embedded · your existing website</div>
-        <div class="tier-name">Standard</div>
-        <div class="tier-tag">For operators who already have a real website</div>
+        <div class="tier-path">Hire the team · your own website</div>
+        <div class="tier-name">Full Site</div>
 
-        <p class="tier-desc">For operators with an existing website they want to keep. We install the booking engine into your current site — WordPress, Wix, Squarespace, custom — styled to match your theme, tested on mobile. No new website, no migration, no domain change. Same captain portal, same automations, same custom features as Founding Partner.</p>
-
-        <div class="tier-setup">€1,500 one-time setup</div>
+        <div class="tier-setup">€350/month · 10% per booking · live in 4–6 weeks</div>
         <div class="tier-price">
-          <span class="tier-price-big">€99</span>
-          <span class="tier-price-unit">/ month</span>
+          <span class="tier-price-big">€3,000</span>
+          <span class="tier-price-unit">one-time build</span>
         </div>
-        <div class="tier-commission"><strong>5%</strong> commission on engine-processed bookings</div>
+        <div class="tier-commission"><strong>How you get paid:</strong> payments run through your own Stripe account — you're paid directly, and our 10% is taken automatically at checkout. We never hold your money.</div>
 
         <ul class="tier-features">
-          <li class="tier-plus">Same back office as Founding Partner · we don't touch your site beyond the engine</li>
-          <li>Booking engine installed on your existing website (WordPress · Wix · Squarespace · custom)</li>
-          <li>One script tag · styled to match your theme · mobile-tested</li>
-          <li>Captain portal · multi-user logins for crew &amp; office</li>
-          <li>All operational tools — slot-blocking, cancellations, capacity, seasonal pricing, waitlist, cross-sell</li>
-          <li>Analytics + channel attribution + exportable customer list</li>
-          <li>Customer comms — WhatsApp + email + add-to-calendar</li>
-          <li>Self-service CMS for booking content (Sanity)</li>
-          <li>Weekly Stripe payouts to your account</li>
-          <li>Standard support — same-day response</li>
+          <li class="tier-plus">Everything in Hosted, on your own domain, plus:</li>
+          <li>A brand-new, conversion-optimised website — your domain, your brand, your story</li>
+          <li>We grow your bookings — Google Ads, SEO and content updates (ad budget billed separately)</li>
+          <li>Ongoing development — new pages and booking-flow improvements as you grow</li>
+          <li>Reliability &amp; security — uptime, your data secured, your Google ranking actively protected</li>
+          <li>Conversion optimisation — we watch how visitors use the site and fix what costs you bookings</li>
+          <li>Self-service content editing, plus content loaded and your team trained before launch</li>
+          <li>Lower 10% commission (vs 12% on Hosted)</li>
         </ul>
 
-        <a href="#demo" class="btn btn-ghost">Book a demo</a>
-      </article>
+        <p class="tier-bestfor"><strong>Best for:</strong> operators who want someone running their whole digital presence — and a site they own. Less than hiring a developer, an SEO agency and paying for hosting separately.</p>
 
-      <article class="tier">
-        <div class="tier-path tier-path-hosted">Hosted · on bookitmalta.com</div>
-        <div class="tier-name">Hosted Founding</div>
-        <div class="tier-tag">First 5 Hosted operators · €0/€0 locked for 24 months</div>
-
-        <p class="tier-desc">For operators who don't have a website and don't want to manage one. We host your booking page at bookitmalta.com/charters/yourname, white-labelled to your brand. Customers see your name, your photos, your boats — our infrastructure invisible behind it. Pay nothing until your first booking lands.</p>
-
-        <div class="tier-setup">€0 setup</div>
-        <div class="tier-price">
-          <span class="tier-price-big">€0</span>
-          <span class="tier-price-unit">/ month</span>
-        </div>
-        <div class="tier-commission"><strong>Flat fee per booking</strong> · deposit IS the commission</div>
-
-        <ul class="tier-features">
-          <li>Booking page hosted at <em style="color: var(--terracotta); font-style: normal;">bookitmalta.com/charters/yourname</em></li>
-          <li>White-labelled to your brand — your photos, your colours, your name on every receipt</li>
-          <li>Captain portal + all operational tools — identical to Embedded tiers</li>
-          <li>Customer pays deposit at Stripe Checkout; you collect the balance directly on the day</li>
-          <li>Listed on the BookItMalta charter directory — we drive the SEO traffic</li>
-          <li>Pay only when you earn — no monthly cost, no setup, no minimum bookings</li>
-          <li>Stripe Connect direct payouts to your bank, weekly</li>
-          <li>Cancel anytime · keep your customer list · page archives but doesn't delete</li>
-        </ul>
-
-        <a href="#demo" class="btn btn-ghost">Book a demo</a>
+        <a href="#demo" class="btn btn-ghost">Book a 20-min call</a>
       </article>
 
     </div>
+
+    <p class="tier-footnote">Full Site's lower 10% reflects your upfront investment and that the site is yours — the monthly fee pays for the active work, so the per-booking rate is lower. Google Ads management is included on Full Site; the ad budget itself is billed separately.</p>
 
   </div>
 </section>
@@ -1870,7 +1839,15 @@ footer .wordmark span { color: var(--terracotta); }
       </details>
       <details class="faq-item">
         <summary>What if I don't have a website yet?</summary>
-        <p>Two paths depending on how much you want to invest in your digital presence. The <strong>Founding Partner</strong> tier is the full-build option — we build you a brand-new website from scratch on your own domain, integrate the booking engine end-to-end, load your content, train your team. Premium tier, premium outcome, 4-6 weeks to launch. The <strong>Hosted Founding</strong> tier is the lightweight option — €0 setup, €0/month, your booking page lives at bookitmalta.com/charters/yourname, white-labelled to your brand, usually live within a week. Pick by how much site you want.</p>
+        <p>Two options. Start on <strong>Hosted</strong> — a branded booking page at bookitmalta.com/charters/you, €50/month, no setup fee, 12% per booking taken as the deposit at checkout. Or go <strong>Full Site</strong> — we build you a brand-new website you own, integrate the booking engine, load your content and train your team, live in 4–6 weeks. Full Site is €3,000 one-time build plus €350/month and a lower 10% per booking, and we actively grow your bookings with Google Ads, SEO and content.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How much commission do you take?</summary>
+        <p>One flat rate per tier, with no attribution step-downs. <strong>Hosted</strong> is 12% per booking, collected as the customer's deposit at checkout. <strong>Full Site</strong> is 10% per booking, taken automatically through your own Stripe account. We never hold your money.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What does the monthly fee cover?</summary>
+        <p>On <strong>Hosted</strong> (€50/month) it covers hosting, the booking system and your captain portal. On <strong>Full Site</strong> (€350/month) it covers all of that plus active marketing — Google Ads management, SEO and content — ongoing development, reliability and security, and conversion work on your site. Ad spend is billed separately.</p>
       </details>
       <details class="faq-item">
         <summary>Can I still use marketplaces and OTAs alongside this?</summary>
