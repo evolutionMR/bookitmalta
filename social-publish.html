@@ -23,6 +23,15 @@
   button:disabled { opacity:.5; cursor:default; }
   pre { background:#0B2545; color:#dfe8f0; padding:14px; border-radius:8px; font-size:.8rem; white-space:pre-wrap; word-break:break-word; margin-top:16px; }
   .note { font-size:.8rem; color:rgba(11,37,69,.6); margin-top:6px; }
+  .modes { display:flex; gap:8px; margin-top:6px; }
+  .mode-btn { flex:1; padding:9px 10px; border:1px solid var(--rule); border-radius:8px; background:#fff; font-size:.9rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; }
+  .mode-btn.active { background:var(--ink); border-color:var(--ink); color:#fff; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .addrow { background:none; border:none; color:var(--terracotta); font-weight:600; padding:6px 0; cursor:pointer; font-size:.85rem; }
+  .imgrow { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .imgrow input { flex:1; }
+  .imgrow .rm { border:none; background:none; color:rgba(11,37,69,.5); font-size:1.1rem; cursor:pointer; padding:0 4px; }
 </style>
 </head>
 <body>
@@ -37,9 +46,30 @@
   <label for="message">Caption</label>
   <textarea id="message" placeholder="Write the post caption…"></textarea>
 
-  <label for="imageUrl">Image URL (public — required for Instagram)</label>
-  <input id="imageUrl" type="text" placeholder="https://bookitmalta.com/og-image.jpg" />
-  <div class="note">Use a public image URL, e.g. one of your site/brand images. Facebook can post text-only; Instagram needs an image.</div>
+  <label>Media</label>
+  <div class="modes">
+    <button type="button" class="mode-btn active" data-mode="photo">📷 Photo</button>
+    <button type="button" class="mode-btn" data-mode="carousel">▦ Carousel</button>
+    <button type="button" class="mode-btn" data-mode="video">▶ Video</button>
+  </div>
+
+  <div id="panel-photo" class="panel active">
+    <label for="imageUrl">Image URL (public — required for Instagram)</label>
+    <input id="imageUrl" type="text" placeholder="https://bookitmalta.com/og-image.jpg" />
+    <div class="note">Facebook can post text-only; Instagram needs an image.</div>
+  </div>
+
+  <div id="panel-carousel" class="panel">
+    <label>Photo URLs (2–10 — posts as a Facebook album / Instagram carousel)</label>
+    <div id="carousel-rows"></div>
+    <button type="button" class="addrow" id="add-photo">+ add photo</button>
+  </div>
+
+  <div id="panel-video" class="panel">
+    <label for="videoUrl">Video URL (public mp4 — posts as a Facebook video + Instagram Reel)</label>
+    <input id="videoUrl" type="text" placeholder="https://…blob.vercel-storage.com/reel.mp4" />
+    <div class="note">Paste a public video URL (e.g. from your Vercel Blob store). Instagram Reels transcode after upload — the page will wait and finish automatically.</div>
+  </div>
 
   <div class="row">
     <label><input type="checkbox" id="fb" checked /> Facebook</label>
@@ -56,35 +86,80 @@
 
 <script>
   var $ = function (id) { return document.getElementById(id); };
-  // remember the secret for this tab only
+  var mode = 'photo';
+
   try { $('secret').value = sessionStorage.getItem('bim_pub_secret') || ''; } catch (e) {}
   $('secret').addEventListener('input', function () {
     try { sessionStorage.setItem('bim_pub_secret', $('secret').value); } catch (e) {}
   });
 
-  // v2: pre-fill the post from URL params so the daily engine can hand off a
-  // ready-to-review draft. The secret is NEVER passed in the URL — it stays in
-  // this tab's sessionStorage. Caption/image/targets are public marketing copy.
+  function setMode(m) {
+    mode = m;
+    var btns = document.querySelectorAll('.mode-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === m);
+    ['photo', 'carousel', 'video'].forEach(function (p) { $('panel-' + p).classList.toggle('active', p === m); });
+  }
+  (function () {
+    var btns = document.querySelectorAll('.mode-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].addEventListener('click', function () { setMode(this.getAttribute('data-mode')); });
+  })();
+
+  function addCarouselRow(val) {
+    var rows = $('carousel-rows');
+    if (rows.querySelectorAll('.imgrow').length >= 10) return;
+    var div = document.createElement('div');
+    div.className = 'imgrow';
+    var inp = document.createElement('input');
+    inp.type = 'text'; inp.placeholder = 'https://…/photo.jpg'; if (val) inp.value = val;
+    var rm = document.createElement('button');
+    rm.type = 'button'; rm.className = 'rm'; rm.textContent = '✕';
+    rm.addEventListener('click', function () { if (rows.querySelectorAll('.imgrow').length > 1) div.remove(); });
+    div.appendChild(inp); div.appendChild(rm); rows.appendChild(div);
+  }
+  $('add-photo').addEventListener('click', function () { addCarouselRow(''); });
+  function carouselUrls() {
+    return Array.prototype.slice.call($('carousel-rows').querySelectorAll('input'))
+      .map(function (i) { return i.value.trim(); }).filter(Boolean);
+  }
+
+  // Pre-fill from URL params so the daily engine can hand off a draft. The secret
+  // is NEVER in the URL — it stays in this tab's sessionStorage.
   try {
     var qs = new URLSearchParams(location.search);
     if (qs.has('caption')) $('message').value = qs.get('caption');
-    var img = qs.get('image') || qs.get('imageUrl');
-    if (img) $('imageUrl').value = img;
     if (qs.has('fb')) $('fb').checked = (qs.get('fb') !== '0' && qs.get('fb') !== 'false');
     if (qs.has('ig')) $('ig').checked = (qs.get('ig') === '1' || qs.get('ig') === 'true');
-    if (qs.has('caption') || img) {
+
+    var imgs = (qs.get('images') || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    var single = qs.get('image') || qs.get('imageUrl');
+    var vid = qs.get('videoUrl') || qs.get('video');
+    var wanted = qs.get('mode');
+
+    if (vid) { $('videoUrl').value = vid; }
+    if (imgs.length === 1 && !single) single = imgs[0];
+    if (single) $('imageUrl').value = single;
+
+    $('carousel-rows').innerHTML = '';
+    if (imgs.length >= 2) { imgs.slice(0, 10).forEach(function (u) { addCarouselRow(u); }); }
+    else { addCarouselRow(''); addCarouselRow(''); }
+
+    if (wanted === 'photo' || wanted === 'carousel' || wanted === 'video') setMode(wanted);
+    else if (vid) setMode('video');
+    else if (imgs.length >= 2) setMode('carousel');
+    else setMode('photo');
+
+    if (qs.has('caption') || single || vid || imgs.length) {
       var note = document.createElement('div');
       note.className = 'note';
-      note.style.color = 'var(--terracotta)';
-      note.style.fontWeight = '600';
-      note.style.marginBottom = '8px';
+      note.style.color = 'var(--terracotta)'; note.style.fontWeight = '600'; note.style.marginBottom = '8px';
       note.textContent = "Draft loaded from today's engine — review it, then Publish. Nothing posts until you click Publish.";
       var cap = document.querySelector('label[for="message"]');
       if (cap && cap.parentNode) cap.parentNode.insertBefore(note, cap);
     }
-  } catch (e) {}
+  } catch (e) { $('carousel-rows').innerHTML = ''; addCarouselRow(''); addCarouselRow(''); }
 
   function show(obj) { var o = $('out'); o.hidden = false; o.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2); }
+  function append(line) { var o = $('out'); o.hidden = false; o.textContent += '\n' + line; }
 
   $('check').addEventListener('click', async function () {
     var secret = $('secret').value.trim();
@@ -96,6 +171,33 @@
     } catch (e) { show('Error: ' + e.message); }
   });
 
+  function buildPayload() {
+    var p = { message: $('message').value };
+    if (mode === 'photo') { var u = $('imageUrl').value.trim(); if (u) p.images = [u]; }
+    else if (mode === 'carousel') { p.images = carouselUrls(); }
+    else if (mode === 'video') { p.videoUrl = $('videoUrl').value.trim(); }
+    return p;
+  }
+
+  async function pollInstagram(secret, creationId) {
+    append('Instagram is processing the ' + 'video/carousel — finishing automatically…');
+    for (var i = 0; i < 40; i++) {
+      await new Promise(function (r) { setTimeout(r, 6000); });
+      try {
+        var r = await fetch('/api/admin/social-publish?action=poll', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + secret },
+          body: JSON.stringify({ action: 'poll', creation_id: creationId }),
+        });
+        var j = await r.json();
+        var st = j.instagram || {};
+        if (st.state === 'published') { append('Instagram published ✓ (id ' + st.id + ')'); return; }
+        if (st.state === 'error') { append('Instagram error: ' + st.error); return; }
+        append('…still processing (' + ((i + 1) * 6) + 's)');
+      } catch (e) { append('Poll error: ' + e.message); }
+    }
+    append('Instagram still processing after several minutes — check the IG app; it usually completes on its own.');
+  }
+
   $('publish').addEventListener('click', async function () {
     var secret = $('secret').value.trim();
     if (!secret) return show('Enter the publish secret first.');
@@ -103,8 +205,17 @@
     if ($('fb').checked) targets.push('facebook');
     if ($('ig').checked) targets.push('instagram');
     if (targets.length === 0) return show('Tick Facebook and/or Instagram.');
-    var payload = { message: $('message').value, imageUrl: $('imageUrl').value.trim(), targets: targets };
-    if (!confirm('Publish this post to: ' + targets.join(', ') + '?\n\nIt goes live immediately.')) return;
+
+    var payload = buildPayload();
+    payload.targets = targets;
+
+    if (mode === 'carousel' && (!payload.images || payload.images.length < 2)) return show('Carousel needs at least 2 photo URLs.');
+    if (mode === 'video' && !payload.videoUrl) return show('Paste a public video URL.');
+    if (mode === 'video' && targets.indexOf('instagram') !== -1 && !payload.videoUrl) return show('Instagram needs the video URL.');
+
+    var label = mode === 'video' ? 'video (FB video + IG Reel)' : (mode === 'carousel' ? (payload.images.length + '-photo carousel') : 'photo');
+    if (!confirm('Publish this ' + label + ' to: ' + targets.join(', ') + '?\n\nIt goes live immediately.')) return;
+
     $('publish').disabled = true; show('Publishing…');
     try {
       var r = await fetch('/api/admin/social-publish', {
@@ -112,7 +223,10 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + secret },
         body: JSON.stringify(payload),
       });
-      show(await r.json());
+      var j = await r.json();
+      show(j);
+      var ig = j.results && j.results.instagram;
+      if (ig && ig.pending && ig.creation_id) { await pollInstagram(secret, ig.creation_id); }
     } catch (e) { show('Error: ' + e.message); }
     $('publish').disabled = false;
   });
