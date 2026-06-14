@@ -1188,6 +1188,35 @@ function confirmViaWhatsApp() {
     '(via bookitmalta.com/adventure-cruises)'
   ];
   const message = lines.join('\n');
+
+  // Capture the lead server-side BEFORE handing off to WhatsApp, so the operator
+  // is notified even if the customer never taps \"send\" in WhatsApp. Best-effort
+  // and non-blocking (sendBeacon survives the tab switch); partial data is fine.
+  try {
+    const nameEl  = document.getElementById('bookName');
+    const emailEl = document.getElementById('bookEmail');
+    const phoneEl = document.getElementById('bookPhone');
+    const lead = {
+      tenant:         'adventure-cruises',
+      source:         'whatsapp',
+      customer_name:  (nameEl  && nameEl.value.trim())  || null,
+      customer_email: (emailEl && emailEl.value.trim()) || null,
+      customer_phone: (phoneEl && phoneEl.value.trim()) || null,
+      preferred_date: dateInput.value,
+      party_size:     seats,
+      slot_time:      slot,
+      tour_option:    slot,
+      message:        message
+    };
+    const endpoint = '/api/enquiry?tenant=adventure-cruises&source=whatsapp';
+    const blob = new Blob([JSON.stringify(lead)], { type: 'application/json' });
+    if (!(navigator.sendBeacon && navigator.sendBeacon(endpoint, blob))) {
+      fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead), keepalive: true }).catch(function () {});
+    }
+    if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
+  } catch (e) { /* never block the WhatsApp hand-off */ }
+
   const url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message);
   window.open(url, '_blank');
 }

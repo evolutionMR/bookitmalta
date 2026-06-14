@@ -52,6 +52,16 @@ module.exports = async function handler(req, res) {
     try { body = JSON.parse(body); } catch { /* leave as-is */ }
   }
 
+  // WhatsApp one-tap leads: the customer is being handed to WhatsApp right now
+  // and may not have filled name/email. Capture best-effort and ALWAYS notify
+  // the operator, skipping the strict enquiry validation (which requires email)
+  // and the NOT NULL enquiries insert. A WhatsApp click must never be invisible.
+  const isWhatsapp = (req.query && req.query.source === 'whatsapp') ||
+                     (body && body.source === 'whatsapp');
+  if (isWhatsapp) {
+    return await routeToWhatsappLead({ tenant, config, body, req, res });
+  }
+
   // Validate against tenant-specific rules (party_size cap, slot list, etc.)
   let input;
   try {
@@ -87,6 +97,49 @@ module.exports = async function handler(req, res) {
 // =============================================================================
 // ENQUIRY PATH — date is available
 // =============================================================================
+// =============================================================================
+// WHATSAPP LEAD PATH — one-tap hand-off; partial data allowed, always notify
+// =============================================================================
+async function routeToWhatsappLead({ tenant, config, body, req, res }) {
+  const name  = (body && typeof body.customer_name  === 'string' && body.customer_name.trim())  || null;
+  const email = (body && typeof body.customer_email === 'string' && body.customer_email.trim()) || null;
+  const phone = (body && typeof body.customer_phone === 'string' && body.customer_phone.trim()) || null;
+  const date  = (body && body.preferred_date) || '\u2014';
+  const seats = (body && body.party_size) || '\u2014';
+  const slot  = (body && (body.slot_time || body.tour_option)) || '\u2014';
+
+  // Best-effort operator alert — the whole point of this path.
+  try {
+    const captainEmailAddr = getTenantEnv(tenant, 'OPERATOR_EMAIL');
+    const text = [
+      'A customer just opened WhatsApp from the ' + config.name + ' booking page.',
+      'They may not complete the WhatsApp message, so follow up directly.',
+      '',
+      'Date:   ' + date,
+      'Time:   ' + slot,
+      'Seats:  ' + seats,
+      'Name:   ' + (name  || '(not given)'),
+      'Email:  ' + (email || '(not given)'),
+      'Phone:  ' + (phone || '(not given)'),
+      '',
+      'Source: WhatsApp one-tap (bookitmalta.com' + (config.publicPagePath || '') + ')',
+    ].join('\n');
+    await sendEmail({
+      tenantSlug:   tenant,
+      tenantConfig: config,
+      to:           captainEmailAddr,
+      subject:      '[' + config.name + '] \u26a1 WhatsApp lead \u2014 ' + date + (name ? ' \u2014 ' + name : ''),
+      text:         text,
+      replyTo:      email || undefined,
+    });
+  } catch (e) {
+    console.error('[enquiry] whatsapp lead email failed:', e);
+  }
+
+  // 204 — sendBeacon ignores the response body anyway.
+  return res.status(204).end();
+}
+
 async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, res }) {
   const audit = auditFields(req);
 
