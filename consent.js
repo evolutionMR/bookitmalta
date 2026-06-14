@@ -13,11 +13,20 @@
 
   var CLARITY_ID = "wemhqvel3r";
   var META_PIXEL_ID = "959223593544701";
-  // Bumped from "bim_consent" because the consent PURPOSE changed: we now load
-  // the Meta advertising pixel, not just analytics. Versioning the key means
-  // anyone who accepted the old analytics-only banner ("no ads") is re-prompted
-  // and must give fresh consent before any advertising tracking loads (GDPR).
-  var KEY = "bim_consent_v2"; // values: "granted" | "denied"
+  // Google Ads (BookItMalta Ads account) — base tag + per-action conversion
+  // labels. PLACEHOLDERS until the BookItMalta Ads account exists; the deploy
+  // script refuses to ship while "XXXX"/"_LABEL" remain, and the loader/helper
+  // below no-op on placeholders so nothing breaks if they ever slip through.
+  var GOOGLE_ADS_ID = "AW-18237355051";
+  var GADS_CONV = {
+    enquiry:  "AW-18237355051/s7TCCPLpqr4cEKvon_hD",   // AC – Booking enquiry (lead)
+    purchase: "AW-18237355051/rrnyCNzR9L4cEKvon_hD"    // AC – Booking confirmed (paid)
+  };
+  // Bumped to v3 because the consent PURPOSE changed again: we now also load
+  // Google Ads (conversion measurement) alongside Clarity + the Meta pixel.
+  // Versioning the key re-prompts anyone who accepted the earlier banner so
+  // they give fresh consent before any Google advertising tracking loads (GDPR).
+  var KEY = "bim_consent_v3"; // values: "granted" | "denied"
 
   function loadClarity() {
     if (window.__bimClarityLoaded) return;
@@ -43,10 +52,41 @@
     window.fbq("track", "PageView");
   }
 
+  function loadGoogleAds() {
+    if (window.__bimGAdsLoaded) return;
+    if (GOOGLE_ADS_ID.indexOf("XXXX") !== -1) return; // placeholder not replaced
+    window.__bimGAdsLoaded = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    var t = document.createElement("script"); t.async = true;
+    t.src = "https://www.googletagmanager.com/gtag/js?id=" + GOOGLE_ADS_ID;
+    document.head.appendChild(t);
+    window.gtag("js", new Date());
+    window.gtag("config", GOOGLE_ADS_ID);
+  }
+
+  // Fire a Google Ads conversion. No-ops unless the visitor consented AND the
+  // conversion label has been filled in (placeholder labels are skipped). Safe
+  // to call from any page; pass {value:Number} to attach a EUR value.
+  window.bimTrackConversion = function (kind, params) {
+    try {
+      if (getChoice() !== "granted") return false;
+      var sendTo = GADS_CONV[kind];
+      if (!sendTo || sendTo.indexOf("_LABEL") !== -1 || sendTo.indexOf("XXXX") !== -1) return false;
+      loadGoogleAds();
+      if (typeof window.gtag !== "function") return false;
+      var payload = { send_to: sendTo };
+      if (params && typeof params.value === "number") { payload.value = params.value; payload.currency = "EUR"; }
+      window.gtag("event", "conversion", payload);
+      return true;
+    } catch (e) { return false; }
+  };
+
   // Load everything the visitor has consented to.
   function loadConsented() {
     loadClarity();
     loadMetaPixel();
+    loadGoogleAds();
   }
 
   function getChoice() {
@@ -92,7 +132,7 @@
 
     var text = document.createElement("p");
     text.className = "bim-c-text";
-    text.innerHTML = "We use cookies for analytics (Microsoft Clarity) and advertising (the Meta pixel) — to understand how visitors use the site and to measure our ads. You can accept or decline. <a href=\"/privacy.html\">Privacy Policy</a>";
+    text.innerHTML = "We use cookies for analytics (Microsoft Clarity) and advertising measurement (the Meta pixel and Google Ads) — to understand how visitors use the site and to measure our ads. You can accept or decline. <a href=\"/privacy.html\">Privacy Policy</a>";
 
     var actions = document.createElement("div");
     actions.className = "bim-c-actions";

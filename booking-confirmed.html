@@ -12,6 +12,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..700&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
+<!-- Cookie consent + analytics/advertising gate (Clarity · Meta pixel · Google Ads). -->
+<script defer src="/consent.js"></script>
+
 <style>
 :root {
   --ink: #0B2545;
@@ -492,6 +495,17 @@ function render() {
   document.getElementById('d-code').textContent     = code;
 
   document.title = `Booking confirmed — ${fmtDateHuman(dateIso)}`;
+
+  // Google Ads — fire the booking-confirmed (purchase) conversion. AC only, so
+  // a non-AC tenant's booking can't be mis-attributed to the AC campaign.
+  // No-ops unless the visitor consented and the Ads label is configured.
+  try {
+    const _p = new URLSearchParams(location.search);
+    if (_p.get('tenant') === 'adventure-cruises' && window.bimTrackConversion) {
+      const _party = parseInt(_p.get('party'), 10) || 1;
+      window.bimTrackConversion('purchase', { value: _party * 40 });
+    }
+  } catch (e) {}
 
   if (!dateIso) {
     // Edge case — no date in URL. Hide the calendar buttons gracefully.
