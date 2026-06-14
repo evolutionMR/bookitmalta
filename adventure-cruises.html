@@ -700,6 +700,9 @@ body.cm-locked { overflow: hidden; }
   .itin-arrow { display: none; }
 }
 </style>
+
+<!-- Cookie consent + analytics/advertising gate (Clarity · Meta pixel · Google Ads). -->
+<script defer src="/consent.js"></script>
 </head>
 <body>
 
@@ -1213,6 +1216,10 @@ function clearError() {
 
 function showSuccess(code, customerEmail) {
   const shortCode = code.toUpperCase().slice(0, 8);
+
+  // Google Ads conversion — fires the AC enquiry (lead) conversion. No-ops
+  // unless the visitor accepted cookies and the Ads label is configured.
+  if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
 
   // 1) Open the center-screen modal so the success is impossible to miss
   //    regardless of where the user scrolled.
