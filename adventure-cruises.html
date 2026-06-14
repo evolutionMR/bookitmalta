@@ -775,11 +775,11 @@ body.cm-locked { overflow: hidden; }
       <div class="book-left">
         <div class="eyebrow">§ How booking works</div>
         <h2>Lock your seats in <em>under a minute.</em></h2>
-        <p class="lead">A booking fee holds your seats. The balance is paid to the crew on the day, in cash or by card. No platform middleman, no third-party markups.</p>
+        <p class="lead">A booking fee holds your seats. The balance is paid to the crew on the day in cash. No platform middleman, no third-party markups.</p>
         <ul class="points">
           <li><div><strong>You see real availability</strong> for every departure for the next 30 days.</div></li>
           <li><div><strong>€10 booking fee per seat</strong> charged now, secures your spot.</div></li>
-          <li><div><strong>€30 per seat to the crew on the day</strong> when you board — cash, card, or local payment apps.</div></li>
+          <li><div><strong>€30 per seat to the crew on the day</strong> when you board, in cash.</div></li>
           <li><div><strong>Free cancellation up to 24 hours</strong> before departure. Bad weather → automatic refund.</div></li>
         </ul>
       </div>
@@ -907,9 +907,8 @@ body.cm-locked { overflow: hidden; }
         <h3>Included on board</h3>
         <ul>
           <li class="yes">Captain &amp; deck crew</li>
-          <li class="yes">Fresh water on tap — bring a bottle</li>
           <li class="yes">Snorkel masks &amp; pool floats</li>
-          <li class="yes">Ice &amp; coolers for your own drinks</li>
+          <li class="yes">Coolers for your drinks — bring your own water &amp; ice</li>
           <li class="yes">Life vests, including child sizes</li>
           <li class="yes">Bluetooth speaker — pick the playlist</li>
         </ul>
@@ -921,7 +920,7 @@ body.cm-locked { overflow: hidden; }
           <li class="no">Drinks (no kiosk on board — buy at the Blue Lagoon stop or BYO)</li>
           <li class="no">Towels (no charge if you forget, but crew won't always have spares)</li>
           <li class="no">Sun cream (factor 30+, reef-safe please — it's a marine protected area)</li>
-          <li class="no">Cash for the balance &amp; tips (card accepted but cash is faster on the boat)</li>
+          <li class="no">Cash for the balance &amp; tips</li>
         </ul>
       </div>
     </div>
@@ -1003,7 +1002,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>Can I bring my own food &amp; drink?</h4>
-        <p>Yes — fully encouraged. The boat has fridges, ice, and coolers. Most guests bring a picnic; the Blue Lagoon stop also has beach kiosks if you forget.</p>
+        <p>Yes — fully encouraged. The boat has coolers for your drinks — bring your own water and ice. Most guests bring a picnic; the Blue Lagoon stop also has beach kiosks if you forget.</p>
       </div>
       <div class="faq-item">
         <h4>Are children welcome?</h4>
@@ -1011,7 +1010,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>How do I pay the €30/seat balance on the day?</h4>
-        <p>The crew accepts cash, card (POS terminal on board), Revolut, and Apple/Google Pay. Most guests pay cash because it's fastest at boarding. Tips are optional but always appreciated — €5–10 per guest is normal for a good day.</p>
+        <p>The €30-per-seat balance is settled in cash with the crew when you board. Tips are optional but always appreciated — €5–10 per guest is normal for a good day.</p>
       </div>
       <div class="faq-item">
         <h4>What if I need to cancel?</h4>
@@ -1181,8 +1180,8 @@ function confirmViaWhatsApp() {
     'I’d like to book ' + seats + ' seat' + (seats > 1 ? 's' : '') + ' for the ' + slot + ' departure on ' + dateLabel + '.',
     '',
     '• ' + seats + ' × €' + PRICE_PER_SEAT + ' = €' + total + ' total',
-    '• €' + fee + ' booking fee (paid via your link)',
-    '• €' + balance + ' balance settled with crew on the day',
+    '• €' + fee + ' booking fee',
+    '• €' + balance + ' balance settled in cash with crew on the day',
     '',
     'Please confirm availability and send the booking-fee payment link — thank you!',
     '',
