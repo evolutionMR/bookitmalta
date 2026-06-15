@@ -13,7 +13,9 @@
 <meta property="og:description" content="5-hour powerboat day tour from Sliema to Comino, the Blue Lagoon, and Gozo. €40 per seat, twice daily." />
 <meta property="og:url" content="https://bookitmalta.com/adventure-cruises" />
 <meta property="og:type" content="website" />
+<meta property="og:image" content="https://bookitmalta.com/charters/adventure-cruises-images/ac-hero-cruising-1280.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://bookitmalta.com/charters/adventure-cruises-images/ac-hero-cruising-1280.jpg" />
 
 <!-- JSON-LD for Tour product -->
 <script type="application/ld+json">
@@ -25,7 +27,6 @@
   "provider": {
     "@type": "TravelAgency",
     "name": "Adventure Cruises Malta",
-    "telephone": "+356 9928 6698",
     "url": "https://bookitmalta.com/adventure-cruises"
   },
   "offers": {
@@ -40,6 +41,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,30,0..1&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
+/* ============================================================
+   Adventure Cruises Malta — MOBILE-FIRST stylesheet.
+   Base rules target a phone (~360–430px). Layout widens at the
+   760px and 1040px breakpoints via min-width queries.
+============================================================ */
 :root {
   --ink: #0B2545;
   --ink-soft: #1C3558;
@@ -61,643 +67,454 @@
   --sans:  "Manrope", -apple-system, sans-serif;
   --mono:  "JetBrains Mono", ui-monospace, monospace;
   --maxw: 1180px;
-  --gut: clamp(1.25rem, 4vw, 3rem);
+  --gut: clamp(1.15rem, 5vw, 3rem);
+  --bookbar-h: 68px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
-body { font-size: 16px; line-height: 1.6; }
+body { font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+img { max-width: 100%; }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
-
-/* Mockup banner */
-.banner {
-  background: var(--ink); color: var(--paper); padding: 0.65rem var(--gut);
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.05em;
-  text-transform: uppercase; text-align: center;
+.skip-link {
+  position: absolute; left: -999px; top: 0; z-index: 200;
+  background: var(--ink); color: var(--paper); padding: 0.6rem 1rem;
+  border-radius: 0 0 8px 0; font-size: 0.85rem;
 }
-.banner strong { color: #FFD8A8; }
-.banner em { font-style: normal; color: #B8DCDD; }
+.skip-link:focus { left: 0; }
 
-/* BookItMalta nav (minimal, since this is a subpage) */
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; line-height: 1.12; letter-spacing: -0.01em; color: var(--ink); }
+em { font-style: italic; color: var(--terracotta); }
+.eyebrow {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--terracotta);
+  display: inline-block; margin-bottom: 0.8rem;
+}
+
+/* ============================ NAV ============================ */
 .nav {
   border-bottom: 1px solid var(--rule);
-  padding: 0.85rem 0;
+  padding: 0.8rem 0;
   background: rgba(244, 235, 217, 0.92);
   backdrop-filter: blur(8px);
   position: sticky; top: 0; z-index: 50;
 }
 .nav .wrap { display: flex; justify-content: space-between; align-items: center; }
 .nav .brand {
-  font-family: var(--serif); font-size: 1.15rem; font-weight: 600;
-  text-decoration: none; color: var(--ink);
-  letter-spacing: -0.01em;
+  font-family: var(--serif); font-size: 1.1rem; font-weight: 600;
+  text-decoration: none; color: var(--ink); letter-spacing: -0.01em;
 }
 .nav .brand em { color: var(--terracotta); font-style: italic; }
 .nav .meta {
-  font-family: var(--mono); font-size: 0.72rem;
+  font-family: var(--mono); font-size: 0.66rem;
   color: var(--mute); letter-spacing: 0.05em; text-transform: uppercase;
 }
-.nav .back {
-  color: var(--ink-soft); text-decoration: none; font-size: 0.85rem;
-  font-weight: 500;
-}
-.nav .back:hover { color: var(--terracotta); }
 
-h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); }
-em { font-style: italic; color: var(--terracotta); }
-.eyebrow {
-  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--terracotta);
-  display: inline-block; margin-bottom: 1rem;
-}
-
-/* ============================================================
-   HERO
-============================================================ */
-.hero {
-  padding: 4rem 0 3.5rem;
-  background: linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
-  position: relative; overflow: hidden;
-}
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 3rem;
-  align-items: center;
-}
-.hero h1 {
-  font-size: clamp(2.4rem, 5.5vw, 4rem);
-  margin-bottom: 1.4rem;
-  max-width: 16ch;
-}
-.hero .lead {
-  font-size: 1.15rem; color: var(--ink-soft);
-  max-width: 50ch; margin-bottom: 2rem;
-}
-.hero .cta-row { display: flex; gap: 1rem; align-items: center; }
+/* shared buttons */
 .btn {
-  display: inline-block; padding: 0.95rem 1.7rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.95rem 1.6rem; min-height: 48px;
   font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
-  text-decoration: none; border-radius: 8px;
+  text-decoration: none; border-radius: 9px;
   transition: all 0.2s ease; cursor: pointer; border: 0;
 }
 .btn-primary { background: var(--terracotta); color: white; }
 .btn-primary:hover { background: var(--terracotta-deep); }
-.btn-ghost {
-  background: transparent; color: var(--ink);
-  border: 1.5px solid var(--rule-strong);
-}
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--rule-strong); }
 .btn-ghost:hover { border-color: var(--ink); }
 .btn .arrow { display: inline-block; margin-left: 0.4rem; transition: transform 0.2s; }
 .btn:hover .arrow { transform: translateX(3px); }
 
-.hero-photo {
-  border-radius: 12px; aspect-ratio: 4/3; overflow: hidden;
-  background: var(--paper-deep);
+/* ============================================================
+   HERO — full-bleed action shot, headline + price overlaid
+============================================================ */
+.hero {
   position: relative;
-  box-shadow: 0 20px 60px rgba(11, 37, 69, 0.18);
+  min-height: 78vh;
+  display: flex; align-items: flex-end;
+  color: var(--paper);
+  overflow: hidden;
 }
-.hero-photo img,
-.boat-photo img,
-.private-image img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
+.hero-media { position: absolute; inset: 0; z-index: 0; }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 60% center; display: block; }
+.hero-scrim {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(11,37,69,0.30) 0%, rgba(11,37,69,0.10) 38%, rgba(11,37,69,0.78) 100%);
 }
+.hero-inner { position: relative; z-index: 2; width: 100%; padding-top: 4rem; padding-bottom: 1.8rem; }
+.hero .eyebrow { color: #FFD8A8; }
+.hero h1 {
+  color: var(--paper);
+  font-size: clamp(2.1rem, 9vw, 3.3rem);
+  margin-bottom: 0.9rem; max-width: 15ch;
+  text-shadow: 0 2px 18px rgba(11,37,69,0.35);
+}
+.hero h1 em { color: #FFD8A8; }
+.hero .lead {
+  font-size: 1.02rem; color: rgba(244,235,217,0.92);
+  max-width: 44ch; margin-bottom: 1.4rem;
+  text-shadow: 0 1px 10px rgba(11,37,69,0.4);
+}
+.hero-price {
+  display: inline-flex; align-items: baseline; gap: 0.4rem;
+  background: rgba(244, 235, 217, 0.95); color: var(--ink);
+  padding: 0.45rem 0.9rem; border-radius: 30px;
+  font-family: var(--mono); font-size: 0.82rem; font-weight: 500;
+  margin-bottom: 1.3rem;
+}
+.hero-price b { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+.hero .cta-row { display: flex; flex-direction: column; gap: 0.7rem; }
+.hero .btn-primary { width: 100%; }
+.hero .btn-ghost { width: 100%; color: var(--paper); border-color: rgba(244,235,217,0.5); }
+.hero .btn-ghost:hover { border-color: var(--paper); background: rgba(244,235,217,0.08); }
 
-/* Trust strip */
+/* ============================ TRUST STRIP ============================ */
 .trust {
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--rule);
+  padding: 1.1rem var(--gut);
   border-bottom: 1px solid var(--rule);
   background: var(--paper-deep);
 }
 .trust-grid {
-  display: flex; gap: 2.5rem; flex-wrap: wrap;
-  align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 0.82rem;
-  color: var(--ink-soft); letter-spacing: 0.03em;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1rem;
+  max-width: var(--maxw); margin: 0 auto;
+  font-family: var(--mono); font-size: 0.74rem;
+  color: var(--ink-soft); letter-spacing: 0.02em;
 }
-.trust-grid span { display: flex; align-items: center; gap: 0.4rem; }
+.trust-grid span { display: flex; align-items: center; gap: 0.4rem; line-height: 1.3; }
 .trust-grid b { color: var(--ink); font-weight: 600; }
 
 /* ============================================================
-   LIVE AVAILABILITY
+   DEPARTURES STRIP
+   Replaces the old 7-day availability grid. There's no live seat
+   data yet, so 7 identical "Available" cards added scroll without
+   information — a slim banner that jumps to the booking form is
+   honest and gets people to the date picker faster.
 ============================================================ */
-.avail { padding: 5rem 0 3rem; }
-.avail .head { max-width: 56rem; margin-bottom: 2.5rem; }
-.avail h2 { font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 0.8rem; max-width: 22ch; }
-.avail .lead { color: var(--ink-soft); font-size: 1.05rem; max-width: 56ch; }
-
-.avail-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr);
-  gap: 0.7rem;
+.depart { padding: 2rem 0 0.5rem; }
+.depart-strip {
+  display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+  background: #FFFAF1; border: 1px solid var(--rule); border-radius: 12px;
+  padding: 1.1rem 1.3rem; text-decoration: none; color: var(--ink);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
-.avail-day {
-  background: #FFFAF1; border: 1px solid var(--rule);
-  border-radius: 8px; padding: 1rem 0.6rem;
-  cursor: pointer; transition: transform 0.15s, border-color 0.15s;
-}
-.avail-day:hover { transform: translateY(-2px); border-color: var(--terracotta); }
-.avail-day.today { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.avail-day .dow {
-  font-family: var(--mono); font-size: 0.7rem;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--mute); margin-bottom: 0.2rem;
-}
-.avail-day.today .dow { color: rgba(244, 235, 217, 0.7); }
-.avail-day .date {
-  font-family: var(--serif); font-size: 1.4rem;
-  margin-bottom: 0.8rem; line-height: 1;
-}
-.avail-day.today .date { color: var(--paper); }
-.avail-slot {
-  display: flex; justify-content: space-between; align-items: baseline;
-  font-size: 0.78rem;
-  border-top: 1px solid var(--rule);
-  padding: 0.45rem 0 0.1rem;
-}
-.avail-day.today .avail-slot { border-color: rgba(244, 235, 217, 0.15); }
-.avail-slot .time { font-family: var(--mono); font-weight: 500; color: var(--ink-soft); }
-.avail-day.today .avail-slot .time { color: rgba(244, 235, 217, 0.85); }
-.avail-slot .seats { font-weight: 600; color: var(--ok); }
-.avail-slot .seats.few { color: var(--warn); }
-.avail-slot .seats.gone { color: var(--mute); text-decoration: line-through; }
-.avail-day.today .avail-slot .seats { color: #B8E6CC; }
+.depart-strip:hover { border-color: var(--terracotta); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(11, 37, 69, 0.08); }
+.depart-ico { color: var(--terracotta); font-size: 1.25rem; line-height: 1; }
+.depart-text { flex: 1; min-width: 12rem; font-size: 0.98rem; color: var(--ink-soft); }
+.depart-text strong { color: var(--ink); font-weight: 600; }
+.depart-cta { font-family: var(--mono); font-size: 0.82rem; font-weight: 600; color: var(--terracotta); white-space: nowrap; letter-spacing: 0.03em; }
 
 /* ============================================================
    BOOKING WIDGET
 ============================================================ */
-.book {
-  padding: 4rem 0 5rem;
-  background: var(--paper-deep);
-  border-top: 1px solid var(--rule);
-}
-.book-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 3rem; align-items: start;
-}
-.book-left h2 { font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 1rem; max-width: 14ch; }
-.book-left .lead { font-size: 1.05rem; color: var(--ink-soft); margin-bottom: 1.5rem; max-width: 50ch; }
-.book-left .points {
-  list-style: none; padding: 0; margin-top: 1.5rem;
-}
+.book { padding: 2.5rem 0 3rem; background: var(--paper-deep); border-top: 1px solid var(--rule); }
+.book-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; }
+.book-left h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.8rem; max-width: 14ch; }
+.book-left .lead { font-size: 0.98rem; color: var(--ink-soft); margin-bottom: 1rem; max-width: 50ch; }
+.book-left .points { list-style: none; padding: 0; margin-top: 1.2rem; }
 .book-left .points li {
-  display: flex; gap: 0.8rem; padding: 0.65rem 0;
-  font-size: 0.95rem; color: var(--ink-soft);
-  border-bottom: 1px solid var(--rule);
+  display: flex; gap: 0.8rem; padding: 0.6rem 0; font-size: 0.92rem;
+  color: var(--ink-soft); border-bottom: 1px solid var(--rule);
 }
 .book-left .points li:last-child { border-bottom: 0; }
-.book-left .points li::before {
-  content: "→"; color: var(--terracotta); font-weight: 600;
-  flex-shrink: 0;
-}
+.book-left .points li::before { content: "→"; color: var(--terracotta); font-weight: 600; flex-shrink: 0; }
 .book-left .points strong { color: var(--ink); }
 
 .book-widget {
-  background: #FFFAF1; border-radius: 12px;
-  padding: 2rem 2rem 1.6rem;
-  border: 1px solid var(--rule);
+  background: #FFFAF1; border-radius: 14px;
+  padding: 1.5rem 1.3rem 1.3rem; border: 1px solid var(--rule);
   box-shadow: 0 12px 40px rgba(11, 37, 69, 0.1);
 }
 .book-widget .label {
-  font-family: var(--mono); font-size: 0.72rem;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--mute); margin-bottom: 0.4rem; font-weight: 600;
+  font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--mute); margin-bottom: 0.4rem; font-weight: 600;
 }
-.book-row { margin-bottom: 1.2rem; }
-
+.book-row { margin-bottom: 1.1rem; }
 .book-date, .book-date-input {
   background: var(--paper); border: 1px solid var(--rule-strong);
-  border-radius: 8px; padding: 0.7rem 0.9rem;
-  font-family: var(--mono); font-size: 0.9rem; color: var(--ink);
-  width: 100%;
+  border-radius: 9px; padding: 0.8rem 0.9rem; min-height: 48px;
+  font-family: var(--mono); font-size: 0.95rem; color: var(--ink); width: 100%;
 }
 .book-date-input { font-family: inherit; }
 .book-date-input:focus { outline: 2px solid var(--terracotta); outline-offset: -1px; border-color: var(--terracotta); }
 .book-date .icon { color: var(--terracotta); }
 
-.avail-empty {
-  grid-column: 1 / -1;
-  text-align: center; padding: 2rem 1rem;
-  color: var(--ink-soft); font-style: italic;
-}
-.avail-day .check {
-  display: flex; justify-content: center;
-  padding: 0.35rem 0; font-size: 0.78rem;
-  font-family: var(--mono); color: var(--terracotta); font-weight: 600;
-  border-top: 1px solid var(--rule);
-}
-.avail-day.today .check { color: #FFD8A8; border-color: rgba(244, 235, 217, 0.15); }
-
 .book-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
 .book-slot {
   background: var(--paper); border: 1.5px solid var(--rule-strong);
-  border-radius: 8px; padding: 0.85rem;
-  text-align: center; cursor: pointer; transition: all 0.15s;
+  border-radius: 9px; padding: 0.8rem; text-align: center; cursor: pointer; transition: all 0.15s;
 }
 .book-slot:hover { border-color: var(--terracotta); }
-.book-slot.selected {
-  background: var(--ink); color: var(--paper); border-color: var(--ink);
-}
+.book-slot.selected { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .book-slot .t { font-family: var(--mono); font-weight: 600; font-size: 0.95rem; }
-.book-slot .s { font-size: 0.75rem; color: var(--ink-soft); margin-top: 0.15rem; }
+.book-slot .s { font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.15rem; }
 .book-slot.selected .s { color: rgba(244, 235, 217, 0.8); }
 
 .book-seats {
   display: flex; align-items: center; gap: 0.6rem;
-  background: var(--paper); border: 1px solid var(--rule-strong);
-  border-radius: 8px; padding: 0.6rem 0.9rem;
+  background: var(--paper); border: 1px solid var(--rule-strong); border-radius: 9px; padding: 0.5rem 0.9rem;
 }
 .book-seats button {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
   background: var(--ink); color: var(--paper); border: 0;
-  font-size: 1.1rem; cursor: pointer; font-weight: 700;
-  line-height: 1;
+  font-size: 1.2rem; cursor: pointer; font-weight: 700; line-height: 1;
 }
 .book-seats input {
   flex: 1; text-align: center; border: 0; background: transparent;
-  font-family: var(--mono); font-size: 1.05rem; font-weight: 600; color: var(--ink);
+  font-family: var(--mono); font-size: 1.05rem; font-weight: 600; color: var(--ink); min-width: 0;
 }
 
-.book-math {
-  background: var(--paper-deep); border-radius: 8px;
-  padding: 1.2rem 1.2rem 1rem; margin: 1.2rem 0;
-  border: 1px solid var(--rule);
-}
+.book-math { background: var(--paper-deep); border-radius: 9px; padding: 1.1rem 1.1rem 0.9rem; margin: 1.1rem 0; border: 1px solid var(--rule); }
 .book-math .line {
   display: flex; justify-content: space-between; align-items: baseline;
-  padding: 0.35rem 0; font-size: 0.92rem; color: var(--ink-soft);
-  font-variant-numeric: tabular-nums;
+  padding: 0.35rem 0; font-size: 0.9rem; color: var(--ink-soft); font-variant-numeric: tabular-nums;
 }
-.book-math .line.total {
-  border-top: 1.5px solid var(--ink); margin-top: 0.5rem; padding-top: 0.7rem;
-  color: var(--ink); font-weight: 600; font-size: 1.05rem;
-}
-.book-math .line.fee {
-  color: var(--terracotta); font-weight: 600;
-}
-.book-math .line.balance {
-  color: var(--sea); font-style: italic; font-size: 0.88rem;
-}
+.book-math .line.total { border-top: 1.5px solid var(--ink); margin-top: 0.5rem; padding-top: 0.7rem; color: var(--ink); font-weight: 600; font-size: 1.05rem; }
+.book-math .line.fee { color: var(--terracotta); font-weight: 600; }
+.book-math .line.balance { color: var(--sea); font-style: italic; font-size: 0.86rem; }
 
 .book-confirm-btn {
-  width: 100%; padding: 1.05rem;
-  background: var(--terracotta); color: white;
-  border: 0; border-radius: 8px;
-  font-family: var(--sans); font-weight: 600; font-size: 1rem;
-  cursor: pointer; transition: background 0.15s;
+  width: 100%; padding: 1.05rem; min-height: 52px;
+  background: var(--terracotta); color: white; border: 0; border-radius: 9px;
+  font-family: var(--sans); font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.15s;
 }
 .book-confirm-btn:hover { background: var(--terracotta-deep); }
-.book-confirm-btn:disabled {
-  background: var(--mute); cursor: not-allowed;
-}
-
+.book-confirm-btn:disabled { background: var(--mute); cursor: not-allowed; }
 .book-fallback-btn {
-  width: 100%; margin-top: 0.6rem; padding: 0.7rem;
+  width: 100%; margin-top: 0.6rem; padding: 0.8rem; min-height: 48px;
   background: transparent; color: var(--ink-soft);
-  border: 1px solid var(--rule-strong); border-radius: 8px;
-  font-family: var(--sans); font-weight: 500; font-size: 0.85rem;
-  cursor: pointer; transition: all 0.15s;
+  border: 1px solid var(--rule-strong); border-radius: 9px;
+  font-family: var(--sans); font-weight: 500; font-size: 0.85rem; cursor: pointer; transition: all 0.15s;
 }
-.book-fallback-btn:hover {
-  border-color: var(--ink); color: var(--ink);
-}
-
+.book-fallback-btn:hover { border-color: var(--ink); color: var(--ink); }
 .book-terms {
   display: flex; gap: 0.6rem; align-items: flex-start;
-  padding: 0.7rem 0 0.4rem; font-size: 0.85rem;
-  color: var(--ink-soft); line-height: 1.4;
-  cursor: pointer;
+  padding: 0.7rem 0 0.4rem; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.4; cursor: pointer;
 }
-.book-terms input[type="checkbox"] {
-  flex-shrink: 0; margin-top: 0.15rem;
-  width: 1rem; height: 1rem;
-  accent-color: var(--terracotta);
-}
+.book-terms input[type="checkbox"] { flex-shrink: 0; margin-top: 0.15rem; width: 1.1rem; height: 1.1rem; accent-color: var(--terracotta); }
 .book-terms a { color: var(--terracotta); text-decoration: underline; }
+.book-error { background: #FEF3C7; color: #7C2D12; border: 1px solid #FCD34D; border-radius: 8px; padding: 0.7rem 0.9rem; font-size: 0.88rem; margin: 0.5rem 0 0.8rem; line-height: 1.4; }
+.book-success { background: #D8F3DC; color: #1B4332; border: 1px solid #95D5B2; border-radius: 8px; padding: 1rem; text-align: center; line-height: 1.5; }
+.book-success .code { display: inline-block; margin: 0.4rem 0; font-family: var(--mono); font-weight: 600; font-size: 1.05rem; background: white; padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid var(--ok-soft); }
+.book-fineprint { text-align: center; font-size: 0.72rem; color: var(--mute); margin-top: 0.9rem; font-style: italic; }
 
-.book-error {
-  background: #FEF3C7; color: #7C2D12;
-  border: 1px solid #FCD34D; border-radius: 8px;
-  padding: 0.7rem 0.9rem; font-size: 0.88rem;
-  margin: 0.5rem 0 0.8rem; line-height: 1.4;
-}
-
-.book-success {
-  background: #D8F3DC; color: #1B4332;
-  border: 1px solid #95D5B2; border-radius: 8px;
-  padding: 1rem; text-align: center; line-height: 1.5;
-}
-.book-success .code {
-  display: inline-block; margin: 0.4rem 0;
-  font-family: var(--mono); font-weight: 600; font-size: 1.05rem;
-  background: white; padding: 0.25rem 0.6rem; border-radius: 4px;
-  border: 1px solid var(--ok-soft);
-}
-
-/* ============================ CONFIRMATION MODAL ============================
-   Center-screen popup that appears on successful enquiry submission.
-   Designed to be impossible to miss regardless of scroll position.
-   ESC closes; click on backdrop closes; "Got it, thanks" CTA closes. */
-.confirm-modal {
-  position: fixed; inset: 0;
-  display: none;
-  align-items: center; justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
-}
+/* ============================ CONFIRMATION MODAL ============================ */
+.confirm-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 9999; padding: 1rem; }
 .confirm-modal[aria-hidden="false"] { display: flex; }
-.confirm-modal-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(11, 37, 69, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  animation: cm-fade 220ms ease-out;
-}
-.confirm-modal-card {
-  position: relative;
-  background: #FFFAF1;
-  border: 1px solid var(--rule);
-  border-radius: 14px;
-  max-width: 460px; width: 100%;
-  padding: 2.2rem 2rem 1.8rem;
-  box-shadow: 0 24px 80px rgba(11, 37, 69, 0.28);
-  text-align: center;
-  animation: cm-rise 260ms cubic-bezier(.22,.9,.3,1) both;
-}
-.confirm-modal-check {
-  width: 56px; height: 56px;
-  margin: 0 auto 1rem;
-  border-radius: 50%;
-  background: #D8F3DC;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.7rem; color: #1B4332;
-  font-weight: 700;
-}
-.confirm-modal-card h3 {
-  font-family: var(--serif);
-  font-size: 1.7rem;
-  color: var(--ink);
-  margin-bottom: 0.4rem;
-  font-weight: 420;
-  letter-spacing: -0.01em;
-}
-.confirm-modal-sub {
-  color: var(--ink-soft);
-  font-size: 0.95rem;
-  margin-bottom: 1.2rem;
-}
-.confirm-modal-code-label {
-  display: block;
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin-bottom: 0.5rem;
-}
-.confirm-modal-code {
-  display: inline-block;
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: var(--ink);
-  background: var(--paper);
-  padding: 0.55rem 0.95rem;
-  border-radius: 6px;
-  border: 1px solid var(--rule-strong);
-  margin-bottom: 1.3rem;
-  letter-spacing: 0.06em;
-}
-.confirm-modal-body {
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-  line-height: 1.55;
-  margin-bottom: 1.5rem;
-}
+.confirm-modal-backdrop { position: absolute; inset: 0; background: rgba(11, 37, 69, 0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: cm-fade 220ms ease-out; }
+.confirm-modal-card { position: relative; background: #FFFAF1; border: 1px solid var(--rule); border-radius: 14px; max-width: 460px; width: 100%; padding: 2.2rem 1.6rem 1.8rem; box-shadow: 0 24px 80px rgba(11, 37, 69, 0.28); text-align: center; animation: cm-rise 260ms cubic-bezier(.22,.9,.3,1) both; }
+.confirm-modal-check { width: 56px; height: 56px; margin: 0 auto 1rem; border-radius: 50%; background: #D8F3DC; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; color: #1B4332; font-weight: 700; }
+.confirm-modal-card h3 { font-family: var(--serif); font-size: 1.7rem; color: var(--ink); margin-bottom: 0.4rem; font-weight: 420; letter-spacing: -0.01em; }
+.confirm-modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.2rem; }
+.confirm-modal-code-label { display: block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); margin-bottom: 0.5rem; }
+.confirm-modal-code { display: inline-block; font-family: var(--mono); font-weight: 600; font-size: 1.1rem; color: var(--ink); background: var(--paper); padding: 0.55rem 0.95rem; border-radius: 6px; border: 1px solid var(--rule-strong); margin-bottom: 1.3rem; letter-spacing: 0.06em; }
+.confirm-modal-body { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.55; margin-bottom: 1.5rem; }
 .confirm-modal-body strong { color: var(--ink); }
-.confirm-modal-close {
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 999px;
-  padding: 0.9rem 1.7rem;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-.confirm-modal-close:hover {
-  background: var(--terracotta);
-  transform: translateY(-1px);
-}
-.confirm-modal-x {
-  position: absolute; top: 0.8rem; right: 1rem;
-  background: none; border: none;
-  font-size: 1.6rem;
-  color: var(--mute);
-  cursor: pointer;
-  line-height: 1;
-  padding: 0.2rem 0.5rem;
-}
+.confirm-modal-close { background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; border: none; border-radius: 999px; padding: 0.9rem 1.7rem; cursor: pointer; transition: background 0.2s ease, transform 0.15s ease; }
+.confirm-modal-close:hover { background: var(--terracotta); transform: translateY(-1px); }
+.confirm-modal-x { position: absolute; top: 0.8rem; right: 1rem; background: none; border: none; font-size: 1.6rem; color: var(--mute); cursor: pointer; line-height: 1; padding: 0.2rem 0.5rem; }
 .confirm-modal-x:hover { color: var(--ink); }
 @keyframes cm-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes cm-rise {
-  from { opacity: 0; transform: translateY(20px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+@keyframes cm-rise { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
 body.cm-locked { overflow: hidden; }
 
-.book-fineprint {
-  text-align: center; font-size: 0.72rem; color: var(--mute);
-  margin-top: 0.9rem; font-style: italic;
-}
-
 /* ============================================================
-   ITINERARY
+   ITINERARY — stacked cards on mobile, with a photo per stop
 ============================================================ */
-.itin { padding: 5rem 0; }
-.itin .head { margin-bottom: 3rem; max-width: 56rem; }
-.itin h2 { font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 0.8rem; max-width: 18ch; }
-.itin .lead { font-size: 1.05rem; color: var(--ink-soft); max-width: 56ch; }
-
-.itin-flow {
-  display: grid; grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
-  position: relative;
-}
+.itin { padding: 3rem 0; }
+.itin .head { margin-bottom: 1.8rem; max-width: 56rem; }
+.itin h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; max-width: 18ch; }
+.itin .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
+.itin-flow { display: grid; grid-template-columns: 1fr; gap: 0.9rem; position: relative; }
 .itin-stop {
-  background: var(--paper-deep); border-radius: 8px;
-  padding: 1.2rem 1rem 1.1rem;
-  border: 1px solid var(--rule);
-  position: relative;
+  background: var(--paper-deep); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--rule); position: relative;
+  display: grid; grid-template-columns: 96px 1fr; align-items: stretch;
 }
-.itin-stop .marker {
-  font-family: var(--mono); font-size: 0.7rem;
-  background: var(--terracotta); color: white;
-  padding: 0.18rem 0.5rem; border-radius: 3px;
-  display: inline-block; margin-bottom: 0.6rem;
-  letter-spacing: 0.05em;
-}
-.itin-stop h4 {
-  font-size: 1.15rem; margin-bottom: 0.3rem;
-}
-.itin-stop p {
-  font-size: 0.83rem; color: var(--ink-soft); line-height: 1.5;
-}
-.itin-arrow {
-  position: absolute; top: 50%; right: -0.7rem; transform: translateY(-50%);
-  font-family: var(--mono); color: var(--terracotta); font-weight: 700;
-  font-size: 1.2rem;
-}
+.itin-stop .thumb { background: var(--sea); overflow: hidden; }
+.itin-stop .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.itin-stop .copy { padding: 0.95rem 1rem; }
+.itin-stop .marker { font-family: var(--mono); font-size: 0.66rem; background: var(--terracotta); color: white; padding: 0.16rem 0.5rem; border-radius: 3px; display: inline-block; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+.itin-stop h4 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+.itin-stop p { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5; }
+.itin-arrow { display: none; }
 
 /* ============================================================
    INCLUDED / NOT
 ============================================================ */
-.incl {
-  padding: 4rem 0; background: var(--paper-deep);
-  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-}
-.incl-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
-}
-.incl h3 { font-size: 1.3rem; margin-bottom: 1.2rem; }
+.incl { padding: 2.8rem 0; background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.incl-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+.incl h3 { font-size: 1.25rem; margin-bottom: 1rem; }
 .incl ul { list-style: none; padding: 0; }
-.incl li {
-  display: flex; gap: 0.7rem; padding: 0.55rem 0;
-  font-size: 0.95rem; border-bottom: 1px solid var(--rule);
-}
+.incl li { display: flex; gap: 0.7rem; padding: 0.55rem 0; font-size: 0.93rem; border-bottom: 1px solid var(--rule); line-height: 1.45; }
 .incl li:last-child { border-bottom: 0; }
-.incl .yes::before {
-  content: "✓"; color: var(--ok); font-weight: 700; flex-shrink: 0;
-}
-.incl .no::before {
-  content: "✗"; color: var(--mute); font-weight: 700; flex-shrink: 0;
-}
+.incl .yes::before { content: "✓"; color: var(--ok); font-weight: 700; flex-shrink: 0; }
+.incl .no::before { content: "✗"; color: var(--mute); font-weight: 700; flex-shrink: 0; }
 .incl .no { color: var(--ink-soft); }
+
+/* ============================================================
+   GALLERY — "On the water" photo band
+============================================================ */
+.gallery { padding: 3rem 0; }
+.gallery .head { max-width: 56rem; margin-bottom: 1.5rem; }
+.gallery h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
+.gallery .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
+.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.gallery-grid figure { margin: 0; border-radius: 10px; overflow: hidden; background: var(--paper-deep); aspect-ratio: 1 / 1; }
+.gallery-grid figure.wide { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+.gallery-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+.gallery-grid figure:hover img { transform: scale(1.04); }
 
 /* ============================================================
    THE BOATS
 ============================================================ */
-.boats { padding: 5rem 0; }
-.boats .head { max-width: 56rem; margin-bottom: 2.5rem; }
-.boats h2 { font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 0.8rem; }
-.boats .lead { font-size: 1.05rem; color: var(--ink-soft); max-width: 56ch; }
-.boats-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
-}
-.boat-card {
-  background: var(--paper-deep); border-radius: 12px;
-  border: 1px solid var(--rule); overflow: hidden;
-}
-.boat-photo {
-  aspect-ratio: 4/3;
-  background: var(--paper-deep);
-  position: relative; overflow: hidden;
-}
-.boat-card .body { padding: 1.4rem 1.6rem 1.6rem; }
-.boat-card h4 { font-size: 1.3rem; margin-bottom: 0.4rem; }
-.boat-card .specs {
-  font-family: var(--mono); font-size: 0.78rem;
-  color: var(--mute); letter-spacing: 0.04em; text-transform: uppercase;
-  margin-bottom: 0.8rem;
-}
-.boat-card p { font-size: 0.92rem; color: var(--ink-soft); }
+.boats { padding: 3rem 0; }
+.boats .head { max-width: 56rem; margin-bottom: 1.6rem; }
+.boats h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
+.boats .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
+.boats-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+.boat-card { background: var(--paper-deep); border-radius: 12px; border: 1px solid var(--rule); overflow: hidden; }
+.boat-photo { aspect-ratio: 4/3; background: var(--paper-deep); position: relative; overflow: hidden; }
+.boat-photo img, .private-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.boat-card .body { padding: 1.2rem 1.4rem 1.4rem; }
+.boat-card h4 { font-size: 1.25rem; margin-bottom: 0.4rem; }
+.boat-card .specs { font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.7rem; }
+.boat-card p { font-size: 0.9rem; color: var(--ink-soft); }
 
 /* ============================================================
    PRIVATE CHARTER (secondary)
 ============================================================ */
-.private {
-  padding: 4rem 0;
-  background: var(--ink); color: var(--paper);
-}
-.private-grid {
-  display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center;
-}
-.private h2 {
-  color: var(--paper); font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 1rem;
-  max-width: 18ch;
-}
+.private { padding: 3rem 0; background: var(--ink); color: var(--paper); }
+.private-grid { display: grid; grid-template-columns: 1fr; gap: 1.8rem; align-items: center; }
+.private h2 { color: var(--paper); font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.9rem; max-width: 18ch; }
 .private h2 em { color: #FFD8A8; }
-.private p { color: rgba(244, 235, 217, 0.8); margin-bottom: 1.5rem; max-width: 50ch; }
-.private .btn-light {
-  background: var(--paper); color: var(--ink);
-  display: inline-block; padding: 0.9rem 1.5rem;
-  border-radius: 8px; text-decoration: none; font-weight: 600;
+.private p { color: rgba(244, 235, 217, 0.8); margin-bottom: 1.2rem; max-width: 50ch; font-size: 0.96rem; }
+.private-cta { display: flex; flex-direction: column; gap: 0.7rem; }
+.private .btn-light, .private .btn-wa {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 48px; padding: 0.9rem 1.5rem; border-radius: 9px;
+  font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; cursor: pointer; width: 100%; transition: all 0.2s ease;
 }
+.private .btn-light { background: var(--paper); color: var(--ink); border: 0; }
 .private .btn-light:hover { background: #FFD8A8; }
-
-.private-image {
-  aspect-ratio: 4/3; border-radius: 10px;
-  background: var(--paper-deep);
-  position: relative; overflow: hidden;
-  border: 1px solid rgba(255, 216, 168, 0.2);
-}
+.private .btn-wa { background: transparent; color: var(--paper); border: 1.5px solid rgba(244, 235, 217, 0.5); }
+.private .btn-wa:hover { border-color: var(--paper); background: rgba(244, 235, 217, 0.08); }
+.private-note { color: rgba(244, 235, 217, 0.6); font-size: 0.82rem; margin-top: 0.9rem; }
+.private-image { aspect-ratio: 4/3; border-radius: 12px; background: var(--paper-deep); position: relative; overflow: hidden; border: 1px solid rgba(255, 216, 168, 0.2); order: -1; }
 
 /* ============================================================
    FAQ
 ============================================================ */
-.faq { padding: 5rem 0; }
-.faq .head { max-width: 56rem; margin-bottom: 2rem; }
-.faq h2 { font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 0.8rem; }
+.faq { padding: 3rem 0; }
+.faq .head { max-width: 56rem; margin-bottom: 1.4rem; }
+.faq h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
 .faq-list { max-width: 56rem; }
-.faq-item {
-  padding: 1.4rem 0;
-  border-bottom: 1px solid var(--rule);
-}
+.faq-item { padding: 1.2rem 0; border-bottom: 1px solid var(--rule); }
 .faq-item:last-child { border-bottom: 0; }
-.faq-item h4 {
-  font-family: var(--sans); font-size: 1.02rem; font-weight: 700;
-  margin-bottom: 0.4rem; letter-spacing: -0.005em;
-}
-.faq-item p { color: var(--ink-soft); font-size: 0.95rem; }
+.faq-item h4 { font-family: var(--sans); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.005em; }
+.faq-item p { color: var(--ink-soft); font-size: 0.93rem; }
 
 /* ============================================================
    FOOTER
 ============================================================ */
-.foot {
-  padding: 3rem 0 2rem;
-  background: var(--paper-deep);
-  border-top: 1px solid var(--rule);
-}
-.foot-grid {
-  display: grid; grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 2.5rem; margin-bottom: 2.5rem;
-}
-.foot-brand .name {
-  font-family: var(--serif); font-size: 1.3rem;
-  font-weight: 600; margin-bottom: 0.3rem;
-}
+.foot { padding: 2.5rem 0 calc(2rem + var(--bookbar-h)); background: var(--paper-deep); border-top: 1px solid var(--rule); }
+.foot-grid { display: grid; grid-template-columns: 1fr; gap: 1.8rem; margin-bottom: 2rem; }
+.foot-brand .name { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
 .foot-brand .name em { color: var(--terracotta); font-style: italic; }
-.foot-brand p { font-size: 0.88rem; color: var(--ink-soft); max-width: 36ch; }
-.foot-col h5 {
-  font-family: var(--mono); font-size: 0.72rem;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--mute); margin-bottom: 0.7rem; font-weight: 600;
-}
+.foot-brand p { font-size: 0.86rem; color: var(--ink-soft); max-width: 42ch; }
+.foot-col h5 { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mute); margin-bottom: 0.7rem; font-weight: 600; }
 .foot-col ul { list-style: none; padding: 0; }
-.foot-col li { padding: 0.2rem 0; font-size: 0.9rem; }
-.foot-col a {
-  color: var(--ink-soft); text-decoration: none;
-}
+.foot-col li { padding: 0.3rem 0; font-size: 0.92rem; }
+.foot-col a { color: var(--ink-soft); text-decoration: none; }
 .foot-col a:hover { color: var(--terracotta); }
-.foot-bottom {
-  padding-top: 1.5rem; border-top: 1px solid var(--rule);
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 0.78rem; color: var(--mute);
-}
+.foot-bottom { padding-top: 1.4rem; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.76rem; color: var(--mute); }
 .foot-bottom .powered { font-family: var(--mono); }
 .foot-bottom .powered strong { color: var(--ink); font-weight: 600; }
 
-/* responsive */
-@media (max-width: 800px) {
-  .hero-grid, .book-grid, .incl-grid, .boats-grid, .private-grid, .foot-grid {
-    grid-template-columns: 1fr; gap: 2rem;
-  }
-  .avail-grid { grid-template-columns: repeat(3, 1fr); }
-  .itin-flow { grid-template-columns: 1fr; }
-  .itin-arrow { display: none; }
+/* ============================================================
+   STICKY MOBILE BOOK BAR
+============================================================ */
+.bookbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+  height: var(--bookbar-h);
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem var(--gut);
+  background: rgba(244, 235, 217, 0.97);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--rule-strong);
+  box-shadow: 0 -4px 20px rgba(11, 37, 69, 0.1);
+}
+.bookbar .price { line-height: 1.1; flex-shrink: 0; }
+.bookbar .price b { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--ink); display: block; }
+.bookbar .price span { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mute); }
+.bookbar a.bar-cta {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 46px; background: var(--terracotta); color: #fff;
+  border-radius: 9px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+}
+.bookbar a.bar-cta:hover { background: var(--terracotta-deep); }
+
+/* ============================================================
+   ≥ 760px  — tablet / small desktop
+============================================================ */
+@media (min-width: 760px) {
+  .nav { padding: 0.85rem 0; }
+  .nav .brand { font-size: 1.15rem; }
+  .nav .meta { font-size: 0.72rem; }
+
+  .hero { min-height: 86vh; }
+  .hero-inner { padding-top: 5rem; padding-bottom: 3rem; }
+  .hero h1 { font-size: clamp(3rem, 6vw, 4.2rem); }
+  .hero .lead { font-size: 1.15rem; }
+  .hero .cta-row { flex-direction: row; align-items: center; }
+  .hero .btn-primary, .hero .btn-ghost { width: auto; }
+
+  .trust-grid { display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 0.82rem; }
+
+  .depart { padding: 3rem 0 1rem; }
+
+  .book { padding: 4rem 0 5rem; }
+  .book-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .book-widget { padding: 2rem 2rem 1.6rem; }
+
+  .itin { padding: 5rem 0; }
+  .incl { padding: 4rem 0; }
+  .incl-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+
+  .gallery { padding: 4.5rem 0; }
+  .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
+  .gallery-grid figure.wide { grid-column: span 2; aspect-ratio: 1 / 1; }
+  .gallery-grid figure.tall { grid-row: span 2; aspect-ratio: 1 / 2; }
+
+  .boats { padding: 5rem 0; }
+  .boats-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+  .private { padding: 4.5rem 0; }
+  .private-grid { grid-template-columns: 1.2fr 1fr; gap: 3rem; }
+  .private-image { order: 0; }
+
+  .faq { padding: 5rem 0; }
+
+  .foot { padding: 3rem 0 2rem; }
+  .foot-grid { grid-template-columns: 1.4fr 1fr 1fr; gap: 2.5rem; }
+  .foot-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
+
+  /* sticky bar is mobile-only */
+  .bookbar { display: none; }
+}
+
+/* ============================================================
+   ≥ 1040px  — full desktop
+============================================================ */
+@media (min-width: 1040px) {
+  .hero-inner { padding-bottom: 3.5rem; }
+  .itin-flow { grid-template-columns: repeat(5, 1fr); }
+  .itin-stop { grid-template-columns: 1fr; }
+  .itin-stop .thumb { aspect-ratio: 4/3; }
+  .itin-stop .marker { margin: 0 0 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition: none !important; }
 }
 </style>
 
@@ -705,6 +522,7 @@ body.cm-locked { overflow: hidden; }
 <script defer src="/consent.js"></script>
 </head>
 <body>
+<a href="#book" class="skip-link">Skip to booking</a>
 
 <!-- ============================ NAV ============================ -->
 <nav class="nav">
@@ -716,21 +534,32 @@ body.cm-locked { overflow: hidden; }
 
 <!-- ============================ HERO ============================ -->
 <section class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-      <div>
-        <div class="eyebrow">Adventure Cruises Malta · By the seat</div>
-        <h1>Comino, Blue Lagoon, Gozo. <em>€40 a seat.</em></h1>
-        <p class="lead">A 5-hour Mediterranean day, from Sliema Ferries to Comino's caves and back. Two boats, 80 seats per departure, twice every day. Lock your seat with a €10 booking fee — pay the rest to the crew on the day.</p>
-        <div class="cta-row">
-          <a href="#book" class="btn btn-primary">Check availability <span class="arrow">→</span></a>
-          <a href="#about" class="btn btn-ghost">See what's included</a>
-        </div>
-      </div>
-      <div class="hero-photo">
-        <img src="/charters/adventure-cruises-images/hero-valletta-skyline.jpg"
-             alt="Adventure Cruises Malta powerboat with passengers, returning to Sliema Ferries with the Valletta skyline behind."
-             width="1920" height="2560" fetchpriority="high" decoding="async" />
+  <div class="hero-media">
+    <picture>
+      <source type="image/webp"
+        srcset="/charters/adventure-cruises-images/ac-hero-cruising-768.webp 768w,
+                /charters/adventure-cruises-images/ac-hero-cruising-1280.webp 1280w,
+                /charters/adventure-cruises-images/ac-hero-cruising-1920.webp 1920w"
+        sizes="100vw" />
+      <img src="/charters/adventure-cruises-images/ac-hero-cruising-1280.jpg"
+           srcset="/charters/adventure-cruises-images/ac-hero-cruising-768.jpg 768w,
+                   /charters/adventure-cruises-images/ac-hero-cruising-1280.jpg 1280w,
+                   /charters/adventure-cruises-images/ac-hero-cruising-1920.jpg 1920w"
+           sizes="100vw"
+           alt="Adventure Cruises Malta powerboat full of passengers cruising off the coast, the Adventure Cruises name on the hull."
+           width="2048" height="945" fetchpriority="high" decoding="async" />
+    </picture>
+  </div>
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <div class="wrap">
+      <div class="eyebrow">Adventure Cruises Malta · By the seat</div>
+      <h1>Comino, Blue Lagoon, Gozo. <em>€40 a seat.</em></h1>
+      <p class="lead">A 5-hour Mediterranean day, from Sliema Ferries to Comino's caves and back. Two boats, 80 seats per departure, twice every day.</p>
+      <div class="hero-price"><b>€40</b> / seat · <span>just €10 to hold it</span></div>
+      <div class="cta-row">
+        <a href="#book" class="btn btn-primary">Check availability <span class="arrow">→</span></a>
+        <a href="#about" class="btn btn-ghost">See what's included</a>
       </div>
     </div>
   </div>
@@ -738,33 +567,23 @@ body.cm-locked { overflow: hidden; }
 
 <!-- ============================ TRUST STRIP ============================ -->
 <section class="trust">
-  <div class="wrap">
-    <div class="trust-grid">
-      <span>⛵ <b>2 boats · 80 seats / departure</b></span>
-      <span>📍 <b>Sliema Ferries</b></span>
-      <span>⏰ <b>Daily 09:30 &amp; 14:30</b></span>
-      <span>⭐ <b>4.9 on TripAdvisor</b> · 44+ reviews</span>
-      <span>🌤 <b>Weather refund</b></span>
-    </div>
+  <div class="trust-grid">
+    <span>⛵ <b>2 boats · 80 seats</b></span>
+    <span>📍 <b>Sliema Ferries</b></span>
+    <span>⏰ <b>Daily 09:30 &amp; 14:30</b></span>
+    <span>⭐ <b>4.9 · 44+ reviews</b></span>
+    <span>🌤 <b>Weather refund</b></span>
   </div>
 </section>
 
-<!-- ============================ LIVE AVAILABILITY ============================ -->
-<section class="avail" id="avail">
+<!-- ============================ DEPARTURES STRIP ============================ -->
+<section class="depart" id="avail">
   <div class="wrap">
-    <div class="head">
-      <div class="eyebrow">§ Today and the next 6 days</div>
-      <h2>Pick your day.</h2>
-      <p class="lead">Tap any day to lock it in below — Anthony confirms availability over WhatsApp, usually inside 30 minutes during the day. Live, real-time seat counts coming with the new booking engine.</p>
-    </div>
-    <div class="avail-grid" id="availGrid">
-      <!-- JS populates next 7 days. Until the live engine ships, all
-           slots show "Check availability" — the booking widget below
-           routes confirmation requests through WhatsApp directly to
-           the crew. Replaces the misleading fake-seat-counts that
-           would erode trust if a customer booked and found out it's
-           actually full. -->
-    </div>
+    <a class="depart-strip" href="#book">
+      <span class="depart-ico" aria-hidden="true">⛵</span>
+      <span class="depart-text"><strong>Departures every day</strong> — 09:30 &amp; 14:30, twice daily from Sliema Ferries.</span>
+      <span class="depart-cta">Pick your date →</span>
+    </a>
   </div>
 </section>
 
@@ -775,11 +594,11 @@ body.cm-locked { overflow: hidden; }
       <div class="book-left">
         <div class="eyebrow">§ How booking works</div>
         <h2>Lock your seats in <em>under a minute.</em></h2>
-        <p class="lead">A booking fee holds your seats. The balance is paid to the crew on the day in cash. No platform middleman, no third-party markups.</p>
+        <p class="lead">A booking fee holds your seats. The balance is paid to the crew on the day, in cash or by card. No platform middleman, no third-party markups.</p>
         <ul class="points">
           <li><div><strong>You see real availability</strong> for every departure for the next 30 days.</div></li>
           <li><div><strong>€10 booking fee per seat</strong> charged now, secures your spot.</div></li>
-          <li><div><strong>€30 per seat to the crew on the day</strong> when you board, in cash.</div></li>
+          <li><div><strong>€30 per seat to the crew on the day</strong> when you board — cash, card, or local payment apps.</div></li>
           <li><div><strong>Free cancellation up to 24 hours</strong> before departure. Bad weather → automatic refund.</div></li>
         </ul>
       </div>
@@ -867,33 +686,44 @@ body.cm-locked { overflow: hidden; }
 
     <div class="itin-flow">
       <div class="itin-stop">
-        <span class="marker">0:00</span>
-        <h4>Sliema Ferries</h4>
-        <p>Boarding 15 mins before departure. Crew checks names + collects balance.</p>
-        <div class="itin-arrow">→</div>
+        <div class="thumb"><img src="/charters/adventure-cruises-images/ac-boat-anchored-600.jpg" alt="Adventure Cruises boat at anchor in clear water off Sliema." loading="lazy" decoding="async" width="600" height="600" /></div>
+        <div class="copy">
+          <span class="marker">0:00</span>
+          <h4>Sliema Ferries</h4>
+          <p>Boarding 15 mins before departure. Crew checks names + collects balance.</p>
+        </div>
       </div>
       <div class="itin-stop">
-        <span class="marker">0:45</span>
-        <h4>Comino caves</h4>
-        <p>Slow pass through the sea caves on Comino's south side. Crystal-clear water for swimming.</p>
-        <div class="itin-arrow">→</div>
+        <div class="thumb"><img src="/charters/adventure-cruises-images/ac-cave-entrance-640.jpg" alt="Powerboat bow approaching a Comino sea cave in turquoise water." loading="lazy" decoding="async" width="640" height="360" /></div>
+        <div class="copy">
+          <span class="marker">0:45</span>
+          <h4>Comino caves</h4>
+          <p>Slow pass through the sea caves on Comino's south side. Crystal-clear water for swimming.</p>
+        </div>
       </div>
       <div class="itin-stop">
-        <span class="marker">1:30</span>
-        <h4>Blue Lagoon</h4>
-        <p>Long swim + snorkel stop. Snorkel masks on board. Floats &amp; toys provided.</p>
-        <div class="itin-arrow">→</div>
+        <div class="thumb"><img src="/charters/adventure-cruises-images/ac-blue-lagoon-moored-640.jpg" alt="Adventure Cruises boats moored in the Blue Lagoon, Comino." loading="lazy" decoding="async" width="640" height="480" /></div>
+        <div class="copy">
+          <span class="marker">1:30</span>
+          <h4>Blue Lagoon</h4>
+          <p>Long swim + snorkel stop. Snorkel masks on board. Floats &amp; toys provided.</p>
+        </div>
       </div>
       <div class="itin-stop">
-        <span class="marker">3:00</span>
-        <h4>Gozo coastline</h4>
-        <p>Coastal cruise past Mġarr ix-Xini and inland sea. Photo stop at the Azure Window remains.</p>
-        <div class="itin-arrow">→</div>
+        <div class="thumb"><img src="/charters/adventure-cruises-images/ac-blue-water-cliffs-640.jpg" alt="Boat bow gliding past white limestone cliffs and bright turquoise water." loading="lazy" decoding="async" width="640" height="360" /></div>
+        <div class="copy">
+          <span class="marker">3:00</span>
+          <h4>Gozo coastline</h4>
+          <p>Coastal cruise past Mġarr ix-Xini and inland sea. Photo stop at the Azure Window remains.</p>
+        </div>
       </div>
       <div class="itin-stop">
-        <span class="marker">5:00</span>
-        <h4>Back to Sliema</h4>
-        <p>Direct return across the channel. Customer reviews encouraged on the way home.</p>
+        <div class="thumb"><img src="/charters/adventure-cruises-images/ac-group-rafted-640.jpg" alt="Guests aboard Adventure Cruises boats rafted together at the Blue Lagoon." loading="lazy" decoding="async" width="640" height="360" /></div>
+        <div class="copy">
+          <span class="marker">5:00</span>
+          <h4>Back to Sliema</h4>
+          <p>Direct return across the channel. Customer reviews encouraged on the way home.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -920,9 +750,40 @@ body.cm-locked { overflow: hidden; }
           <li class="no">Drinks (no kiosk on board — buy at the Blue Lagoon stop or BYO)</li>
           <li class="no">Towels (no charge if you forget, but crew won't always have spares)</li>
           <li class="no">Sun cream (factor 30+, reef-safe please — it's a marine protected area)</li>
-          <li class="no">Cash for the balance &amp; tips</li>
+          <li class="no">Cash for the balance &amp; tips (card accepted but cash is faster on the boat)</li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ GALLERY ============================ -->
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow">§ On the water</div>
+      <h2>Where the day takes you.</h2>
+      <p class="lead">Comino's caves, the Blue Lagoon, and the bright turquoise water in between — all on a real Adventure Cruises departure.</p>
+    </div>
+    <div class="gallery-grid">
+      <figure class="wide">
+        <img src="/charters/adventure-cruises-images/ac-blue-lagoon-moored-1024.jpg" alt="Two Adventure Cruises boats moored in the turquoise Blue Lagoon at Comino." loading="lazy" decoding="async" width="1024" height="768" />
+      </figure>
+      <figure class="tall">
+        <img src="/charters/adventure-cruises-images/ac-cave-bow-900.jpg" alt="Bow of the boat entering a dark Comino sea cave." loading="lazy" decoding="async" width="900" height="1200" />
+      </figure>
+      <figure>
+        <img src="/charters/adventure-cruises-images/ac-blue-water-cliffs-640.jpg" alt="Bright turquoise water beneath white cliffs near Comino." loading="lazy" decoding="async" width="640" height="360" />
+      </figure>
+      <figure>
+        <img src="/charters/adventure-cruises-images/ac-cave-entrance-640.jpg" alt="Powerboat bow approaching a limestone cave entrance." loading="lazy" decoding="async" width="640" height="360" />
+      </figure>
+      <figure>
+        <img src="/charters/adventure-cruises-images/ac-group-rafted-640.jpg" alt="Guests waving from Adventure Cruises boats rafted at the Blue Lagoon." loading="lazy" decoding="async" width="640" height="360" />
+      </figure>
+      <figure>
+        <img src="/charters/adventure-cruises-images/ac-boat-anchored-600.jpg" alt="Adventure Cruises boat at anchor over clear water." loading="lazy" decoding="async" width="600" height="600" />
+      </figure>
     </div>
   </div>
 </section>
@@ -973,12 +834,16 @@ body.cm-locked { overflow: hidden; }
         <h2>Private charter on a <em>Tullio Abbate</em>.</h2>
         <p>Up to 16 guests, from €890 for the day — the cabin yacht is yours to set the route, the pace, and the playlist. Ideal for hen do's, family days, corporate days, weddings.</p>
         <p>Final pricing varies with date, route, and extras — request a quote and we'll come back within 2 business hours.</p>
-        <a href="#enquiry" class="btn-light">Get a private charter quote →</a>
+        <div class="private-cta">
+          <button type="button" class="btn-light" onclick="privateCharterEnquiry('email')">Email a quote request →</button>
+          <button type="button" class="btn-wa" onclick="privateCharterEnquiry('whatsapp')">Ask on WhatsApp</button>
+        </div>
+        <p class="private-note">Your request goes to BookItMalta — we handle the quote and reply within 2 business hours.</p>
       </div>
       <div class="private-image">
         <img src="/charters/adventure-cruises-images/private-yacht-comino.jpg"
-             alt="Tullio Abbate cabin yacht moored beside a Comino sea cave — Adventure Cruises Malta private charter."
-             loading="lazy" decoding="async" />
+             alt="The Adventure Cruises Tullio Abbate cabin yacht moored in turquoise water beside a Comino sea cave."
+             loading="lazy" decoding="async" width="1600" height="900" />
       </div>
     </div>
   </div>
@@ -1010,7 +875,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>How do I pay the €30/seat balance on the day?</h4>
-        <p>The €30-per-seat balance is settled in cash with the crew when you board. Tips are optional but always appreciated — €5–10 per guest is normal for a good day.</p>
+        <p>The crew accepts cash, card (POS terminal on board), Revolut, and Apple/Google Pay. Most guests pay cash because it's fastest at boarding. Tips are optional but always appreciated — €5–10 per guest is normal for a good day.</p>
       </div>
       <div class="faq-item">
         <h4>What if I need to cancel?</h4>
@@ -1034,13 +899,13 @@ body.cm-locked { overflow: hidden; }
           <li><a href="#book">Book a seat</a></li>
           <li><a href="#about">Itinerary</a></li>
           <li><a href="#avail">Pick your day</a></li>
-          <li><a href="#enquiry">Private charter</a></li>
+          <li><a href="#gallery">Gallery</a></li>
         </ul>
       </div>
       <div class="foot-col">
         <h5>Contact</h5>
         <ul>
-          <li><a href="https://wa.me/35699286698">WhatsApp +356 9928 6698</a></li>
+          <li><a href="mailto:hello@bookitmalta.com">hello@bookitmalta.com</a></li>
           <li>Daily 8am – 8pm</li>
           <li>Sliema Ferries · Malta</li>
         </ul>
@@ -1052,6 +917,12 @@ body.cm-locked { overflow: hidden; }
     </div>
   </div>
 </footer>
+
+<!-- ============================ STICKY MOBILE BOOK BAR ============================ -->
+<div class="bookbar" aria-label="Quick booking">
+  <div class="price"><b>€40</b><span>per seat</span></div>
+  <a href="#book" class="bar-cta">Check availability →</a>
+</div>
 
 <script>
 /* =========================================================
@@ -1078,31 +949,9 @@ const MAX_SEATS = 40;
 
 const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// -----------------------------------------------------------------
-// 7-day availability grid
-// -----------------------------------------------------------------
-function renderAvailability() {
-  const grid = document.getElementById('availGrid');
-  if (!grid) return;
-  const today = new Date();
-  let html = '';
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    const isToday = i === 0;
-    const dowLabel = isToday ? 'Today' : (i === 1 ? 'Tomorrow' : DOW_LABELS[d.getDay()]);
-    const isoDate = d.toISOString().slice(0, 10);
-    html += '<div class="avail-day' + (isToday ? ' today' : '') + '"'
-      + ' onclick="pickDate(\'' + isoDate + '\')">'
-      + '<div class="dow">' + dowLabel + '</div>'
-      + '<div class="date">' + d.getDate() + '</div>'
-      + '<div class="avail-slot"><span class="time">09:30</span><span class="seats">Available</span></div>'
-      + '<div class="avail-slot"><span class="time">14:30</span><span class="seats">Available</span></div>'
-      + '<div class="check">Tap to book →</div>'
-      + '</div>';
-  }
-  grid.innerHTML = html;
-}
+// (The static 7-day availability grid was removed — there's no live seat
+// data yet, so a slim "departures every day" strip links straight to the
+// booking form instead. Re-introduce a grid here once the live engine ships.)
 
 // -----------------------------------------------------------------
 // Booking widget — date / slot / seats
@@ -1190,6 +1039,55 @@ function confirmViaWhatsApp() {
   const message = lines.join('\n');
   const url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message);
   window.open(url, '_blank');
+}
+
+// -----------------------------------------------------------------
+// Private charter quote — routed to BookItMalta (email) or the crew
+// (WhatsApp, asking them to copy BookItMalta) so a lead is never lost.
+// -----------------------------------------------------------------
+const PRIVATE_EMAIL = 'hello@bookitmalta.com';
+
+function privateCharterEnquiry(channel) {
+  // Count it as a lead (no-ops without consent / Ads label).
+  if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
+
+  if (channel === 'whatsapp') {
+    const lines = [
+      'Hi Adventure Cruises! 👋',
+      '',
+      'I’d like a private charter quote (the cabin yacht, up to 16 guests).',
+      '',
+      'Preferred date(s):',
+      'Group size:',
+      'Occasion:',
+      '',
+      'Please share availability & pricing — and loop in BookItMalta (' + PRIVATE_EMAIL + ') on the quote. Thank you!',
+      '',
+      '(via bookitmalta.com/adventure-cruises)'
+    ];
+    const url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
+    window.open(url, '_blank');
+    return;
+  }
+
+  // Default: email straight to BookItMalta so the quote always lands with us.
+  const subject = 'Private charter quote — Adventure Cruises';
+  const body = [
+    'Hi BookItMalta,',
+    '',
+    'I’d like a private charter quote for Adventure Cruises (the cabin yacht, up to 16 guests).',
+    '',
+    'Preferred date(s):',
+    'Group size:',
+    'Occasion (e.g. hen do, family day, corporate, wedding):',
+    'Anything else:',
+    '',
+    'Thank you!',
+    '(via bookitmalta.com/adventure-cruises)'
+  ].join('\n');
+  window.location.href = 'mailto:' + PRIVATE_EMAIL
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
 }
 
 // -----------------------------------------------------------------
@@ -1334,7 +1232,6 @@ async function submitEnquiry() {
 
 // Init on load
 document.addEventListener('DOMContentLoaded', function() {
-  renderAvailability();
   initBookingDate();
   updateMath(parseInt(document.getElementById('bookSeats').value, 10) || 2);
 });
