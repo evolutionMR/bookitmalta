@@ -399,6 +399,23 @@ body.cm-locked { overflow: hidden; }
 .private .btn-wa { background: transparent; color: var(--paper); border: 1.5px solid rgba(244, 235, 217, 0.5); }
 .private .btn-wa:hover { border-color: var(--paper); background: rgba(244, 235, 217, 0.08); }
 .private-note { color: rgba(244, 235, 217, 0.6); font-size: 0.82rem; margin-top: 0.9rem; }
+.private-note a { color: #FFD8A8; text-decoration: underline; }
+.quote-form { display: flex; flex-direction: column; gap: 0.6rem; }
+.qf-row { display: flex; flex-direction: column; gap: 0.6rem; }
+.qf-field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 0; }
+.qf-field > span { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(244, 235, 217, 0.7); }
+.quote-form input, .quote-form textarea {
+  width: 100%; min-height: 46px; padding: 0.7rem 0.9rem;
+  background: var(--paper); border: 1px solid rgba(244, 235, 217, 0.4); border-radius: 9px;
+  font-family: var(--sans); font-size: 0.95rem; color: var(--ink);
+}
+.quote-form textarea { min-height: 80px; resize: vertical; }
+.quote-form input::placeholder, .quote-form textarea::placeholder { color: rgba(11, 37, 69, 0.5); }
+.quote-form input:focus, .quote-form textarea:focus { outline: 2px solid var(--terracotta); outline-offset: -1px; border-color: var(--terracotta); }
+.quote-form .private-cta { margin-top: 0.2rem; }
+.quote-error { background: #FEF3C7; color: #7C2D12; border: 1px solid #FCD34D; border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.85rem; }
+.quote-ok { color: var(--paper); font-size: 1rem; line-height: 1.5; }
+.quote-ok strong { color: #FFD8A8; }
 .private-image { aspect-ratio: 4/3; border-radius: 12px; background: var(--paper-deep); position: relative; overflow: hidden; border: 1px solid rgba(255, 216, 168, 0.2); order: -1; }
 
 /* ============================================================
@@ -491,6 +508,8 @@ body.cm-locked { overflow: hidden; }
   .private { padding: 4.5rem 0; }
   .private-grid { grid-template-columns: 1.2fr 1fr; gap: 3rem; }
   .private-image { order: 0; }
+  .qf-row { flex-direction: row; }
+  .qf-row > * { flex: 1; min-width: 0; }
 
   .faq { padding: 5rem 0; }
 
@@ -834,11 +853,23 @@ body.cm-locked { overflow: hidden; }
         <h2>Private charter on a <em>Tullio Abbate</em>.</h2>
         <p>Up to 16 guests, from €890 for the day — the cabin yacht is yours to set the route, the pace, and the playlist. Ideal for hen do's, family days, corporate days, weddings.</p>
         <p>Final pricing varies with date, route, and extras — request a quote and we'll come back within 2 business hours.</p>
-        <div class="private-cta">
-          <button type="button" class="btn-light" onclick="privateCharterEnquiry('email')">Email a quote request →</button>
-          <button type="button" class="btn-wa" onclick="privateCharterEnquiry('whatsapp')">Ask on WhatsApp</button>
-        </div>
-        <p class="private-note">Your request goes to BookItMalta — we handle the quote and reply within 2 business hours.</p>
+        <form id="quoteForm" class="quote-form" onsubmit="submitQuote(event)">
+          <div class="qf-row">
+            <input type="text" id="qName" placeholder="Your name" autocomplete="name" required />
+            <input type="email" id="qEmail" placeholder="Email" autocomplete="email" required />
+          </div>
+          <div class="qf-row">
+            <label class="qf-field"><span>Preferred date</span><input type="date" id="qDates" /></label>
+            <label class="qf-field"><span>Group size</span><input type="number" id="qGroup" min="1" max="16" inputmode="numeric" placeholder="e.g. 12" /></label>
+          </div>
+          <textarea id="qMsg" placeholder="Occasion &amp; anything else (optional)"></textarea>
+          <div id="quoteError" class="quote-error" hidden></div>
+          <div class="private-cta">
+            <button type="submit" class="btn-light" id="qSubmit">Send quote request →</button>
+            <button type="button" class="btn-wa" id="qWa" onclick="quoteViaWhatsApp()">Ask on WhatsApp</button>
+          </div>
+        </form>
+        <p class="private-note">Your request goes straight to BookItMalta — we handle the quote and reply within 2 business hours. By sending, you agree to our <a href="/privacy.html" target="_blank">privacy policy</a>.</p>
       </div>
       <div class="private-image">
         <img src="/charters/adventure-cruises-images/private-yacht-comino.jpg"
@@ -1042,52 +1073,129 @@ function confirmViaWhatsApp() {
 }
 
 // -----------------------------------------------------------------
-// Private charter quote — routed to BookItMalta (email) or the crew
-// (WhatsApp, asking them to copy BookItMalta) so a lead is never lost.
+// "Ask on WhatsApp" — capture the lead server-side FIRST (so BookItMalta is
+// emailed regardless of channel), THEN open WhatsApp pre-filled. Requires
+// name + email so there's a lead to send. This closes the gap where a pure
+// WhatsApp handoff left BookItMalta out of the loop.
 // -----------------------------------------------------------------
-const PRIVATE_EMAIL = 'hello@bookitmalta.com';
+async function quoteViaWhatsApp() {
+  const errEl = document.getElementById('quoteError');
+  if (errEl) errEl.hidden = true;
+  const name  = document.getElementById('qName').value.trim();
+  const email = document.getElementById('qEmail').value.trim();
+  const dates = document.getElementById('qDates').value.trim();
+  const group = document.getElementById('qGroup').value.trim();
+  const msg   = document.getElementById('qMsg').value.trim();
 
-function privateCharterEnquiry(channel) {
-  // Count it as a lead (no-ops without consent / Ads label).
-  if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
+  if (!name)  return showQuoteError('Add your name first so we can follow up.');
+  if (!email) return showQuoteError('Add your email first so we can follow up.');
 
-  if (channel === 'whatsapp') {
-    const lines = [
-      'Hi Adventure Cruises! 👋',
-      '',
-      'I’d like a private charter quote (the cabin yacht, up to 16 guests).',
-      '',
-      'Preferred date(s):',
-      'Group size:',
-      'Occasion:',
-      '',
-      'Please share availability & pricing — and loop in BookItMalta (' + PRIVATE_EMAIL + ') on the quote. Thank you!',
-      '',
-      '(via bookitmalta.com/adventure-cruises)'
-    ];
-    const url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
-    window.open(url, '_blank');
-    return;
+  const waBtn = document.getElementById('qWa');
+  if (waBtn) waBtn.disabled = true;
+
+  // 1) Notify BookItMalta server-side (best-effort — never block the handoff).
+  try {
+    await fetch('/api/enquiry?tenant=adventure-cruises', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant: 'adventure-cruises',
+        kind: 'private_charter',
+        customer_name: name,
+        customer_email: email,
+        preferred_dates: dates || null,
+        party_size: group || null,
+        message: (msg ? msg + '\n\n' : '') + '[Customer is also messaging the crew on WhatsApp]',
+      }),
+    });
+    if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
+  } catch (err) {
+    console.error('[quote/wa] notify failed:', err);
   }
 
-  // Default: email straight to BookItMalta so the quote always lands with us.
-  const subject = 'Private charter quote — Adventure Cruises';
-  const body = [
-    'Hi BookItMalta,',
+  // 2) Open WhatsApp pre-filled with their details.
+  const lines = [
+    'Hi Adventure Cruises!',
     '',
-    'I’d like a private charter quote for Adventure Cruises (the cabin yacht, up to 16 guests).',
+    'I’d like a private charter quote (the cabin yacht, up to 16 guests).',
     '',
-    'Preferred date(s):',
-    'Group size:',
-    'Occasion (e.g. hen do, family day, corporate, wedding):',
-    'Anything else:',
-    '',
-    'Thank you!',
-    '(via bookitmalta.com/adventure-cruises)'
-  ].join('\n');
-  window.location.href = 'mailto:' + PRIVATE_EMAIL
-    + '?subject=' + encodeURIComponent(subject)
-    + '&body=' + encodeURIComponent(body);
+    'Name: ' + name,
+    'Preferred date: ' + (dates || '—'),
+    'Group size: ' + (group || '—'),
+  ];
+  if (msg) lines.push('Notes: ' + msg);
+  lines.push('', 'Please share availability & pricing — thanks!', '', '(via bookitmalta.com/adventure-cruises)');
+  window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+
+  // 3) Confirm in-page.
+  const form = document.getElementById('quoteForm');
+  if (form) {
+    form.innerHTML =
+      '<div class="quote-ok"><strong>Sent to us — opening WhatsApp…</strong> ' +
+      'We\'ll also reply by email within 2 business hours.</div>';
+  }
+}
+
+// -----------------------------------------------------------------
+// Private charter QUOTE form — POST to /api/enquiry (kind=private_charter)
+// Routes server-side so the lead is emailed to the operator + BCC'd to
+// BookItMalta. Falls back to the WhatsApp button if the request fails.
+// -----------------------------------------------------------------
+function showQuoteError(m) {
+  const el = document.getElementById('quoteError');
+  if (el) { el.textContent = m; el.hidden = false; }
+  return false;
+}
+
+async function submitQuote(e) {
+  e.preventDefault();
+  const errEl = document.getElementById('quoteError');
+  if (errEl) errEl.hidden = true;
+  const btn = document.getElementById('qSubmit');
+  const name  = document.getElementById('qName').value.trim();
+  const email = document.getElementById('qEmail').value.trim();
+  const dates = document.getElementById('qDates').value.trim();
+  const group = document.getElementById('qGroup').value.trim();
+  const msg   = document.getElementById('qMsg').value.trim();
+
+  if (!name)  return showQuoteError('Please enter your name.');
+  if (!email) return showQuoteError('Please enter your email.');
+
+  btn.disabled = true;
+  const orig = btn.textContent;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('/api/enquiry?tenant=adventure-cruises', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant: 'adventure-cruises',
+        kind: 'private_charter',
+        customer_name: name,
+        customer_email: email,
+        preferred_dates: dates || null,
+        party_size: group || null,
+        message: msg || null,
+      }),
+    });
+    if (!res.ok) {
+      let m; try { m = (await res.json()).error; } catch { /* ignore */ }
+      throw new Error(m || ('HTTP ' + res.status));
+    }
+    if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
+    const form = document.getElementById('quoteForm');
+    if (form) {
+      form.innerHTML =
+        '<div class="quote-ok"><strong>Request sent.</strong> ' +
+        'We\'ll reply within 2 business hours — keep an eye on your inbox.</div>';
+    }
+  } catch (err) {
+    console.error('[quote] submit failed:', err);
+    showQuoteError('Couldn\'t send just now — tap “Ask on WhatsApp” below and we\'ll sort it.');
+    btn.disabled = false;
+    btn.textContent = orig;
+  }
 }
 
 // -----------------------------------------------------------------
@@ -1232,6 +1340,8 @@ async function submitEnquiry() {
 
 // Init on load
 document.addEventListener('DOMContentLoaded', function() {
+  var qd = document.getElementById('qDates');
+  if (qd) qd.min = new Date().toISOString().slice(0, 10);
   initBookingDate();
   updateMath(parseInt(document.getElementById('bookSeats').value, 10) || 2);
 });

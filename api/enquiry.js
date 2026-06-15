@@ -52,6 +52,17 @@ module.exports = async function handler(req, res) {
     try { body = JSON.parse(body); } catch { /* leave as-is */ }
   }
 
+  // ---- Private-charter QUOTE path -----------------------------------------
+  // The quote button on the AC page posts { kind: 'private_charter' }. A quote
+  // has no departure slot, no seat count and often no firm date, so it doesn't
+  // fit the seat-booking validation or the (NOT NULL date/party) enquiries
+  // table. We handle it separately: email the operator — who is BCC'd to the
+  // BookItMalta owner via ADMIN_BCC_EMAIL — so a lead is captured reliably,
+  // never depending on the visitor's own mail client (the old mailto problem).
+  if (body && (body.kind === 'private_charter' || body.kind === 'quote')) {
+    return await routeToQuote({ tenant, config, body, res });
+  }
+
   // Validate against tenant-specific rules (party_size cap, slot list, etc.)
   let input;
   try {
@@ -160,6 +171,71 @@ async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, r
     redirect: `${baseUrl}${config.publicPagePath}${config.confirmationAnchor}`,
     message: 'Enquiry received. Captain will be in touch within 24 hours.',
   });
+}
+
+// =============================================================================
+// PRIVATE-CHARTER QUOTE PATH — no slot / seat / firm date
+// =============================================================================
+// Emails the operator (auto-BCC'd to ADMIN_BCC_EMAIL so BookItMalta stays in
+// the loop) with the customer set as reply-to. No DB write — the enquiries
+// table requires a date + party size a quote doesn't have, and this is a
+// human-handled lead, not a seat booking. Returns JSON for the fetch() caller.
+async function routeToQuote({ tenant, config, body, res }) {
+  const trim = (s) => (typeof s === 'string' ? s.trim() : '');
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const name    = trim(body.customer_name);
+  const email   = trim(body.customer_email).toLowerCase();
+  const phone   = trim(body.customer_phone);
+  const dates   = trim(body.preferred_dates || body.preferred_date);
+  const group   = trim(String(body.party_size == null ? '' : body.party_size));
+  const message = trim(body.message).slice(0, 4000);
+
+  if (!name || name.length < 2) {
+    return res.status(400).json({ error: 'Please enter your name.' });
+  }
+  if (!EMAIL_RE.test(email) || email.length > 240) {
+    return res.status(400).json({ error: 'Please enter a valid email.' });
+  }
+
+  // Send to the operator if configured (this is what triggers the admin BCC);
+  // otherwise straight to the platform admin so the lead is never dropped.
+  const operatorEmail = getTenantEnvOptional(tenant, 'OPERATOR_EMAIL', null);
+  const adminBcc = (process.env.ADMIN_BCC_EMAIL || '').trim() || null;
+  const to = operatorEmail || adminBcc || 'hello@bookitmalta.com';
+
+  const text = [
+    `New PRIVATE CHARTER quote request — ${config.name}`,
+    '',
+    `Name:        ${name}`,
+    `Email:       ${email}`,
+    `Phone:       ${phone || '—'}`,
+    `Preferred:   ${dates || '—'}`,
+    `Group size:  ${group || '—'}`,
+    '',
+    'Message:',
+    message || '—',
+    '',
+    'Reply to this email to reach the customer directly (set as reply-to).',
+    '',
+    'BookItMalta',
+  ].join('\n');
+
+  try {
+    await sendEmail({
+      tenantSlug: tenant,
+      tenantConfig: config,
+      to,
+      subject: `[${config.name}] Private charter quote — ${name}`,
+      text,
+      replyTo: email,
+    });
+  } catch (e) {
+    console.error('[quote] email failed:', e);
+    return res.status(502).json({ error: 'Could not send your request right now.' });
+  }
+
+  return res.status(200).json({ type: 'quote', status: 'sent' });
 }
 
 // =============================================================================
