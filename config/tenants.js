@@ -117,6 +117,27 @@ const TENANTS = {
       'true-northdigital@outlook.com',             // Julian (owner)
     ],
   },
+
+  // Quote-only listing — no Supabase schema, no Stripe, no DB writes. Catamaran
+  // (La Zingara + Chardonnay) is operated by Simon (same operator as Bandama).
+  // Enquiries are captured via the /api/enquiry quote path (kind:'private_charter')
+  // which only emails — it never touches the booking tables. Set the optional
+  // env var CATAMARAN_OPERATOR_EMAIL to route quote emails to the operator
+  // (auto-BCC'd to ADMIN_BCC_EMAIL); if unset, they fall back to the platform
+  // admin / hello@bookitmalta.com so a lead is never dropped.
+  catamaran: {
+    slug: 'catamaran',
+    name: 'Catamaran Malta — La Zingara & Chardonnay',
+    operatorFirstName: 'Simon',
+    boat: 'La Zingara (Lagoon 450) + Chardonnay (Lagoon 440)',
+    pricingModel: 'quote',          // quote-only: never hits stripe/supabase math
+    currency: 'EUR',
+    publicPagePath: '/catamaran',
+    confirmationAnchor: '#enquiry-confirmed',
+    emailFromName: 'Catamaran Malta (via BookItMalta)',
+    emailReplyTo: null,             // resolved from CATAMARAN_OPERATOR_EMAIL if set
+    schedulingModel: 'quote',
+  },
 };
 
 function getTenant(slug) {
