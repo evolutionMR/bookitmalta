@@ -96,6 +96,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..700&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
 <style>
+/* ============================================================
+   Bandama Yacht Charters — MOBILE-FIRST stylesheet.
+   Base rules target a phone (~360–430px). Layout widens at the
+   760px and 1040px breakpoints via min-width queries.
+   Shares the BookItMalta house tokens with Adventure Cruises.
+============================================================ */
 :root {
   --ink: #0B2545;
   --ink-soft: #1C3558;
@@ -110,9 +116,10 @@
   --serif: "Fraunces", Georgia, serif;
   --sans:  "Manrope", -apple-system, sans-serif;
   --mono:  "JetBrains Mono", ui-monospace, monospace;
-  --maxw: 1240px;
+  --maxw: 1180px;
   --maxw-narrow: 940px;
-  --gut: clamp(1.25rem, 4vw, 3rem);
+  --gut: clamp(1.15rem, 5vw, 3rem);
+  --bookbar-h: 68px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -121,8 +128,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.55;
+  font-size: 16px;
+  line-height: 1.6;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -146,7 +153,7 @@ main, nav, footer { position: relative; z-index: 1; }
   background: var(--ink); color: var(--paper);
   font-family: var(--mono); font-size: 0.78rem;
   letter-spacing: 0.1em; text-transform: uppercase;
-  z-index: 100;
+  z-index: 200;
 }
 .skip-to-content:focus { left: 1rem; top: 1rem; }
 
@@ -160,33 +167,36 @@ main, nav, footer { position: relative; z-index: 1; }
 }
 .eyebrow {
   font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--mute);
+  color: var(--terracotta);
+  display: inline-block;
+  margin-bottom: 0.8rem;
 }
 h1, h2, h3 { font-family: var(--serif); color: var(--ink); font-weight: 400; letter-spacing: -0.015em; }
 h1 {
-  font-size: clamp(2.4rem, 5.4vw, 4.6rem);
-  line-height: 1;
+  font-size: clamp(2.1rem, 9vw, 3.3rem);
+  line-height: 1.04;
   font-weight: 340;
   font-variation-settings: "SOFT" 30, "WONK" 1;
 }
 h1 em { font-style: italic; color: var(--terracotta); font-variation-settings: "SOFT" 80, "WONK" 1; }
-h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.1; font-weight: 380; }
+h2 { font-size: clamp(1.6rem, 6vw, 2.4rem); line-height: 1.1; font-weight: 380; }
 h2 em { font-style: italic; color: var(--terracotta); }
 h3 { font-size: clamp(1.1rem, 1.8vw, 1.3rem); line-height: 1.2; font-weight: 440; }
+em { font-style: italic; color: var(--terracotta); }
 .lead {
-  font-size: clamp(1.05rem, 1.4vw, 1.15rem);
+  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
   line-height: 1.5;
   color: var(--ink-soft);
-  max-width: 38em;
+  max-width: 44ch;
 }
 p { max-width: 38em; }
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
 .wrap-narrow { max-width: var(--maxw-narrow); margin: 0 auto; padding: 0 var(--gut); }
-section { padding: clamp(3rem, 6vw, 5rem) 0; position: relative; }
+section { padding: clamp(2.6rem, 6vw, 4.5rem) 0; position: relative; }
 
 /* Post-submit confirmation banner — hidden by default, shown when URL is #enquiry-confirmed */
 .enquiry-confirmed {
@@ -233,22 +243,24 @@ section { padding: clamp(3rem, 6vw, 5rem) 0; position: relative; }
 }
 .ec-close:hover { color: var(--paper); border-color: var(--paper); }
 
-/* Top breadcrumb nav */
+/* ============================ NAV ============================ */
 nav.top {
-  padding: 1.2rem 0;
+  padding: 0.8rem 0;
   border-bottom: 1px solid var(--rule);
-  background: var(--paper);
+  background: rgba(244, 235, 217, 0.92);
+  backdrop-filter: blur(8px);
+  position: sticky; top: 0; z-index: 50;
 }
 nav.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
 .wordmark {
   font-family: var(--serif);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 400;
   font-variation-settings: "SOFT" 50, "WONK" 1;
   letter-spacing: -0.015em;
 }
 .wordmark span { color: var(--terracotta); font-style: italic; }
-.breadcrumbs { font-family: var(--mono); font-size: 0.7rem; color: var(--mute); letter-spacing: 0.08em; }
+.breadcrumbs { font-family: var(--mono); font-size: 0.66rem; color: var(--mute); letter-spacing: 0.05em; text-transform: uppercase; }
 .breadcrumbs a:hover { color: var(--terracotta); }
 
 .btn {
@@ -257,109 +269,95 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.95rem 1.6rem;
+  min-height: 48px;
   border-radius: 999px;
   transition: all .22s ease;
   cursor: pointer;
   border: 1px solid transparent;
-  display: inline-flex; align-items: center; gap: 0.5rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
 }
-.btn-primary { background: var(--ink); color: var(--paper); }
-.btn-primary:hover { background: var(--terracotta); transform: translateY(-1px); }
+.btn-primary { background: var(--terracotta); color: #fff; }
+.btn-primary:hover { background: var(--terracotta-deep); transform: translateY(-1px); }
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--rule-strong); }
 .btn-ghost:hover { border-color: var(--ink); }
+.btn .arrow { display: inline-block; transition: transform .2s; }
+.btn:hover .arrow { transform: translateX(3px); }
 
-/* Hero with operator branding */
-.hero { padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(2rem, 4vw, 3rem); }
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: clamp(2rem, 4vw, 4rem);
-  align-items: center;
-}
-.hero-content .kicker { display: block; margin-bottom: 1.2rem; }
-.hero-content h1 { max-width: 18ch; margin-bottom: 1.4rem; }
-.hero-content .lead { margin-bottom: 2rem; }
-.hero-content .cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-.hero-image {
-  background: linear-gradient(135deg, var(--sea) 0%, var(--ink-soft) 100%);
-  border-radius: 6px;
-  aspect-ratio: 4 / 3;
+/* ============================================================
+   HERO — full-bleed image, headline + price chip overlaid
+============================================================ */
+.hero {
   position: relative;
+  min-height: 78vh;
+  display: flex; align-items: flex-end;
+  color: var(--paper);
   overflow: hidden;
 }
-.hero-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  position: relative;
-  z-index: 1;
+.hero-media { position: absolute; inset: 0; z-index: 0; }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 60% center; display: block; }
+.hero-scrim {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(11,37,69,0.55) 0%, rgba(11,37,69,0.40) 42%, rgba(11,37,69,0.86) 100%);
 }
+.hero-inner { position: relative; z-index: 2; width: 100%; padding-top: 4rem; padding-bottom: 1.8rem; }
+.hero .kicker { color: #FFD8A8; display: block; margin-bottom: 0.8rem; }
+.hero h1 {
+  color: var(--paper);
+  margin-bottom: 0.9rem; max-width: 16ch;
+  text-shadow: 0 2px 18px rgba(11,37,69,0.35);
+}
+.hero h1 em { color: #FFD8A8; }
+.hero .lead {
+  font-size: 1.02rem; color: rgba(244,235,217,0.92);
+  max-width: 46ch; margin-bottom: 1.4rem;
+  text-shadow: 0 1px 10px rgba(11,37,69,0.4);
+}
+.hero-price {
+  display: inline-flex; align-items: baseline; gap: 0.4rem;
+  background: rgba(244, 235, 217, 0.95); color: var(--ink);
+  padding: 0.45rem 0.9rem; border-radius: 30px;
+  font-family: var(--mono); font-size: 0.82rem; font-weight: 500;
+  margin-bottom: 1.3rem;
+}
+.hero-price b { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+.hero .cta-row { display: flex; flex-direction: column; gap: 0.7rem; }
+.hero .btn-primary { width: 100%; }
+.hero .btn-ghost { width: 100%; color: var(--paper); border-color: rgba(244,235,217,0.5); }
+.hero .btn-ghost:hover { border-color: var(--paper); background: rgba(244,235,217,0.08); }
 
-/* Gallery */
-.gallery { padding: clamp(3rem, 5vw, 4.5rem) 0; background: var(--paper); }
-.gallery-head { margin-bottom: 1.8rem; }
-.gallery-head h2 { margin-top: 0.8rem; max-width: 22ch; }
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.7rem;
-  grid-auto-flow: dense;
-}
-.g-item {
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: 4px;
+/* ============================ KEY FACTS STRIP ============================ */
+.specs-strip {
+  padding: 1.1rem var(--gut);
+  border-bottom: 1px solid var(--rule);
   background: var(--paper-deep);
-  position: relative;
 }
-.g-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .35s ease;
-}
-.g-item:hover img { transform: scale(1.03); }
-.g-tall { grid-row: span 2; aspect-ratio: 4 / 6.15; }
-.g-wide { grid-column: span 2; aspect-ratio: 8 / 3; }
-@media (max-width: 720px) {
-  .gallery-grid { grid-template-columns: 1fr; }
-  .g-tall { grid-row: auto; aspect-ratio: 4 / 3; }
-  .g-wide { grid-column: auto; aspect-ratio: 4 / 3; }
-}
-
-/* Specs strip */
-.specs-strip { background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 1.8rem 0; }
 .specs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem 2rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1.4rem;
+  max-width: var(--maxw); margin: 0 auto;
 }
 .spec { display: flex; flex-direction: column; gap: 0.2rem; }
 .spec-label {
-  font-family: var(--mono); font-size: 0.66rem;
+  font-family: var(--mono); font-size: 0.64rem;
   letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--mute);
 }
-.spec-value { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); font-weight: 420; line-height: 1.1; }
+.spec-value { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); font-weight: 420; line-height: 1.1; }
 
-/* About + route */
+/* ============================ ABOUT / ROUTE ============================ */
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: 1fr;
+  gap: clamp(1.8rem, 5vw, 3.5rem);
   align-items: start;
 }
 .about-grid h2 { margin-bottom: 1.2rem; }
 .about-grid p + p { margin-top: 1rem; }
 
-/* Included list */
+/* Included / getting-to-boat list card */
 .included {
   background: var(--paper-deep);
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: 12px;
   padding: 1.6rem 1.8rem 1.8rem;
 }
 .included h3 { font-size: 1.1rem; margin-bottom: 1rem; }
@@ -376,13 +374,35 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   flex-shrink: 0; width: 14px;
 }
 
-/* Pricing breakdown */
+/* ============================ GALLERY ============================ */
+.gallery { padding: clamp(2.6rem, 5vw, 4.5rem) 0; background: var(--paper); }
+.gallery .gallery-head { max-width: 56rem; margin-bottom: 1.5rem; }
+.gallery-head h2 { margin-top: 0.4rem; max-width: 22ch; }
+.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.gallery-grid figure {
+  margin: 0; border-radius: 10px; overflow: hidden;
+  background: var(--paper-deep); aspect-ratio: 1 / 1;
+}
+.gallery-grid figure.wide { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+.gallery-grid img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.4s ease;
+}
+.gallery-grid figure:hover img { transform: scale(1.04); }
+
+/* ============================ FAQ ============================ */
+.faq-list { display: grid; gap: 1.4rem; }
+.faq-item { border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+.faq-item h3 { margin-bottom: 0.5rem; }
+.faq-item p { color: var(--ink-soft); }
+
+/* ============================ PRICING ============================ */
 .pricing { background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
 .pricing-card {
   background: var(--paper);
   border: 1px solid var(--rule);
-  border-radius: 6px;
-  padding: 2rem 2.2rem 2.4rem;
+  border-radius: 12px;
+  padding: 1.8rem 1.5rem 2rem;
   max-width: 640px;
 }
 .pricing-card h2 { margin-bottom: 0.5rem; }
@@ -392,31 +412,15 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   display: flex; justify-content: space-between; align-items: baseline;
   padding: 0.7rem 0;
   border-bottom: 1px solid var(--rule);
+  gap: 1rem;
 }
 .pricing-row:last-of-type { border-bottom: 0; }
-.pricing-row .pr-label { font-size: 0.95rem; color: var(--ink-soft); }
-.pricing-row .pr-value { font-family: var(--mono); color: var(--ink); font-weight: 500; }
+.pricing-row .pr-label { font-size: 0.92rem; color: var(--ink-soft); }
+.pricing-row .pr-value { font-family: var(--mono); color: var(--ink); font-weight: 500; white-space: nowrap; }
 .pricing-row.total { padding-top: 1rem; }
 .pricing-row.total .pr-label { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); font-weight: 420; }
 .pricing-row.total .pr-value { font-family: var(--serif); font-size: 1.4rem; color: var(--ink); font-weight: 400; }
 
-.pricing-deposit {
-  margin-top: 1.4rem;
-  padding: 1rem 1.2rem;
-  background: rgba(200,92,46,0.08);
-  border: 1px solid rgba(200,92,46,0.25);
-  border-radius: 4px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.pricing-deposit .pd-label {
-  font-family: var(--mono); font-size: 0.7rem;
-  color: var(--terracotta); letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.pricing-deposit .pd-value {
-  font-family: var(--serif); font-size: 1.3rem;
-  color: var(--terracotta); font-weight: 420;
-}
 .pricing-note {
   margin-top: 1rem;
   font-family: var(--mono); font-size: 0.74rem;
@@ -424,19 +428,19 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   line-height: 1.55;
 }
 
-/* Enquiry form */
-.enquiry { padding: clamp(3rem, 5vw, 4.5rem) 0; }
+/* ============================ ENQUIRY FORM ============================ */
+.enquiry { padding: clamp(2.6rem, 5vw, 4.5rem) 0; }
 .enquiry-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: 1fr;
+  gap: clamp(1.8rem, 5vw, 3.5rem);
   align-items: start;
 }
 .enquiry-form {
   background: var(--paper-deep);
   border: 1px solid var(--rule);
-  border-radius: 6px;
-  padding: 1.8rem 1.8rem 2rem;
+  border-radius: 12px;
+  padding: 1.6rem 1.5rem 1.8rem;
 }
 .enquiry-form h3 { margin-bottom: 0.7rem; }
 .enquiry-form .form-intro {
@@ -446,7 +450,7 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 }
 .form-field { margin-bottom: 1rem; }
 .form-field label {
-  font-family: var(--mono); font-size: 0.66rem;
+  font-family: var(--mono); font-size: 0.64rem;
   letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--mute);
   display: block;
@@ -460,8 +464,9 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   color: var(--ink);
   background: var(--paper);
   border: 1px solid var(--rule-strong);
-  border-radius: 4px;
+  border-radius: 9px;
   padding: 0.7rem 0.9rem;
+  min-height: 48px;
   line-height: 1.4;
   transition: border-color .15s ease;
 }
@@ -472,7 +477,7 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   border-color: var(--terracotta);
 }
 .form-field textarea { resize: vertical; min-height: 80px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; align-items: end; }
+.form-row { display: grid; grid-template-columns: 1fr; gap: 0.8rem; align-items: end; }
 .enquiry-form .btn { width: 100%; justify-content: center; margin-top: 0.7rem; }
 .enquiry-form .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .consent {
@@ -549,7 +554,7 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
   flex-shrink: 0;
 }
 
-/* Powered-by strip */
+/* ============================ POWERED-BY STRIP ============================ */
 .powered { background: var(--ink); color: rgba(244,235,217,0.7); padding: 2rem 0; }
 .powered .wrap { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .powered .powered-text { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -557,16 +562,16 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .powered .powered-text a:hover { color: var(--terracotta); }
 .powered .powered-meta { font-family: var(--mono); font-size: 0.7rem; color: rgba(244,235,217,0.5); letter-spacing: 0.06em; }
 
-/* Footer */
+/* ============================ FOOTER ============================ */
 footer {
   background: var(--ink);
   color: rgba(244,235,217,0.7);
-  padding: 3rem 0 2rem;
+  padding: 3rem 0 calc(2rem + var(--bookbar-h));
   border-top: 1px solid rgba(244,235,217,0.15);
 }
 .footer-grid {
-  display: grid; grid-template-columns: 2fr 1fr 1fr;
-  gap: 2.5rem;
+  display: grid; grid-template-columns: 1fr;
+  gap: 1.8rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid rgba(244,235,217,0.12);
 }
@@ -581,16 +586,97 @@ footer .wordmark span { color: var(--terracotta); }
 .footer-col a:hover { color: var(--terracotta); }
 .footer-bottom {
   padding-top: 1.5rem;
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
   font-family: var(--mono); font-size: 0.68rem; color: rgba(244,235,217,0.45); letter-spacing: 0.08em; text-transform: uppercase;
 }
 
-@media (max-width: 880px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .about-grid { grid-template-columns: 1fr; }
-  .enquiry-grid { grid-template-columns: 1fr; }
-  .form-row { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr; }
+/* ============================================================
+   STICKY MOBILE BOOK BAR
+============================================================ */
+.bookbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+  height: var(--bookbar-h);
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem var(--gut);
+  background: rgba(244, 235, 217, 0.97);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--rule-strong);
+  box-shadow: 0 -4px 20px rgba(11, 37, 69, 0.1);
+}
+.bookbar .price { line-height: 1.1; flex-shrink: 0; }
+.bookbar .price b { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--ink); display: block; }
+.bookbar .price span { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mute); }
+.bookbar a.bar-cta {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 46px; background: var(--terracotta); color: #fff;
+  border-radius: 9px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+}
+.bookbar a.bar-cta:hover { background: var(--terracotta-deep); }
+
+/* Floating back-to-top — fades in on scroll, sits above the book bar on mobile */
+.to-top {
+  position: fixed; right: 16px; bottom: calc(var(--bookbar-h) + 14px); z-index: 70;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--ink); color: var(--paper); border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.25rem; line-height: 1;
+  box-shadow: 0 6px 18px rgba(11, 37, 69, 0.28);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s, background 0.2s ease;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.to-top:hover { background: var(--terracotta); }
+.to-top:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 3px; }
+
+/* ============================================================
+   ≥ 760px — tablet / small desktop
+============================================================ */
+@media (min-width: 760px) {
+  body { font-size: 17px; }
+  nav.top { padding: 0.85rem 0; }
+  .wordmark { font-size: 1.2rem; }
+  .breadcrumbs { font-size: 0.7rem; }
+
+  .hero { min-height: 86vh; }
+  .hero-inner { padding-top: 5rem; padding-bottom: 3rem; }
+  .hero h1 { font-size: clamp(3rem, 6vw, 4.2rem); max-width: 18ch; }
+  .hero .lead { font-size: 1.15rem; }
+  .hero .cta-row { flex-direction: row; align-items: center; }
+  .hero .btn-primary, .hero .btn-ghost { width: auto; }
+
+  .specs-grid { display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
+
+  .about-grid { grid-template-columns: 1fr 1fr; }
+
+  .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
+  .gallery-grid figure.wide { grid-column: span 2; aspect-ratio: 1 / 1; }
+  .gallery-grid figure.tall { grid-row: span 2; aspect-ratio: 1 / 2; }
+
+  .pricing-card { padding: 2rem 2.2rem 2.4rem; }
+
+  .enquiry-grid { grid-template-columns: 1fr 1fr; }
+  .enquiry-form { padding: 1.8rem 1.8rem 2rem; }
+  .form-row { grid-template-columns: 1fr 1fr; }
+
+  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; gap: 2.5rem; }
+  .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
+
+  /* sticky bar is mobile-only */
+  .bookbar { display: none; }
+  .to-top { bottom: 24px; }
+  footer { padding: 3rem 0 2rem; }
+}
+
+/* ============================================================
+   ≥ 1040px — full desktop
+============================================================ */
+@media (min-width: 1040px) {
+  .hero-inner { padding-bottom: 3.5rem; }
+  .specs-grid { gap: 3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition: none !important; }
+  html { scroll-behavior: auto; }
 }
 </style>
 </head>
@@ -636,63 +722,66 @@ footer .wordmark span { color: var(--terracotta); }
   </div>
 </section>
 
+<!-- ============================ HERO ============================ -->
 <header class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-      <div class="hero-content">
-        <span class="kicker">Private day charter · Ta' Xbiex, beside Sliema</span>
-        <h1>Bandama Yacht Charters — a <em>full day</em> on the water.</h1>
-        <p class="lead">A private boat charter departing Ta' Xbiex Creek, the sheltered marina right beside Sliema — a ten-minute waterfront walk from the Sliema ferries. Bandama is a Beneteau Swift Trawler 47, a 14.7m luxury motor yacht built in 2019, run with a professional skipper and crew. Comino, the Blue Lagoon and the south coast of Gozo, all within reach of the day.</p>
-        <div class="cta-row">
-          <a href="#enquire" class="btn btn-primary">Enquire about a date <span class="arrow">→</span></a>
-          <a href="#pricing" class="btn btn-ghost">See what's included</a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <img src="/charters/bandama/images/hero.jpg" alt="Beneteau Swift Trawler 47 anchored in turquoise water at Comino, Malta" />
+  <div class="hero-media">
+    <img src="/charters/bandama/images/hero.jpg"
+         alt="Beneteau Swift Trawler 47 anchored in turquoise water at Comino, Malta"
+         fetchpriority="high" decoding="async" />
+  </div>
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <div class="wrap">
+      <span class="kicker">Private day charter · Ta' Xbiex, beside Sliema</span>
+      <h1>Bandama Yacht Charters — a <em>full day</em> on the water.</h1>
+      <p class="lead">A private boat charter departing Ta' Xbiex Creek, the sheltered marina right beside Sliema. Bandama is a Beneteau Swift Trawler 47, a 14.7m luxury motor yacht, run with a professional skipper and crew. Comino, the Blue Lagoon and the south coast of Gozo, all within reach of the day.</p>
+      <div class="hero-price"><b>€1,850</b> · <span>whole boat, up to 8 guests</span></div>
+      <div class="cta-row">
+        <a href="#enquire" class="btn btn-primary">Enquire about a date <span class="arrow">→</span></a>
+        <a href="#pricing" class="btn btn-ghost">See what's included</a>
       </div>
     </div>
   </div>
 </header>
 
+<!-- ============================ KEY FACTS ============================ -->
 <section class="specs-strip">
-  <div class="wrap">
-    <div class="specs-grid">
-      <div class="spec">
-        <span class="spec-label">Boat</span>
-        <span class="spec-value">Beneteau ST 47</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Length</span>
-        <span class="spec-value">14.70m / 48ft</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Year</span>
-        <span class="spec-value">2019</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Guests</span>
-        <span class="spec-value">Up to 8</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Departure</span>
-        <span class="spec-value">Ta' Xbiex</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Duration</span>
-        <span class="spec-value">~8 hours</span>
-      </div>
+  <div class="specs-grid">
+    <div class="spec">
+      <span class="spec-label">Boat</span>
+      <span class="spec-value">Beneteau ST 47</span>
+    </div>
+    <div class="spec">
+      <span class="spec-label">Length</span>
+      <span class="spec-value">14.70m / 48ft</span>
+    </div>
+    <div class="spec">
+      <span class="spec-label">Year</span>
+      <span class="spec-value">2019</span>
+    </div>
+    <div class="spec">
+      <span class="spec-label">Guests</span>
+      <span class="spec-value">Up to 8</span>
+    </div>
+    <div class="spec">
+      <span class="spec-label">Departure</span>
+      <span class="spec-value">Ta' Xbiex</span>
+    </div>
+    <div class="spec">
+      <span class="spec-label">Duration</span>
+      <span class="spec-value">~8 hours</span>
     </div>
   </div>
 </section>
 
+<!-- ============================ WHERE YOU CAST OFF ============================ -->
 <section>
   <div class="wrap-narrow">
     <div class="about-grid">
       <div>
         <span class="kicker">Where you cast off</span>
         <h2 style="margin-top: 0.8rem;">A private boat charter, <em>moments from Sliema</em>.</h2>
-        <p><em style="font-style: italic; color: var(--terracotta);">Bandama</em> berths at Ta' Xbiex Creek, a sheltered marina on the same harbour as Sliema — many people simply call it the Sliema marina. It's a ten-minute walk along the waterfront from the Sliema ferries, and a short taxi or drive from the hotels along The Strand.</p>
+        <p><em>Bandama</em> berths at Ta' Xbiex Creek, a sheltered marina on the same harbour as Sliema — many people simply call it the Sliema marina. It's a ten-minute walk along the waterfront from the Sliema ferries, and a short taxi or drive from the hotels along The Strand.</p>
         <p>That matters more than it sounds. Most private charters on the big marketplaces stay vague about exactly where you meet the boat — you book first and chase the pin later. Here you know from the outset: you board on a calm, sheltered creek in the heart of the harbour, not a far northern jetty, so the cruising day starts the moment you step aboard.</p>
         <p>From the berth it's open water within minutes, then a straight run to Comino, the Blue Lagoon and the southern coast of Gozo — the same route whether you're a family who'd rather not sail, a group marking an occasion, or first-timers who want a steady motor yacht underfoot rather than a heeling sail.</p>
       </div>
@@ -711,15 +800,16 @@ footer .wordmark span { color: var(--terracotta); }
   </div>
 </section>
 
+<!-- ============================ THE EXPERIENCE ============================ -->
 <section>
   <div class="wrap-narrow">
     <div class="about-grid">
       <div>
         <span class="kicker">The experience</span>
         <h2 style="margin-top: 0.8rem;">Malta's coastline, <em>in complete privacy</em>.</h2>
-        <p>Experience Malta's coastline in complete privacy aboard <em style="font-style: italic; color: var(--terracotta);">Bandama</em>, your exclusive luxury day charter.</p>
+        <p>Experience Malta's coastline in complete privacy aboard <em>Bandama</em>, your exclusive luxury day charter.</p>
         <p>Cruise through the breathtaking waters of Comino and Gozo, discovering hidden coves, tranquil bays, and crystal-clear lagoons away from the crowds. Spend the day swimming, snorkelling, sunbathing, and relaxing while enjoying a bespoke charter designed entirely around you.</p>
-        <p>From the iconic Blue Lagoon to secret anchorages known only to locals, every journey aboard <em style="font-style: italic; color: var(--terracotta);">Bandama</em> is crafted to deliver elegance, comfort, and unforgettable memories.</p>
+        <p>From the iconic Blue Lagoon to secret anchorages known only to locals, every journey aboard <em>Bandama</em> is crafted to deliver elegance, comfort, and unforgettable memories.</p>
         <p style="font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; line-height: 1.6; margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
           Departure <strong style="color: var(--ink); font-weight: 500;">09:30 or 10:00</strong> from Ta' Xbiex Creek · Return <strong style="color: var(--ink); font-weight: 500;">17:30 or 18:00</strong> · 30 NM cruising range covers Comino, Blue Lagoon, and southern Gozo · Route flexes with weather and your group's preferences.
         </p>
@@ -740,7 +830,8 @@ footer .wordmark span { color: var(--terracotta); }
   </div>
 </section>
 
-<section class="gallery">
+<!-- ============================ GALLERY ============================ -->
+<section class="gallery" id="gallery">
   <div class="wrap-narrow">
     <div class="gallery-head">
       <span class="kicker">The boat</span>
@@ -748,57 +839,59 @@ footer .wordmark span { color: var(--terracotta); }
     </div>
 
     <div class="gallery-grid">
-      <figure class="g-item g-tall">
-        <img src="/charters/bandama/images/aft-deck.jpg" alt="Aft deck with cream-upholstered seating on Bandama's Beneteau Swift Trawler 47" loading="lazy" />
+      <figure class="wide">
+        <img src="/charters/bandama/images/action.jpg" alt="Bandama Swift Trawler 47 underway with bow wave" loading="lazy" decoding="async" />
       </figure>
-      <figure class="g-item">
-        <img src="/charters/bandama/images/saloon.jpg" alt="Interior saloon with grey couch and dining table" loading="lazy" />
+      <figure class="tall">
+        <img src="/charters/bandama/images/aft-deck.jpg" alt="Aft deck with cream-upholstered seating on Bandama's Beneteau Swift Trawler 47" loading="lazy" decoding="async" />
       </figure>
-      <figure class="g-item">
-        <img src="/charters/bandama/images/galley.jpg" alt="Galley with full kitchen, stove, and refrigerator" loading="lazy" />
+      <figure>
+        <img src="/charters/bandama/images/saloon.jpg" alt="Interior saloon with grey couch and dining table" loading="lazy" decoding="async" />
       </figure>
-      <figure class="g-item g-wide">
-        <img src="/charters/bandama/images/action.jpg" alt="Bandama Swift Trawler 47 underway with bow wave" loading="lazy" />
+      <figure>
+        <img src="/charters/bandama/images/galley.jpg" alt="Galley with full kitchen, stove, and refrigerator" loading="lazy" decoding="async" />
       </figure>
-      <figure class="g-item">
-        <img src="/charters/bandama/images/profile.jpg" alt="Bandama yacht anchored near a rocky cove in Malta" loading="lazy" />
+      <figure>
+        <img src="/charters/bandama/images/profile.jpg" alt="Bandama yacht anchored near a rocky cove in Malta" loading="lazy" decoding="async" />
       </figure>
-      <figure class="g-item">
-        <img src="/charters/bandama/images/helm-view.jpg" alt="View from the helm of Comino rock formations through the windshield" loading="lazy" />
+      <figure>
+        <img src="/charters/bandama/images/helm-view.jpg" alt="View from the helm of Comino rock formations through the windshield" loading="lazy" decoding="async" />
       </figure>
-      <figure class="g-item">
-        <img src="/charters/bandama/images/bow-lifestyle.jpg" alt="Guests relaxing on the bow with drinks, Comino in the background" loading="lazy" />
+      <figure>
+        <img src="/charters/bandama/images/bow-lifestyle.jpg" alt="Guests relaxing on the bow with drinks, Comino in the background" loading="lazy" decoding="async" />
       </figure>
     </div>
   </div>
 </section>
 
+<!-- ============================ FAQ ============================ -->
 <section>
   <div class="wrap-narrow">
     <span class="kicker">Good to know</span>
     <h2 style="margin: 0.8rem 0 1.6rem; max-width: 24ch;">Departing beside Sliema, in <em>plain English</em>.</h2>
-    <div style="display: grid; gap: 1.4rem;">
-      <div style="border-top: 1px solid var(--rule); padding-top: 1.2rem;">
-        <h3 style="margin-bottom: 0.5rem;">Where does the Bandama charter depart from in Malta?</h3>
-        <p style="color: var(--ink-soft);">Bandama departs from Ta' Xbiex Creek Marina — the central harbour marina many people know as the Sliema marina, a ten-minute walk along the waterfront from the Sliema ferries. Your exact berth and meeting time are confirmed the moment the captain accepts your date.</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <h3>Where does the Bandama charter depart from in Malta?</h3>
+        <p>Bandama departs from Ta' Xbiex Creek Marina — the central harbour marina many people know as the Sliema marina, a ten-minute walk along the waterfront from the Sliema ferries. Your exact berth and meeting time are confirmed the moment the captain accepts your date.</p>
       </div>
-      <div style="border-top: 1px solid var(--rule); padding-top: 1.2rem;">
-        <h3 style="margin-bottom: 0.5rem;">Is this a private charter or a shared boat trip?</h3>
-        <p style="color: var(--ink-soft);">Entirely private. The boat, the skipper and the route are yours for the day — up to eight guests, no strangers aboard. You book directly with the operator, never a seat on a shared-tour boat.</p>
+      <div class="faq-item">
+        <h3>Is this a private charter or a shared boat trip?</h3>
+        <p>Entirely private. The boat, the skipper and the route are yours for the day — up to eight guests, no strangers aboard. You book directly with the operator, never a seat on a shared-tour boat.</p>
       </div>
-      <div style="border-top: 1px solid var(--rule); padding-top: 1.2rem;">
-        <h3 style="margin-bottom: 0.5rem;">What does the day on the water cover?</h3>
-        <p style="color: var(--ink-soft);">A full day — roughly 09:30 to 17:30 — cruising Comino, the Blue Lagoon and the southern coast of Gozo with a professional skipper and crew. Fuel for up to 30 nautical miles, mineral water, soft drinks and snacks are included. €1,850 is the total for the whole boat, not a per-person price.</p>
+      <div class="faq-item">
+        <h3>What does the day on the water cover?</h3>
+        <p>A full day — roughly 09:30 to 17:30 — cruising Comino, the Blue Lagoon and the southern coast of Gozo with a professional skipper and crew. Fuel for up to 30 nautical miles, mineral water, soft drinks and snacks are included. €1,850 is the total for the whole boat, not a per-person price.</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================ PRICING ============================ -->
 <section id="pricing" class="pricing">
   <div class="wrap-narrow">
     <span class="kicker">Pricing</span>
     <h2 style="margin: 1rem 0 0.8rem; max-width: 22ch;">€1,850 total. €300 booking fee secures your date; €1,550 paid to operator on the day.</h2>
-    <p class="lead" style="margin-bottom: 2rem;">Lower commitment upfront, no surprises. Pay the BookItMalta booking fee when you confirm the date; the charter price is settled directly with the operator at the dock.</p>
+    <p class="lead" style="margin-bottom: 2rem; max-width: 56ch;">Lower commitment upfront, no surprises. Pay the BookItMalta booking fee when you confirm the date; the charter price is settled directly with the operator at the dock.</p>
 
     <div class="pricing-card">
       <div class="pricing-row">
@@ -825,6 +918,7 @@ footer .wordmark span { color: var(--terracotta); }
   </div>
 </section>
 
+<!-- ============================ ENQUIRY ============================ -->
 <section id="enquire" class="enquiry">
   <div class="wrap-narrow">
     <div class="enquiry-grid">
@@ -987,6 +1081,7 @@ footer .wordmark span { color: var(--terracotta); }
   </div>
 </section>
 
+<!-- ============================ POWERED-BY ============================ -->
 <section class="powered">
   <div class="wrap">
     <div class="powered-text">
@@ -1029,6 +1124,35 @@ footer .wordmark span { color: var(--terracotta); }
     </div>
   </div>
 </footer>
+
+<!-- ============================ BACK TO TOP ============================ -->
+<button id="toTop" class="to-top" type="button" aria-label="Back to top" onclick="scrollToTop()">↑</button>
+
+<!-- ============================ STICKY MOBILE BOOK BAR ============================ -->
+<div class="bookbar" aria-label="Quick booking">
+  <div class="price"><b>€1,850</b><span>whole boat · up to 8</span></div>
+  <a href="#enquire" class="bar-cta">Enquire about a date →</a>
+</div>
+
+<script>
+/* =========================================================
+   Bandama Yacht Charters — floating back-to-top
+   Shows after the reader scrolls past the hero.
+========================================================= */
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+(function () {
+  var btn = document.getElementById('toTop');
+  if (!btn) return;
+  var onScroll = function () {
+    if (window.scrollY > 600) btn.classList.add('show');
+    else btn.classList.remove('show');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
 
 <script src="/consent.js" defer></script>
 
