@@ -470,6 +470,20 @@ body.cm-locked { overflow: hidden; }
 }
 .bookbar a.bar-cta:hover { background: var(--terracotta-deep); }
 
+/* Floating back-to-top — fades in on scroll, sits above the book bar on mobile */
+.to-top {
+  position: fixed; right: 16px; bottom: calc(var(--bookbar-h) + 14px); z-index: 70;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--ink); color: var(--paper); border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.25rem; line-height: 1;
+  box-shadow: 0 6px 18px rgba(11, 37, 69, 0.28);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s, background 0.2s ease;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.to-top:hover { background: var(--terracotta); }
+.to-top:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 3px; }
+
 /* ============================================================
    ≥ 760px  — tablet / small desktop
 ============================================================ */
@@ -519,6 +533,7 @@ body.cm-locked { overflow: hidden; }
 
   /* sticky bar is mobile-only */
   .bookbar { display: none; }
+  .to-top { bottom: 24px; }
 }
 
 /* ============================================================
@@ -949,6 +964,9 @@ body.cm-locked { overflow: hidden; }
   </div>
 </footer>
 
+<!-- ============================ BACK TO TOP ============================ -->
+<button id="toTop" class="to-top" type="button" aria-label="Back to top" onclick="scrollToTop()">↑</button>
+
 <!-- ============================ STICKY MOBILE BOOK BAR ============================ -->
 <div class="bookbar" aria-label="Quick booking">
   <div class="price"><b>€40</b><span>per seat</span></div>
@@ -1345,6 +1363,23 @@ document.addEventListener('DOMContentLoaded', function() {
   initBookingDate();
   updateMath(parseInt(document.getElementById('bookSeats').value, 10) || 2);
 });
+
+// -----------------------------------------------------------------
+// Floating back-to-top — show after the reader scrolls past the hero
+// -----------------------------------------------------------------
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+(function () {
+  var btn = document.getElementById('toTop');
+  if (!btn) return;
+  var onScroll = function () {
+    if (window.scrollY > 600) btn.classList.add('show');
+    else btn.classList.remove('show');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 </script>
 
 <!-- ====================== ENQUIRY CONFIRMATION MODAL ======================
