@@ -498,12 +498,24 @@ function render() {
 
   // Google Ads — fire the booking-confirmed (purchase) conversion. AC only, so
   // a non-AC tenant's booking can't be mis-attributed to the AC campaign.
+  // render() runs synchronously during parse, BEFORE the deferred consent.js
+  // has defined window.bimTrackConversion — so we wait for DOMContentLoaded
+  // (defer scripts have run by then) instead of checking the helper inline.
   // No-ops unless the visitor consented and the Ads label is configured.
   try {
     const _p = new URLSearchParams(location.search);
-    if (_p.get('tenant') === 'adventure-cruises' && window.bimTrackConversion) {
+    if (_p.get('tenant') === 'adventure-cruises') {
       const _party = parseInt(_p.get('party'), 10) || 1;
-      window.bimTrackConversion('purchase', { value: _party * 40 });
+      const _fireAcPurchase = function () {
+        if (window.bimTrackConversion) {
+          window.bimTrackConversion('purchase', { value: _party * 40 });
+        }
+      };
+      if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', _fireAcPurchase);
+      } else {
+        _fireAcPurchase();
+      }
     }
   } catch (e) {}
 
