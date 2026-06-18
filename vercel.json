@@ -21,6 +21,7 @@
     { "source": "/captain/dashboard", "destination": "/captain/dashboard.html" },
     { "source": "/captain/:path*", "destination": "/api/captain" },
     { "source": "/for-operators", "destination": "/for-operators.html" },
+    { "source": "/for-operators/intake", "destination": "/for-operators/intake.html" },
     { "source": "/demo", "destination": "/demo.html" },
     { "source": "/adventure-cruises", "destination": "/adventure-cruises.html" },
     { "source": "/catamaran", "destination": "/catamaran.html" },

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>List your boat on BookItMalta — operator intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#0B2545; --ink-soft:#1C3558; --paper:#F4EBD9; --paper-deep:#EBDFC6; --card:#FFFAF1;
+  --terracotta:#C85C2E; --mute:rgba(11,37,69,.55); --rule:rgba(11,37,69,.15); --rule-strong:rgba(11,37,69,.35);
+  --ok:#1B4332; --ok-bg:#D8F3DC; --err:#B3261E; --err-bg:rgba(179,38,30,.08);
+  --serif:"Fraunces",Georgia,serif; --sans:"Manrope",-apple-system,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;padding:1.2rem 1rem 5rem}
+.wrap{max-width:680px;margin:0 auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem}
+.brand{font-family:var(--serif);font-size:1rem;color:var(--ink);text-decoration:none}
+.brand b{font-weight:600}
+.eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);display:block;margin-bottom:.3rem}
+h1{font-family:var(--serif);font-size:2rem;font-weight:380;line-height:1.12;margin-bottom:.5rem}
+.lead{font-size:.98rem;color:var(--ink);opacity:.85;margin-bottom:.6rem}
+.note-box{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--terracotta);border-radius:8px;padding:.7rem .9rem;font-size:.85rem;color:var(--ink-soft);margin:1rem 0 1.6rem}
+.note-box b{color:var(--ink)}
+fieldset{border:1px solid var(--rule);background:var(--card);border-radius:12px;padding:1.1rem 1.1rem 1.3rem;margin-bottom:1.1rem}
+legend{font-family:var(--serif);font-size:1.25rem;font-weight:420;padding:0 .5rem;color:var(--ink)}
+.sec-hint{font-size:.82rem;color:var(--mute);margin:-.2rem 0 .9rem}
+label{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:.85rem 0 .3rem}
+label .req{color:var(--terracotta)}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],textarea,select{
+  width:100%;border:1px solid var(--rule-strong);border-radius:9px;padding:.7rem .8rem;font-family:var(--sans);font-size:1rem;background:#fff;color:var(--ink)}
+textarea{min-height:88px;resize:vertical}
+.fhint{font-size:.76rem;color:var(--mute);margin-top:.25rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+.radios{display:flex;flex-direction:column;gap:.5rem;margin-top:.45rem}
+.radio{display:flex;gap:.6rem;align-items:flex-start;background:#fff;border:1px solid var(--rule-strong);border-radius:9px;padding:.7rem .8rem;cursor:pointer}
+.radio input{margin-top:.25rem}
+.radio b{font-size:.95rem}
+.radio span{display:block;font-size:.8rem;color:var(--mute)}
+.cond{display:none;border-left:2px solid var(--paper-deep);padding-left:.9rem;margin-top:.6rem}
+.cond.show{display:block}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.resumebar{display:none;align-items:center;justify-content:space-between;gap:.6rem;background:var(--ok-bg);border:1px solid var(--ok);border-radius:10px;padding:.6rem .8rem;margin-bottom:1rem;font-size:.84rem;color:var(--ok)}
+.resumebar button{background:transparent;border:1px solid var(--ok);color:var(--ok);border-radius:8px;padding:.35rem .7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.cta{width:100%;background:var(--terracotta);color:#fff;border:0;border-radius:10px;padding:1rem;font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-weight:600;margin-top:.4rem}
+.cta:disabled{opacity:.55;cursor:default}
+.status{margin-top:1rem;border-radius:10px;padding:.8rem .9rem;font-size:.9rem;display:none}
+.status.err{display:block;background:var(--err-bg);color:var(--err);border:1px solid var(--err)}
+.success{display:none;background:var(--card);border:1px solid var(--ok);border-radius:14px;padding:1.6rem 1.3rem;text-align:center}
+.success h2{font-family:var(--serif);font-weight:420;font-size:1.5rem;margin-bottom:.5rem;color:var(--ok)}
+.success p{color:var(--ink-soft);font-size:.92rem}
+.foot{text-align:center;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-top:1.6rem}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="/for-operators"><b>BookItMalta</b> · for operators</a>
+  </div>
+
+  <div id="formhost">
+  <span class="eyebrow">Operator onboarding</span>
+  <h1>List your boat with us</h1>
+  <p class="lead">Thanks for wanting to join BookItMalta. Fill in what you can below — it's everything we need to build your listing page and booking flow. Don't worry about getting wording perfect; we'll polish it with you.</p>
+  <div class="note-box">
+    🔒 <b>Please don't enter any bank or card details on this form.</b> We set up your payouts separately and securely once you're approved. Anything marked <span style="color:var(--terracotta)">*</span> is the most useful to have.
+  </div>
+
+  <div class="resumebar" id="resumebar">
+    <span>We saved your progress on this device — pick up where you left off.</span>
+    <button type="button" id="startover">Start over</button>
+  </div>
+
+  <form id="f" autocomplete="on">
+  <input type="text" class="hp" name="company_hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <fieldset>
+    <legend>1 · About you &amp; your business</legend>
+    <p class="sec-hint">Who you are and how we reach you.</p>
+    <label>Business / trading name <span class="req">*</span></label>
+    <input type="text" name="biz_name" placeholder="e.g. Adventure Cruises" required />
+    <div class="grid2">
+      <div><label>Your name <span class="req">*</span></label><input type="text" name="contact_name" placeholder="First and last name" required /></div>
+      <div><label>Role</label><input type="text" name="contact_role" placeholder="e.g. Owner, Captain" /></div>
+    </div>
+    <div class="grid2">
+      <div><label>Email <span class="req">*</span></label><input type="email" name="email" placeholder="you@example.com" required /></div>
+      <div><label>Phone / WhatsApp <span class="req">*</span></label><input type="tel" name="phone" placeholder="+356 …" required /></div>
+    </div>
+    <div class="grid2">
+      <div><label>Website (if any)</label><input type="url" name="website" placeholder="https://…" /></div>
+      <div><label>Instagram / Facebook</label><input type="text" name="social" placeholder="@handle or link" /></div>
+    </div>
+    <label>Company registration / VAT number (optional)</label>
+    <input type="text" name="vat" placeholder="Helps us with invoicing — optional" />
+  </fieldset>
+
+  <fieldset>
+    <legend>2 · Your boat(s)</legend>
+    <p class="sec-hint">One line per boat if you run a fleet.</p>
+    <label>Boat name(s) <span class="req">*</span></label>
+    <input type="text" name="boat_name" placeholder="e.g. Albert V + Adventure 1" required />
+    <div class="grid2">
+      <div><label>Make / model</label><input type="text" name="boat_model" placeholder="e.g. Lagoon 450 catamaran" /></div>
+      <div><label>Year / refit</label><input type="text" name="boat_year" placeholder="e.g. 2019" /></div>
+    </div>
+    <div class="grid2">
+      <div><label>Max guests per trip <span class="req">*</span></label><input type="number" name="capacity" min="1" placeholder="e.g. 40" required /></div>
+      <div><label>Number of boats</label><input type="number" name="boat_count" min="1" placeholder="e.g. 2" /></div>
+    </div>
+    <label>Key features guests care about</label>
+    <textarea name="boat_features" placeholder="e.g. shaded deck, toilet on board, snorkelling gear, sound system, fresh-water shower…"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>3 · What you offer</legend>
+    <p class="sec-hint">The experience(s) you'd like listed. Add more in the notes if you run several.</p>
+    <label>Experience name <span class="req">*</span></label>
+    <input type="text" name="exp_name" placeholder="e.g. Comino &amp; Blue Lagoon day tour" required />
+    <label>Describe it in a few sentences <span class="req">*</span></label>
+    <textarea name="exp_desc" placeholder="What guests do, where you go, the vibe. A paragraph is plenty." required></textarea>
+    <label>Route / itinerary &amp; stops</label>
+    <textarea name="exp_route" placeholder="e.g. Depart Sliema → Comino → Blue Lagoon (2h swim) → Gozo coast → return"></textarea>
+    <div class="grid2">
+      <div><label>Trip duration <span class="req">*</span></label><input type="text" name="duration" placeholder="e.g. 5 hours / full day" required /></div>
+      <div><label>Languages spoken on board</label><input type="text" name="languages" placeholder="e.g. English, Maltese, Italian" /></div>
+    </div>
+    <label>What's included in the price</label>
+    <textarea name="included" placeholder="e.g. fuel, skipper, soft drinks, snorkelling gear"></textarea>
+    <label>What's NOT included / paid separately</label>
+    <textarea name="not_included" placeholder="e.g. food, alcohol, transfers"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>4 · Schedule &amp; season</legend>
+    <p class="sec-hint">When you run trips.</p>
+    <label>How do you run departures? <span class="req">*</span></label>
+    <div class="radios">
+      <label class="radio"><input type="radio" name="sched" value="One departure per day" required /><span><b>One departure per day</b><span>Usually a full-day trip.</span></span></label>
+      <label class="radio"><input type="radio" name="sched" value="Multiple departures per day" /><span><b>Several departures per day</b><span>e.g. a morning and an afternoon slot.</span></span></label>
+    </div>
+    <label>Typical departure time(s) <span class="req">*</span></label>
+    <input type="text" name="times" placeholder="e.g. 09:30 and 14:30" required />
+    <div class="grid2">
+      <div><label>Days you operate</label><input type="text" name="days" placeholder="e.g. Daily, or Tue–Sun" /></div>
+      <div><label>Season</label><input type="text" name="season" placeholder="e.g. April–October" /></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>5 · Pricing</legend>
+    <p class="sec-hint">Pick how you sell. This decides how your booking page works.</p>
+    <label>How do you sell? <span class="req">*</span></label>
+    <div class="radios">
+      <label class="radio"><input type="radio" name="pricing_model" value="Whole-boat charter" required /><span><b>Whole-boat charter</b><span>One price books the entire boat (private charter).</span></span></label>
+      <label class="radio"><input type="radio" name="pricing_model" value="Per seat / per person" /><span><b>Per seat / per person</b><span>Guests buy individual seats on a shared trip.</span></span></label>
+    </div>
+    <div class="cond" id="cond_charter">
+      <label>Whole-boat price</label>
+      <input type="text" name="charter_price" placeholder="e.g. €1,850 for the day" />
+    </div>
+    <div class="cond" id="cond_seat">
+      <label>Price per seat</label>
+      <input type="text" name="seat_price" placeholder="e.g. €40 per adult" />
+      <label>Child / group pricing (if any)</label>
+      <input type="text" name="seat_child" placeholder="e.g. €25 child under 12; 10% off 10+ guests" />
+    </div>
+    <label>Deposit to secure a booking (if any)</label>
+    <input type="text" name="deposit" placeholder="e.g. €300 deposit, or 20%" />
+    <label>What is paid on the day, and how?</label>
+    <input type="text" name="balance" placeholder="e.g. balance €30/seat cash to crew on board" />
+  </fieldset>
+
+  <fieldset>
+    <legend>6 · Where you're based</legend>
+    <p class="sec-hint">Where guests meet you.</p>
+    <label>Departure / meeting point address <span class="req">*</span></label>
+    <input type="text" name="meeting_point" placeholder="e.g. Sliema Ferries, Sliema, Malta" required />
+    <label>Boarding &amp; arrival notes</label>
+    <textarea name="boarding_notes" placeholder="e.g. arrive 15 min early, look for the blue flag, parking at…"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>7 · Policies</legend>
+    <p class="sec-hint">So guests know what to expect.</p>
+    <div class="grid2">
+      <div><label>Cancellation policy</label><input type="text" name="cancellation" placeholder="e.g. full refund up to 7 days before" /></div>
+      <div><label>Minimum numbers to run</label><input type="text" name="min_guests" placeholder="e.g. 6 guests, or none" /></div>
+    </div>
+    <label>Bad-weather policy</label>
+    <textarea name="weather" placeholder="e.g. we reschedule or refund if we cancel for weather"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>8 · Photos &amp; branding</legend>
+    <p class="sec-hint">Great photos sell trips. Please send the highest-resolution images you have — boat exterior &amp; interior, guests enjoying the trip, the views, and your logo.</p>
+    <label>Link to your photos <span class="req">*</span></label>
+    <input type="url" name="photo_link" placeholder="Google Drive / Dropbox / WeTransfer link" required />
+    <div class="fhint">Paste a shared link above. After you submit, you can also reply to our email with the photos attached.</div>
+    <label>Brand colours / logo notes (optional)</label>
+    <input type="text" name="brand" placeholder="e.g. navy &amp; gold; logo on the way" />
+  </fieldset>
+
+  <fieldset>
+    <legend>9 · Anything else</legend>
+    <label>Questions, special requests, or anything we should know</label>
+    <textarea name="notes" placeholder="Tell us anything that doesn't fit above."></textarea>
+  </fieldset>
+
+  <button type="submit" class="cta" id="submit">Send to BookItMalta</button>
+  <div class="status" id="status"></div>
+  <div class="fhint" style="text-align:center;margin-top:.6rem">Your answers save automatically on this device as you type — you can close this and come back later.</div>
+  </form>
+  </div>
+
+  <div class="success" id="success">
+    <h2>Thanks — we've got it ✓</h2>
+    <p>Your details are on their way to the BookItMalta team. We'll review and come back to you shortly. If you have photos to share, just reply to the email we send you.</p>
+  </div>
+
+  <p class="foot">BookItMalta · Questions? WhatsApp us anytime.</p>
+</div>
+
+<script>
+var form = document.getElementById("f");
+var statusEl = document.getElementById("status");
+var DRAFT_KEY = "bim-operator-intake-draft-v1";
+
+function syncPricing(){
+  var v = (form.querySelector("input[name=pricing_model]:checked")||{}).value;
+  document.getElementById("cond_charter").classList.toggle("show", v === "Whole-boat charter");
+  document.getElementById("cond_seat").classList.toggle("show", v === "Per seat / per person");
+}
+
+/* ---- draft autosave (stored only in this browser) ---- */
+function namedFields(){ return form.querySelectorAll("input[name], textarea[name], select[name]"); }
+function saveDraft(){
+  try{
+    var d = {};
+    namedFields().forEach(function(el){
+      if (el.name === "company_hp") return;          // never persist the honeypot
+      if (el.type === "radio"){ if (el.checked) d[el.name] = el.value; }
+      else { d[el.name] = el.value; }
+    });
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  }catch(e){}
+}
+function restoreDraft(){
+  try{
+    var raw = localStorage.getItem(DRAFT_KEY); if (!raw) return false;
+    var d = JSON.parse(raw); if (!d || typeof d !== "object") return false;
+    var any = false;
+    namedFields().forEach(function(el){
+      if (!Object.prototype.hasOwnProperty.call(d, el.name)) return;
+      if (el.type === "radio"){ if (el.value === d[el.name]){ el.checked = true; any = true; } }
+      else if (d[el.name]){ el.value = d[el.name]; any = true; }
+    });
+    return any;
+  }catch(e){ return false; }
+}
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+
+form.querySelectorAll("input[name=pricing_model]").forEach(function(r){ r.addEventListener("change", syncPricing); });
+
+/* bring back any saved progress, then keep the pricing fields in sync */
+if (restoreDraft()) { document.getElementById("resumebar").style.display = "flex"; }
+syncPricing();
+
+/* save as they type (debounced) and on any field change / when leaving */
+var saveTimer = null;
+form.addEventListener("input", function(){ clearTimeout(saveTimer); saveTimer = setTimeout(saveDraft, 400); });
+form.addEventListener("change", saveDraft);
+window.addEventListener("beforeunload", saveDraft);
+
+document.getElementById("startover").addEventListener("click", function(){
+  if (!confirm("Clear everything and start a fresh form?")) return;
+  clearDraft();
+  form.reset();
+  document.getElementById("resumebar").style.display = "none";
+  syncPricing();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+function showErr(msg){ statusEl.className = "status err"; statusEl.textContent = msg; statusEl.scrollIntoView({behavior:"smooth",block:"center"}); }
+
+form.addEventListener("submit", async function(e){
+  e.preventDefault();
+  if (!form.reportValidity()) return;
+  var btn = document.getElementById("submit");
+  var data = {};
+  new FormData(form).forEach(function(v,k){ data[k] = v; });
+  btn.disabled = true; btn.textContent = "Sending…"; statusEl.className = "status";
+  try {
+    var res = await fetch("/api/operator-intake", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    var j = {};
+    try { j = await res.json(); } catch (e2) {}
+    if (res.ok && j.ok) {
+      clearDraft();
+      document.getElementById("formhost").style.display = "none";
+      document.getElementById("success").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    showErr((j && j.error) ? j.error : "Something went wrong sending the form. Please email hello@bookitmalta.com directly.");
+  } catch (err) {
+    showErr("Couldn't reach the server. Please check your connection, or email hello@bookitmalta.com directly.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Send to BookItMalta";
+  }
+});
+</script>
+</body>
+</html>
