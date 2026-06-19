@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Charter Ops — whole-boat pipeline · prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#0B2545; --ink-soft:#1C3558; --paper:#F4EBD9; --paper-deep:#EBDFC6; --card:#FFFAF1;
+  --terracotta:#C85C2E; --mute:rgba(11,37,69,.55); --rule:rgba(11,37,69,.15); --rule-strong:rgba(11,37,69,.35);
+  --ok:#1B4332; --ok-bg:#D8F3DC; --warn:#7A5B00; --warn-bg:#FFF3D6; --err:#B3261E; --err-bg:rgba(179,38,30,.1);
+  --new:#C85C2E; --await:#B98900; --ready:#2F6FB0; --done:#1B7A4B;
+  --serif:"Fraunces",Georgia,serif; --sans:"Manrope",-apple-system,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;min-height:100vh;padding:1rem 1rem 6rem;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto}
+.proto-band{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:.35rem .5rem;border-radius:6px;margin-bottom:1rem}
+header{padding-bottom:.8rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}
+.eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);display:block}
+h1{font-family:var(--serif);font-size:1.45rem;font-weight:380;line-height:1.15}
+.sub{font-size:.8rem;color:var(--mute);margin-top:.15rem}
+
+/* funnel KPI cards (tappable filters) */
+.funnel{display:flex;gap:.5rem;overflow-x:auto;padding:.2rem 0 .4rem;scrollbar-width:none}
+.funnel::-webkit-scrollbar{display:none}
+.kpi{flex:0 0 auto;min-width:96px;border:1px solid var(--rule-strong);border-radius:11px;padding:.6rem .7rem;cursor:pointer;background:var(--card);text-align:left}
+.kpi .n{font-family:var(--mono);font-size:1.5rem;font-weight:700;line-height:1}
+.kpi .l{font-family:var(--mono);font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:.2rem}
+.kpi.on{background:var(--ink);border-color:var(--ink)}
+.kpi.on .n,.kpi.on .l{color:var(--paper)}
+.kpi.k-new .n{color:var(--new)} .kpi.k-await .n{color:var(--await)} .kpi.k-ready .n{color:var(--ready)} .kpi.k-done .n{color:var(--done)}
+.kpi.on .n{color:var(--paper)}
+
+.barline{display:flex;justify-content:space-between;align-items:center;margin:.9rem 0 .4rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.clearf{background:none;border:0;color:var(--terracotta);font-family:var(--mono);font-size:.64rem;cursor:pointer;text-decoration:underline}
+
+/* pipeline rows */
+.row{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:.7rem .85rem;margin-bottom:.55rem;border-left:3px solid var(--rule-strong)}
+.row.s-new{border-left-color:var(--new)} .row.s-contacted{border-left-color:var(--await)}
+.row.s-awaiting_payment{border-left-color:var(--await)} .row.s-paid{border-left-color:var(--ready)}
+.row.s-confirmed{border-left-color:var(--done)} .row.s-expired{border-left-color:var(--mute);border-style:dashed}
+.row.s-cancelled{border-left-color:var(--mute);opacity:.7}
+.rline{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;cursor:pointer}
+.rname{font-weight:600;font-size:.96rem}
+.rmeta{font-family:var(--mono);font-size:.66rem;color:var(--mute);margin-top:.15rem}
+.chip{font-family:var(--mono);font-size:.54rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:.18rem .45rem;white-space:nowrap}
+.c-new{color:#fff;background:var(--new)} .c-contacted{color:#5b4300;background:var(--warn-bg)}
+.c-awaiting_payment{color:#5b4300;background:var(--warn-bg)} .c-paid{color:#fff;background:var(--ready)}
+.c-confirmed{color:#fff;background:var(--done)} .c-expired{color:#fff;background:var(--mute)} .c-cancelled{color:#fff;background:var(--mute)}
+.due{font-family:var(--mono);font-size:.6rem;margin-top:.2rem}
+.due.warn{color:var(--err)}
+.detail{border-top:1px dashed var(--rule);margin-top:.6rem;padding-top:.55rem}
+.tel{font-family:var(--mono);font-size:.72rem;color:var(--mute);margin-bottom:.5rem}
+.acts{display:flex;gap:.4rem;flex-wrap:wrap}
+.btn{border:1px solid var(--rule-strong);background:#fff;color:var(--ink);border-radius:8px;padding:.45rem .7rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;font-weight:600}
+.btn.primary{background:var(--done);color:#fff;border-color:var(--done)}
+.btn.next{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.warn{background:var(--terracotta);color:#fff;border-color:var(--terracotta)}
+.btn.danger{color:var(--err);border-color:var(--err)}
+.owner{margin-top:.55rem;border-top:1px dotted var(--rule);padding-top:.5rem}
+.owner label{font-family:var(--mono);font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:.25rem}
+.owner-row{display:flex;gap:.4rem}
+select,input[type=text]{border:1px solid var(--rule-strong);border-radius:8px;padding:.5rem .6rem;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--ink);width:100%}
+.guard{font-size:.78rem;color:var(--err);background:var(--err-bg);border:1px solid var(--err);border-radius:8px;padding:.4rem .55rem;margin-top:.45rem;display:none}
+.guard.show{display:block}
+.empty{color:var(--mute);font-style:italic;font-size:.88rem;padding:1rem .2rem}
+
+/* calendar */
+.cal-day{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:.9rem 0 .35rem}
+.cal-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:.55rem .75rem;margin-bottom:.4rem;font-size:.86rem}
+.cal-row .who{font-family:var(--mono);font-size:.66rem;color:var(--mute)}
+.cal-tag{font-family:var(--mono);font-size:.56rem;font-weight:700;text-transform:uppercase;border-radius:5px;padding:.15rem .4rem}
+.t-free{color:var(--ok);background:var(--ok-bg)} .t-held{color:#5b4300;background:var(--warn-bg)} .t-booked{color:#fff;background:var(--done)}
+
+/* add wizard */
+.q{font-family:var(--serif);font-size:1.2rem;margin:1rem 0 .55rem}
+.steps{display:flex;gap:.3rem;margin-bottom:.5rem}.steps i{flex:1;height:4px;border-radius:99px;background:var(--paper-deep)}.steps i.on{background:var(--terracotta)}
+.bigbtns{display:grid;gap:.5rem}
+.bigbtn{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--rule-strong);border-radius:11px;padding:.85rem .9rem;cursor:pointer;font-size:1rem;color:var(--ink);text-align:left;width:100%}
+.bigbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bigbtn:disabled{opacity:.45;cursor:not-allowed}
+.bigbtn .x{font-family:var(--mono);font-size:.62rem;text-transform:uppercase}
+.dates{display:flex;gap:.45rem;overflow-x:auto;padding:.2rem 0 .5rem;scrollbar-width:none}.dates::-webkit-scrollbar{display:none}
+.date-chip{flex:0 0 auto;border:1px solid var(--rule-strong);background:var(--card);border-radius:999px;padding:.45rem .8rem;font-family:var(--mono);font-size:.68rem;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.date-chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.fld{margin-top:.5rem}.fld label{font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:.25rem}
+.cta{width:100%;background:var(--terracotta);color:#fff;border:0;border-radius:10px;padding:.9rem;font-family:var(--mono);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-weight:600;margin-top:.9rem}
+.cta.ghost{background:transparent;color:var(--ink);border:1px solid var(--rule-strong);margin-top:.5rem}
+
+/* tabs + toast */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;background:none;border:0;padding:.7rem .3rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);cursor:pointer;border-top:3px solid transparent}
+.tabs button.on{color:var(--terracotta);border-top-color:var(--terracotta);font-weight:600}
+.reset{display:block;text-align:center;font-family:var(--mono);font-size:.62rem;color:var(--mute);margin:1.2rem auto 0;cursor:pointer;text-decoration:underline;background:none;border:0}
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:var(--ok);color:#fff;border-radius:999px;padding:.55rem 1.1rem;font-family:var(--mono);font-size:.72rem;z-index:60;display:none;max-width:92vw;text-align:center}
+.toast.err{background:var(--err)}
+.note-owner{font-family:var(--mono);font-size:.56rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="display:flex;gap:.4rem;align-items:center;background:var(--ink);border-radius:8px;padding:.35rem .45rem;margin-bottom:.9rem">
+    <span style="color:var(--terracotta);font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;padding:0 .35rem">Demo</span>
+    <a href="charter.html" style="flex:1;text-align:center;text-decoration:none;border-radius:6px;padding:.45rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;background:var(--paper);color:var(--ink)">Whole-boat charter</a>
+    <a href="seat.html" style="flex:1;text-align:center;text-decoration:none;border-radius:6px;padding:.45rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--paper)">Per-seat</a>
+  </div>
+  <div class="proto-band">Charter layout · demo data only — nothing is real</div>
+  <header>
+    <span class="eyebrow" id="opName">Marlin Charters · Whole-boat</span>
+    <h1>Enquiry pipeline</h1>
+    <div class="sub">One booking = the whole boat for a date. Move each enquiry: contact → payment → confirm. A boat can't be double-booked.</div>
+  </header>
+  <div id="view"></div>
+  <button class="reset" id="resetBtn">Reset demo data</button>
+</div>
+
+<div class="tabs">
+  <button id="tab-pipe" class="on">Pipeline</button>
+  <button id="tab-cal">Calendar</button>
+  <button id="tab-add">＋ Add</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Charter Ops prototype — whole-boat + enquiry pipeline
+   Self-contained, localStorage-backed demo. No backend.
+   The OP config block is what would come from the operator's
+   tenant config (model: 'charter', boats, experiences).
+   ============================================================ */
+var OP = {
+  name: "Marlin Charters",
+  model: "charter",
+  boats: [ {id:"marlin", name:"Marlin"}, {id:"stella", name:"Stella"} ],
+  experiences: [ {id:"day", name:"Day charter"}, {id:"sunset", name:"Sunset cruise"} ],
+  role: "owner"   // 'owner' sees the free-form status override; 'partner' does not
+};
+
+/* pipeline definition */
+var FLOW = ["new","contacted","awaiting_payment","paid","confirmed"];
+var LABEL = { new:"To contact", contacted:"Contacted", awaiting_payment:"Awaiting payment",
+              paid:"Ready to confirm", confirmed:"Confirmed", expired:"Expired", cancelled:"Cancelled" };
+var NEXT = { new:"contacted", contacted:"awaiting_payment", awaiting_payment:"paid", paid:"confirmed" };
+var NEXT_LABEL = { new:"Mark contacted", contacted:"Awaiting payment", awaiting_payment:"Mark paid", paid:"Confirm booking" };
+
+var KEY = "charter-ops-proto1";
+function iso(d){return d.toISOString().slice(0,10);}
+function dayOffset(n){var d=new Date();d.setDate(d.getDate()+n);return iso(d);}
+function hoursFromNow(h){var d=new Date();d.setHours(d.getHours()+h);return d.toISOString();}
+function fmtDay(s){var d=new Date(s+"T12:00:00");var t=iso(new Date());var l=d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});return s===t?"Today · "+l:l;}
+function boatName(id){var b=OP.boats.find(function(x){return x.id===id;});return b?b.name:id;}
+function expName(id){var e=OP.experiences.find(function(x){return x.id===id;});return e?e.name:id;}
+
+var _id=1;
+function mk(off,boat,exp,name,guests,status,value,phone,holdH,note){
+  return {id:"e"+(_id++),code:"MC-"+(1000+_id),date:dayOffset(off),boat:boat,exp:exp,name:name,guests:guests,
+          status:status,value:value,phone:phone||"",note:note||"",created:dayOffset(-(Math.floor(Math.random()*5)+1)),
+          hold_expires: holdH==null?null:hoursFromNow(holdH), reminded:false};
+}
+function seed(){
+  _id=1;
+  return { items:[
+    mk(14,"marlin","day","Helena Ross (anniversary)",18,"new",1100,"+44 7700 900111",36),
+    mk(9,"stella","sunset","Marco Bianchi",12,"new",650,"+39 333 123 4567",30),
+    mk(21,"marlin","day","Schmidt corporate day",26,"contacted",1100,"+49 160 1234567",60),
+    mk(6,"stella","day","O'Brien wedding party",20,"awaiting_payment",980,"+353 87 123 4567",20),
+    mk(11,"marlin","sunset","Nilsson hen do",16,"awaiting_payment",700,"+46 70 123 45 67",40),
+    mk(4,"marlin","day","Camilleri family",14,"paid",1100,"+356 7912 3456",null),
+    mk(30,"stella","day","Taylor group",22,"confirmed",980,"+44 7700 900654",null),
+    mk(2,"marlin","day","Borg reunion",24,"confirmed",1100,"+356 7945 6789",null),
+    /* an expired one — paid AFTER it lapsed, the real-world case */
+    mk(8,"stella","sunset","Dubois proposal",10,"expired",650,"+33 6 12 34 56 78",-3)
+  ]};
+}
+
+function load(){ try{var r=localStorage.getItem(KEY);if(r){var s=JSON.parse(r);if(s&&Array.isArray(s.items))return s;}}catch(e){} return seed(); }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){} }
+function reset(){ try{localStorage.removeItem(KEY);}catch(e){} location.reload(); }
+var store=load();
+
+function toast(m,err){var t=document.getElementById("toast");t.textContent=m;t.className="toast"+(err?" err":"");t.style.display="block";setTimeout(function(){t.style.display="none";},2600);}
+
+/* a confirmed booking locks that boat+date+exp */
+function isBoatTaken(date,boat,exp,exceptId){
+  return store.items.some(function(x){return x.id!==exceptId && x.status==="confirmed" && x.date===date && x.boat===boat && x.exp===exp;});
+}
+function dueLabel(x){
+  if(!x.hold_expires) return "";
+  var ms=new Date(x.hold_expires)-new Date();
+  if(ms<=0) return "hold lapsed";
+  var h=Math.round(ms/3600000);
+  return h<48 ? ("hold expires in "+h+"h") : ("hold expires in "+Math.round(h/24)+"d");
+}
+
+/* ---- state ---- */
+var tab="pipe", filter=null, open=null, wiz=null;
+
+function setTab(t){tab=t;["pipe","cal","add"].forEach(function(k){document.getElementById("tab-"+k).className=(k===t?"on":"");});if(t!=="add")wiz=null;render();}
+document.getElementById("tab-pipe").onclick=function(){setTab("pipe");};
+document.getElementById("tab-cal").onclick=function(){setTab("cal");};
+document.getElementById("tab-add").onclick=function(){wiz={step:1,date:dayOffset(7),boat:null,exp:null,guests:8,name:"",phone:""};setTab("add");};
+document.getElementById("resetBtn").onclick=reset;
+document.getElementById("opName").textContent=OP.name+" · Whole-boat";
+
+/* ============ PIPELINE ============ */
+function count(statuses){return store.items.filter(function(x){return statuses.indexOf(x.status)>=0;}).length;}
+function renderPipe(el){
+  var cards=[
+    {key:"new",cls:"k-new",label:"To contact",st:["new"]},
+    {key:"await",cls:"k-await",label:"Awaiting pay",st:["contacted","awaiting_payment"]},
+    {key:"ready",cls:"k-ready",label:"Ready to confirm",st:["paid"]},
+    {key:"done",cls:"k-done",label:"Confirmed",st:["confirmed"]}
+  ];
+  var html="<div class='funnel'>";
+  cards.forEach(function(c){
+    var on=filter && filter.join(",")===c.st.join(",");
+    html+="<button class='kpi "+c.cls+(on?" on":"")+"' data-st='"+c.st.join(",")+"'><div class='n'>"+count(c.st)+"</div><div class='l'>"+c.label+"</div></button>";
+  });
+  html+="</div>";
+
+  var list=store.items.filter(function(x){return filter?filter.indexOf(x.status)>=0:true;});
+  /* needs-action first (oldest hold first), then others */
+  var rank={new:0,awaiting_payment:1,contacted:1,paid:2,expired:3,confirmed:4,cancelled:5};
+  list.sort(function(a,b){var r=(rank[a.status]||9)-(rank[b.status]||9);if(r)return r;return (a.hold_expires||a.created)<(b.hold_expires||b.created)?-1:1;});
+
+  html+="<div class='barline'><span>"+list.length+(filter?" matching":" enquiries")+" · oldest first</span>"+(filter?"<button class='clearf' id='clr'>Clear filter</button>":"")+"</div>";
+  el.innerHTML=html;
+
+  var cont=document.createElement("div");
+  if(!list.length){cont.innerHTML="<div class='empty'>Nothing here.</div>";}
+  else list.forEach(function(x){cont.appendChild(rowEl(x));});
+  el.appendChild(cont);
+
+  el.querySelectorAll(".kpi").forEach(function(k){k.onclick=function(){var st=k.dataset.st.split(",");filter=(filter&&filter.join(",")===k.dataset.st)?null:st;open=null;render();};});
+  var clr=el.querySelector("#clr"); if(clr)clr.onclick=function(){filter=null;render();};
+}
+
+function rowEl(x){
+  var r=document.createElement("div");
+  r.className="row s-"+x.status;
+  var due=dueLabel(x);
+  var lapsed=due==="hold lapsed";
+  r.innerHTML="<div class='rline'><div><div class='rname'>"+x.name+"</div>"+
+    "<div class='rmeta'>"+x.code+" · "+boatName(x.boat)+" · "+expName(x.exp)+" · "+fmtDay(x.date)+" · "+x.guests+" guests · €"+x.value+"</div>"+
+    (due?"<div class='due"+(lapsed?" warn":"")+"'>"+(x.status==="expired"?"expired hold":due)+(x.reminded?" · reminder sent":"")+"</div>":"")+
+    "</div><span class='chip c-"+x.status+"'>"+LABEL[x.status]+"</span></div>";
+  r.querySelector(".rline").onclick=function(){open=open===x.id?null:x.id;render();};
+  if(open===x.id) r.appendChild(detailEl(x));
+  return r;
+}
+
+function detailEl(x){
+  var d=document.createElement("div");d.className="detail";
+  d.innerHTML="<div class='tel'>"+(x.phone||"no phone on file")+(x.note?" · note: "+x.note:"")+"</div>";
+  var acts=document.createElement("div");acts.className="acts";
+
+  function advanceBtn(){
+    var nx=NEXT[x.status]; if(!nx) return;
+    var b=document.createElement("button");b.className="btn next";b.textContent=NEXT_LABEL[x.status];
+    b.onclick=function(){
+      if(nx==="confirmed"){ if(isBoatTaken(x.date,x.boat,x.exp,x.id)){toast("⛔ "+boatName(x.boat)+" already booked "+fmtDay(x.date)+" ("+expName(x.exp)+")",true);return;} }
+      x.status=nx; if(nx!=="new"&&nx!=="contacted") x.hold_expires=x.hold_expires; if(nx==="confirmed")x.hold_expires=null;
+      save();toast("✓ "+x.name+" → "+LABEL[nx]);open=x.id;render();
+    };
+    acts.appendChild(b);
+  }
+
+  if(x.status==="expired"){
+    var pay=document.createElement("button");pay.className="btn primary";pay.textContent="Mark paid → confirm";
+    pay.onclick=function(){
+      if(isBoatTaken(x.date,x.boat,x.exp,x.id)){toast("⛔ "+boatName(x.boat)+" already booked that date",true);return;}
+      x.status="confirmed";x.hold_expires=null;save();toast("✓ Payment received — booking confirmed (revived from expired)");open=x.id;render();
+    };
+    var re=document.createElement("button");re.className="btn warn";re.textContent="Reinstate → awaiting payment";
+    re.onclick=function(){x.status="awaiting_payment";x.hold_expires=hoursFromNow(24);save();toast("✓ Reinstated — back in the pipeline");open=x.id;render();};
+    acts.appendChild(pay);acts.appendChild(re);
+  } else if(x.status!=="confirmed"&&x.status!=="cancelled"){
+    advanceBtn();
+    if(x.status==="awaiting_payment"||x.status==="contacted"){
+      var rem=document.createElement("button");rem.className="btn";rem.textContent=x.reminded?"Reminder sent ✓":"Send payment reminder";
+      rem.onclick=function(){x.reminded=true;save();toast("✓ Reminder email sent to customer");open=x.id;render();};
+      acts.appendChild(rem);
+    }
+    var call=document.createElement("button");call.className="btn";call.textContent="Call / email";
+    call.onclick=function(){toast("📞 "+(x.phone||"no phone"));};
+    acts.appendChild(call);
+    var can=document.createElement("button");can.className="btn danger";can.textContent="Cancel";
+    can.onclick=function(){x.status="cancelled";x.hold_expires=null;save();toast("Cancelled");open=x.id;render();};
+    acts.appendChild(can);
+  } else if(x.status==="confirmed"){
+    var info=document.createElement("div");info.className="note-owner";info.textContent="Confirmed — boat locked for this date.";
+    acts.appendChild(info);
+  }
+  d.appendChild(acts);
+
+  /* owner-only free-form status override */
+  if(OP.role==="owner"){
+    var ow=document.createElement("div");ow.className="owner";
+    ow.innerHTML="<label>Owner override — set any status</label>";
+    var rowo=document.createElement("div");rowo.className="owner-row";
+    var sel=document.createElement("select");
+    ["new","contacted","awaiting_payment","paid","confirmed","expired","cancelled"].forEach(function(s){
+      sel.innerHTML+="<option value='"+s+"'"+(s===x.status?" selected":"")+">"+LABEL[s]+"</option>";
+    });
+    var apply=document.createElement("button");apply.className="btn";apply.style.flex="0 0 auto";apply.textContent="Set";
+    apply.onclick=function(){
+      var s=sel.value;
+      if(s==="confirmed"&&isBoatTaken(x.date,x.boat,x.exp,x.id)){toast("⛔ "+boatName(x.boat)+" already booked that date",true);return;}
+      x.status=s; if(s==="confirmed"||s==="cancelled")x.hold_expires=null; save();toast("✓ Status set to "+LABEL[s]+" (logged)");open=x.id;render();
+    };
+    rowo.appendChild(sel);rowo.appendChild(apply);ow.appendChild(rowo);
+    var lg=document.createElement("div");lg.className="note-owner";lg.style.marginTop=".35rem";lg.textContent="Every change is logged (who · when).";
+    ow.appendChild(lg);
+    d.appendChild(ow);
+  }
+  return d;
+}
+
+/* ============ CALENDAR ============ */
+function renderCal(el){
+  el.innerHTML="";
+  for(var i=0;i<14;i++){
+    var date=dayOffset(i);
+    var h=document.createElement("div");h.className="cal-day";h.textContent=fmtDay(date);el.appendChild(h);
+    OP.boats.forEach(function(b){
+      OP.experiences.forEach(function(e){
+        var conf=store.items.find(function(x){return x.status==="confirmed"&&x.date===date&&x.boat===b.id&&x.exp===e.id;});
+        var held=store.items.find(function(x){return ["paid","awaiting_payment","contacted","new"].indexOf(x.status)>=0&&x.date===date&&x.boat===b.id&&x.exp===e.id;});
+        var tag=conf?"booked":(held?"held":"free");
+        if(tag==="free") return; /* only show active rows to keep it scannable */
+        var row=document.createElement("div");row.className="cal-row";
+        row.innerHTML="<div>"+b.name+" · "+e.name+"<div class='who'>"+((conf||held).name)+" · "+(conf||held).guests+" guests</div></div>"+
+          "<span class='cal-tag t-"+tag+"'>"+(tag==="booked"?"Booked":"Held")+"</span>";
+        el.appendChild(row);
+      });
+    });
+  }
+  var note=document.createElement("div");note.className="empty";note.textContent="Only booked/held departures shown. Whole-boat: one confirmed booking locks a boat for that date & experience.";
+  el.appendChild(note);
+}
+
+/* ============ ADD ============ */
+function renderAdd(el){
+  var steps="<div class='steps'>"+[1,2,3].map(function(i){return "<i class='"+(wiz.step>=i?"on":"")+"'></i>";}).join("")+"</div>";
+  if(wiz.step===1){
+    var chips="<div class='dates'>";for(var i=0;i<21;i++){var dd=dayOffset(i);chips+="<button class='date-chip"+(dd===wiz.date?" on":"")+"' data-d='"+dd+"'>"+fmtDay(dd)+"</button>";}chips+="</div>";
+    el.innerHTML=steps+"<div class='q'>Which date?</div>"+chips+
+      "<div class='q'>Which boat?</div><div class='bigbtns'>"+OP.boats.map(function(b){var taken=OP.experiences.every(function(e){return isBoatTaken(wiz.date,b.id,e.id);});return "<button class='bigbtn"+(wiz.boat===b.id?" on":"")+"' data-boat='"+b.id+"'><span>"+b.name+"</span><span class='x'>"+(taken?"fully booked":"available")+"</span></button>";}).join("")+"</div>"+
+      "<button class='cta' id='n1'>Next</button>";
+    el.querySelectorAll("[data-d]").forEach(function(c){c.onclick=function(){wiz.date=c.dataset.d;render();};});
+    el.querySelectorAll("[data-boat]").forEach(function(b){b.onclick=function(){wiz.boat=b.dataset.boat;render();};});
+    el.querySelector("#n1").onclick=function(){if(!wiz.boat){toast("Pick a boat",true);return;}wiz.step=2;render();};
+    return;
+  }
+  if(wiz.step===2){
+    el.innerHTML=steps+"<div class='q'>Which experience?</div><div class='bigbtns'>"+OP.experiences.map(function(e){var taken=isBoatTaken(wiz.date,wiz.boat,e.id);return "<button class='bigbtn"+(wiz.exp===e.id?" on":"")+"' data-exp='"+e.id+"'"+(taken?" disabled":"")+"><span>"+e.name+"</span><span class='x'>"+(taken?"booked":"")+"</span></button>";}).join("")+"</div>"+
+      "<div class='fld'><label>Guests</label><input type='text' id='g' value='"+wiz.guests+"' /></div>"+
+      "<button class='cta' id='n2'>Next</button><button class='cta ghost' id='b2'>← Back</button>";
+    el.querySelectorAll("[data-exp]").forEach(function(b){b.onclick=function(){wiz.exp=b.dataset.exp;render();};});
+    el.querySelector("#g").oninput=function(e){wiz.guests=parseInt(e.target.value,10)||0;};
+    el.querySelector("#n2").onclick=function(){if(!wiz.exp){toast("Pick an experience",true);return;}wiz.step=3;render();};
+    el.querySelector("#b2").onclick=function(){wiz.step=1;render();};
+    return;
+  }
+  el.innerHTML=steps+"<div class='q'>Customer details</div>"+
+    "<div class='fld'><label>Name / group</label><input type='text' id='nm' value='"+wiz.name.replace(/'/g,"&#39;")+"' placeholder='e.g. Helena Ross' /></div>"+
+    "<div class='fld'><label>Phone / WhatsApp</label><input type='text' id='ph' value='"+wiz.phone.replace(/'/g,"&#39;")+"' placeholder='+356 …' /></div>"+
+    "<div class='fld'><label>Estimated value (€)</label><input type='text' id='vl' value='"+(wiz.value||"")+"' placeholder='e.g. 1100' /></div>"+
+    "<button class='cta' id='save'>Add to pipeline (To contact)</button><button class='cta ghost' id='b3'>← Back</button>";
+  el.querySelector("#nm").oninput=function(e){wiz.name=e.target.value;};
+  el.querySelector("#ph").oninput=function(e){wiz.phone=e.target.value;};
+  el.querySelector("#vl").oninput=function(e){wiz.value=parseInt(e.target.value,10)||0;};
+  el.querySelector("#b3").onclick=function(){wiz.step=2;render();};
+  el.querySelector("#save").onclick=function(){
+    var name=(wiz.name||"").trim()||"Unnamed enquiry";
+    store.items.push({id:"e"+Date.now(),code:"MC-"+Math.floor(1000+Math.random()*9000),date:wiz.date,boat:wiz.boat,exp:wiz.exp,
+      name:name,guests:wiz.guests||1,status:"new",value:wiz.value||0,phone:wiz.phone||"",note:"",created:dayOffset(0),hold_expires:hoursFromNow(48),reminded:false});
+    save();filter=null;toast("✓ Added — sitting in 'To contact'");setTab("pipe");
+  };
+}
+
+function render(){
+  var el=document.getElementById("view");
+  if(tab==="pipe")renderPipe(el);
+  else if(tab==="cal")renderCal(el);
+  else renderAdd(el);
+}
+render();
+</script>
+</body>
+</html>
