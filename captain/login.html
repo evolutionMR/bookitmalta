@@ -191,6 +191,22 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 }
 .footer a { color: var(--terracotta); text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
+
+/* Big, thumb-friendly PIN inputs (mobile-first) */
+#pin, #newPin, #newPin2 {
+  font-size: 1.7rem;
+  letter-spacing: 0.45em;
+  text-align: center;
+  padding: 1.05rem 0.8rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  border-radius: 14px;
+}
+#pin::placeholder, #newPin::placeholder, #newPin2::placeholder {
+  letter-spacing: normal;
+  font-size: 0.95rem;
+  font-family: "Manrope", -apple-system, sans-serif;
+}
+.submit { padding: 1.05rem; font-size: 0.9rem; border-radius: 14px; }
 </style>
 </head>
 
@@ -199,47 +215,43 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 <div class="card">
   <div class="eyebrow">Captain dashboard</div>
   <h1>Sign in</h1>
-  <p class="subtitle">Enter the email address on your operator account. We'll send a one-time sign-in link.</p>
+  <p class="subtitle">Enter your email and PIN. First time? Use the PIN we sent you — you'll set your own.</p>
 
   <div id="notice"></div>
 
   <form id="loginForm" novalidate>
-    <label for="tenant-select">Which operator?</label>
-    <div class="tenant-toggle" role="tablist" id="tenantToggle">
-      <button type="button" class="tenant-btn" data-slug="adventure-cruises" role="tab">Adventure Cruises</button>
-      <button type="button" class="tenant-btn" data-slug="bandama" role="tab">Bandama</button>
-    </div>
-
     <label for="email">Email address</label>
     <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@operator.com" />
 
-    <button type="submit" class="submit" id="submitBtn">Send sign-in link</button>
+    <label for="pin">PIN</label>
+    <input type="password" id="pin" name="pin" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="6" placeholder="4–6 digits" />
+
+    <button type="submit" class="submit" id="submitBtn">Sign in</button>
+  </form>
+
+  <!-- First sign-in / reset: choose a new PIN. Hidden until needed. -->
+  <form id="setPinForm" novalidate style="display:none">
+    <label for="newPin">Choose a new PIN</label>
+    <input type="password" id="newPin" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="6" placeholder="4–6 digits" />
+    <label for="newPin2">Confirm new PIN</label>
+    <input type="password" id="newPin2" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="6" placeholder="repeat it" />
+    <button type="submit" class="submit" id="setPinBtn">Set PIN &amp; sign in</button>
   </form>
 
   <div class="footer">
-    Not on your operator's allowlist? Reach out to BookItMalta and we'll add you. The link expires in 15 minutes and can only be used once.
+    <a href="#" id="forgotPin">Forgot your PIN? Email me a sign-in link instead</a><br />
+    Not on your operator's allowlist? Reach out to BookItMalta and we'll add you.
   </div>
 </div>
 
 <script>
-// ---- tenant toggle ----
-let selectedTenant = 'adventure-cruises'; // default
-const toggle = document.getElementById('tenantToggle');
-toggle.querySelectorAll('.tenant-btn').forEach((btn) => {
-  if (btn.dataset.slug === selectedTenant) btn.setAttribute('aria-selected', 'true');
-  btn.addEventListener('click', () => {
-    selectedTenant = btn.dataset.slug;
-    toggle.querySelectorAll('.tenant-btn').forEach((b) =>
-      b.setAttribute('aria-selected', b === btn ? 'true' : 'false')
-    );
-  });
-});
+// Operator is derived server-side from the email — no picker needed.
 
 // ---- error from URL (?error=expired / not_allowed / missing_token) ----
 const params = new URLSearchParams(window.location.search);
 const errMap = {
-  expired:        'The sign-in link expired or had been used already. Request a new one below.',
-  missing_token:  'That sign-in link looked invalid. Request a new one below.',
+  expired:        'The sign-in link expired or had been used already. Sign in with your PIN, or request a new link.',
+  missing_token:  'That sign-in link looked invalid. Sign in with your PIN, or request a new link.',
   not_allowed:    'That email isn\'t on the allowlist for this operator. If this is unexpected, contact BookItMalta.',
   unknown_tenant: 'Unknown operator. Pick one above and try again.',
 };
@@ -247,38 +259,87 @@ if (params.get('error') && errMap[params.get('error')]) {
   showNotice('err', errMap[params.get('error')]);
 }
 
-// ---- form submit ----
+// Carry the just-entered (issued) PIN into the set-PIN step so pin-set can
+// re-verify it server-side as the currentPin.
+let pendingCurrentPin = '';
+
+// ---- email + PIN sign-in ----
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value.trim().toLowerCase();
-  if (!email) return showNotice('err', 'Please enter an email address.');
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
+  const pin = document.getElementById('pin').value.trim();
+  if (!email) return showNotice('err', 'Please enter your email address.');
+  if (!/^[0-9]{4,6}$/.test(pin)) return showNotice('err', 'Your PIN is 4–6 digits.');
 
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
   try {
-    const res = await fetch('/api/captain?mode=login', {
+    const res = await fetch('/api/captain?mode=pin-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tenant: selectedTenant, email }),
+      body: JSON.stringify({ email, pin }),
     });
-    if (!res.ok) {
-      let msg = 'Could not send the sign-in link. Please try again.';
-      try { msg = (await res.json()).error || msg; } catch {}
-      showNotice('err', msg);
-      btn.disabled = false;
-      btn.textContent = 'Send sign-in link';
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (res.ok && data.ok && data.mustChange) {
+      // First sign-in — show the set-PIN form.
+      pendingCurrentPin = pin;
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('setPinForm').style.display = 'block';
+      showNotice('ok', 'Welcome — set your own PIN to finish signing in.');
       return;
     }
-    showNotice(
-      'ok',
-      '<strong>Check your inbox.</strong> If <code>' + escapeHtml(email) + '</code> is on the operator allowlist, a sign-in link will arrive shortly. Expires in 15 minutes.'
-    );
-    btn.textContent = 'Link sent ✓';
+    if (res.ok && data.ok) { window.location.href = '/captain/dashboard'; return; }
+    showNotice('err', data.error || 'Could not sign you in. Please try again.');
+    btn.disabled = false; btn.textContent = 'Sign in';
   } catch (err) {
     showNotice('err', 'Network error — please try again.');
-    btn.disabled = false;
-    btn.textContent = 'Send sign-in link';
+    btn.disabled = false; btn.textContent = 'Sign in';
+  }
+});
+
+// ---- set a new PIN (first sign-in / reset) ----
+document.getElementById('setPinForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const newPin = document.getElementById('newPin').value.trim();
+  const newPin2 = document.getElementById('newPin2').value.trim();
+  if (!/^[0-9]{4,6}$/.test(newPin)) return showNotice('err', 'Your new PIN must be 4–6 digits.');
+  if (newPin !== newPin2) return showNotice('err', 'The two PINs don\'t match.');
+
+  const btn = document.getElementById('setPinBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const res = await fetch('/api/captain?mode=pin-set', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, currentPin: pendingCurrentPin, newPin }),
+    });
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (res.ok && data.ok) { window.location.href = '/captain/dashboard'; return; }
+    showNotice('err', data.error || 'Could not save your PIN. Please try again.');
+    btn.disabled = false; btn.textContent = 'Set PIN & sign in';
+  } catch (err) {
+    showNotice('err', 'Network error — please try again.');
+    btn.disabled = false; btn.textContent = 'Set PIN & sign in';
+  }
+});
+
+// ---- forgot PIN → magic-link fallback ----
+document.getElementById('forgotPin').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  if (!email) return showNotice('err', 'Enter your email first, then tap “Forgot your PIN”.');
+  try {
+    await fetch('/api/captain?mode=login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    showNotice('ok', '<strong>Check your inbox.</strong> If <code>' + escapeHtml(email) + '</code> is on the allowlist, a one-time sign-in link will arrive shortly (expires in 15 minutes). You can reset your PIN once you\'re in.');
+  } catch (err) {
+    showNotice('err', 'Network error — please try again.');
   }
 });
 
