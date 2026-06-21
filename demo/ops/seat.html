@@ -4,627 +4,176 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Per-seat demo — Add First</title>
+<title>Hosted demo — your bookings (per-seat)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-:root {
-  --ink: #0B2545; --ink-soft: #1C3558;
-  --paper: #F4EBD9; --paper-deep: #EBDFC6; --card: #FFFAF1;
-  --terracotta: #C85C2E;
-  --mute: rgba(11,37,69,.55); --rule: rgba(11,37,69,.15); --rule-strong: rgba(11,37,69,.35);
-  --ok: #1B4332; --ok-bg: #D8F3DC;
-  --warn: #7A5B00; --warn-bg: #FFF3D6;
-  --err: #B3261E; --err-bg: rgba(179,38,30,.1);
-  --serif: "Fraunces", Georgia, serif;
-  --sans: "Manrope", -apple-system, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
+:root{
+  --ink:#0B2545; --ink-soft:#1C3558; --paper:#F4EBD9; --paper-deep:#EBDFC6; --card:#FFFAF1;
+  --terracotta:#C85C2E; --mute:rgba(11,37,69,.55); --rule:rgba(11,37,69,.15); --rule-strong:rgba(11,37,69,.35);
+  --ok:#1B7A4B; --ok-bg:#D8F3DC; --warn:#7A5B00; --warn-bg:#FFF3D6; --err:#B3261E; --err-bg:rgba(179,38,30,.1);
+  --serif:"Fraunces",Georgia,serif; --sans:"Manrope",-apple-system,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; min-height: 100vh; padding: 1rem 1rem 9.5rem; -webkit-font-smoothing: antialiased; }
-.wrap { max-width: 520px; margin: 0 auto; }
-.proto-band { background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; text-align: center; padding: .35rem .5rem; border-radius: 6px; margin-bottom: 1rem; }
-header { padding-bottom: .9rem; border-bottom: 1px solid var(--rule); margin-bottom: 1rem; }
-.eyebrow { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--terracotta); display: block; }
-h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 380; letter-spacing: -.015em; line-height: 1.15; }
-.sub { font-size: .8rem; color: var(--mute); margin-top: .15rem; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;min-height:100vh;padding:1rem 1rem 5rem;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto}
+.demobar{display:flex;gap:.4rem;align-items:center;background:var(--ink);border-radius:8px;padding:.35rem .45rem;margin-bottom:.9rem}
+.demobar span{color:var(--terracotta);font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;padding:0 .35rem}
+.demobar a{flex:1;text-align:center;text-decoration:none;border-radius:6px;padding:.45rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--paper)}
+.demobar a.on{font-weight:600;background:var(--paper);color:var(--ink)}
+.proto-band{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:.35rem .5rem;border-radius:6px;margin-bottom:1rem}
+header{padding-bottom:.8rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}
+.eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);display:block}
+h1{font-family:var(--serif);font-size:1.45rem;font-weight:380;line-height:1.15}
+.sub{font-size:.82rem;color:var(--mute);margin-top:.15rem}
+.count-strip{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:.2rem 0 .6rem}
+.count-strip b{color:var(--terracotta)}
 
-.sum { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .8rem .9rem; margin-bottom: 1rem; }
-.sum .big { font-family: var(--mono); font-size: 1.7rem; font-weight: 600; }
-.sum .big .cap { color: var(--mute); font-weight: 400; font-size: 1.1rem; }
-.sum .lbl { font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
-.sum .mini { display: flex; gap: 1rem; margin-top: .45rem; font-family: var(--mono); font-size: .72rem; color: var(--ink-soft); }
-.sum .mini b { font-weight: 600; }
+.row{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:.8rem .9rem;margin-bottom:.6rem;border-left:3px solid var(--rule-strong)}
+.row.pending{border-left-color:var(--terracotta)}
+.rname{font-weight:600;font-size:.98rem}
+.rmeta{font-family:var(--mono);font-size:.68rem;color:var(--mute);margin-top:.2rem}
+.acts{display:flex;gap:.5rem;margin-top:.8rem}
+.btn{flex:1;border-radius:9px;padding:.6rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;border:1px solid var(--rule-strong)}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.btn.no{background:#fff;color:var(--err);border-color:var(--err)}
+.hint{font-size:.8rem;color:var(--mute);margin-top:.7rem;line-height:1.5}
+.empty{color:var(--mute);font-style:italic;font-size:.9rem;padding:1.4rem .2rem;text-align:center}
+.calbtn{display:inline-block;margin-top:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);cursor:pointer;border:1px solid var(--rule-strong);border-radius:7px;padding:.4rem .65rem;background:#fff}
+.callinks{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap}
+.callinks a{flex:1;min-width:78px;text-align:center;text-decoration:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);border:1px solid var(--rule-strong);border-radius:7px;padding:.45rem .3rem;background:#fff}
 
-.q { font-family: var(--serif); font-size: 1.2rem; margin: 1.1rem 0 .6rem; }
-.bigbtns { display: grid; gap: .6rem; }
-.bigbtn { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--rule-strong); border-radius: 12px; padding: 1rem .95rem; cursor: pointer; font-size: 1.05rem; color: var(--ink); text-align: left; width: 100%; }
-.bigbtn .left { font-family: var(--mono); font-size: .78rem; font-weight: 600; }
-.bigbtn .left.ok { color: var(--ok); } .bigbtn .left.warn { color: var(--warn); } .bigbtn .left.full { color: var(--err); }
-.bigbtn.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.bigbtn.on .left { color: var(--paper); }
-.bigbtn:disabled { opacity: .45; cursor: not-allowed; }
-.bigbtn .sug { font-family: var(--mono); font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; background: var(--terracotta); color: #fff; border-radius: 999px; padding: .15rem .5rem; margin-left: .45rem; }
-.stepper { display: flex; align-items: center; gap: 1rem; justify-content: center; margin: .4rem 0; }
-.stepper button { width: 58px; height: 58px; border-radius: 12px; border: 1px solid var(--rule-strong); background: var(--card); font-size: 1.7rem; color: var(--ink); cursor: pointer; }
-.stepper .n { font-family: var(--mono); font-size: 2.2rem; font-weight: 600; min-width: 3rem; text-align: center; }
-input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 10px; padding: .75rem .8rem; font-family: var(--sans); font-size: 1.05rem; background: var(--card); color: var(--ink); }
-.hint { font-size: .76rem; color: var(--mute); margin-top: .3rem; }
-.guard { margin-top: .6rem; font-size: .84rem; border-radius: 8px; padding: .55rem .7rem; display: none; }
-.guard.err { display: block; background: var(--err-bg); color: var(--err); border: 1px solid var(--err); }
-.cta { width: 100%; margin-top: 1rem; background: var(--terracotta); color: #fff; border: 0; border-radius: 10px; padding: .95rem; font-family: var(--mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; font-weight: 600; }
-.cta.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule-strong); margin-top: .5rem; }
-.steps { display: flex; gap: .3rem; margin-bottom: .2rem; }
-.steps i { flex: 1; height: 4px; border-radius: 99px; background: var(--paper-deep); }
-.steps i.on { background: var(--terracotta); }
+.dep{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:.65rem .85rem;margin-bottom:.45rem}
+.dep .top{display:flex;justify-content:space-between;align-items:center}
+.dep .slot{font-family:var(--mono);font-weight:600;font-size:.85rem}
+.dep .seats{font-family:var(--mono);font-size:.78rem;font-weight:600}
+.dep .seats.ok{color:var(--ink-soft)} .dep .seats.warn{color:var(--warn)} .dep .seats.full{color:var(--ok)}
+.bar{height:6px;border-radius:99px;background:var(--paper-deep);margin-top:.45rem;overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--ok)}
+.day-h{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:.9rem 0 .4rem}
 
-/* overview */
-.ov-day { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 1rem 0 .45rem; }
-.slot-strip { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: .55rem 0 .35rem; }
-.slot-strip button { border: 1px solid var(--rule-strong); background: var(--card); color: var(--ink); border-radius: 6px; padding: .2rem .55rem; font-family: var(--mono); font-size: .6rem; cursor: pointer; }
-.slot-cancelled { font-family: var(--mono); font-size: .66rem; color: var(--err); background: var(--err-bg); border: 1px solid var(--err); border-radius: 8px; padding: .45rem .6rem; margin-bottom: .45rem; }
-.ov-row { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: .7rem .85rem; margin-bottom: .5rem; }
-.ov-row.full { border-color: var(--err); }
-.ov-row.closed { border-style: dashed; opacity: .85; }
-.ov-row .line1 { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-.ov-row .nm { font-size: .95rem; }
-.ov-row .nm small { display: block; font-family: var(--mono); font-size: .62rem; color: var(--mute); }
-.ov-row .ct { font-family: var(--mono); font-weight: 600; }
-.ov-row .ct.ok { color: var(--ok); } .ov-row .ct.warn { color: var(--warn); } .ov-row .ct.full { color: var(--err); }
-.ov-row .ct.closed { color: var(--mute); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; }
-.ov-detail { border-top: 1px dashed var(--rule); margin-top: .55rem; padding-top: .45rem; }
-.boat-acts { display: flex; gap: .4rem; margin: .45rem 0 .2rem; }
-
-/* manifest rows (shared look with v1) */
-.mrow { padding: .42rem .1rem; border-bottom: 1px solid var(--rule); font-size: .88rem; }
-.mrow:last-child { border-bottom: 0; }
-.mrow .line1 { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-.mrow .src { font-family: var(--mono); font-size: .58rem; border-radius: 999px; padding: .1rem .45rem; background: var(--paper-deep); color: var(--ink-soft); margin-left: .4rem; }
-.mrow .pax { font-family: var(--mono); font-weight: 600; }
-.mrow.cancelled .line1 span:first-child { text-decoration: line-through; color: var(--mute); }
-.mrow .cnote { font-family: var(--mono); font-size: .64rem; color: var(--err); padding-top: .1rem; }
-.mrow .detail { padding: .45rem 0 .2rem; }
-.mrow .tel { font-family: var(--mono); font-size: .72rem; color: var(--mute); margin-bottom: .45rem; }
-.acts { display: flex; gap: .4rem; }
-.sbtn { border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 7px; padding: .4rem .7rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
-.sbtn.danger { color: var(--err); border-color: var(--err); }
-.sbtn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
-.iform { background: #fff; border: 1px solid var(--rule-strong); border-radius: 8px; padding: .6rem .7rem; margin-top: .4rem; }
-.iform label { font-family: var(--mono); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .4rem 0 .2rem; }
-.iform input[type=text] { width: 100%; border: 1px solid var(--rule-strong); border-radius: 7px; padding: .5rem .6rem; font-family: var(--sans); font-size: .95rem; background: #fff; color: var(--ink); }
-.iform .stepper button { width: 40px; height: 40px; font-size: 1.25rem; }
-.iform .stepper .n { font-size: 1.3rem; min-width: 2rem; }
-.iform .stepper { justify-content: flex-start; gap: .7rem; }
-.srcpick { display: flex; gap: .35rem; flex-wrap: wrap; }
-.srcpick .sp { border: 1px solid var(--rule-strong); background: #fff; border-radius: 999px; padding: .38rem .7rem; font-family: var(--mono); font-size: .64rem; cursor: pointer; color: var(--ink); }
-.srcpick .sp.on { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
-
-/* slot panel (cancel / move) */
-.slot-panel { background: var(--card); border: 1px solid var(--rule-strong); border-radius: 10px; padding: .8rem .9rem; margin-bottom: .55rem; }
-.slot-panel .t { font-family: var(--serif); font-size: 1.02rem; margin-bottom: .45rem; }
-.slot-panel label { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); display: block; margin: .45rem 0 .25rem; }
-.slot-panel input[type=text] { background: #fff; font-size: .95rem; padding: .55rem .65rem; border-radius: 8px; }
-.panel-row { display: flex; gap: .45rem; margin-top: .6rem; }
-.pbtn { flex: 1; border: 1px solid var(--rule-strong); background: #fff; color: var(--ink); border-radius: 8px; padding: .55rem .4rem; font-family: var(--mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
-.pbtn.danger { background: var(--err); color: #fff; border-color: var(--err); }
-.pbtn.tc { background: var(--terracotta); color: #fff; border-color: var(--terracotta); }
-.dates { display: flex; gap: .45rem; overflow-x: auto; padding: .2rem 0 .6rem; scrollbar-width: none; }
-.dates::-webkit-scrollbar { display: none; }
-.date-chip { flex: 0 0 auto; border: 1px solid var(--rule-strong); background: var(--card); border-radius: 999px; padding: .45rem .85rem; font-family: var(--mono); font-size: .68rem; cursor: pointer; white-space: nowrap; color: var(--ink); }
-.date-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-
-/* dock */
-#dock { position: fixed; inset: 0; background: var(--ink); color: var(--paper); z-index: 50; display: none; flex-direction: column; padding: 1rem; overflow-y: auto; }
-#dock.open { display: flex; }
-#dock .d-title { font-family: var(--serif); font-size: 1.5rem; }
-#dock .d-sub { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: rgba(244,235,217,.65); text-transform: uppercase; }
-#dock .d-count { font-family: var(--mono); font-size: 2.4rem; font-weight: 600; text-align: center; margin: .6rem 0 .9rem; }
-#dock .d-count small { display: block; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(244,235,217,.6); font-weight: 400; }
-#dock .drow { display: flex; justify-content: space-between; align-items: center; background: rgba(244,235,217,.08); border: 1px solid rgba(244,235,217,.22); border-radius: 12px; padding: 1rem .9rem; margin-bottom: .55rem; font-size: 1.15rem; cursor: pointer; }
-#dock .drow .pax { font-family: var(--mono); font-size: 1.25rem; font-weight: 600; }
-#dock .drow.on { background: var(--ok-bg); border-color: var(--ok-bg); color: var(--ok); }
-#dock .drow.on::after { content: "✓ ABOARD"; font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; margin-left: .5rem; }
-#dock .exit { margin-top: auto; background: var(--paper); color: var(--ink); border: 0; border-radius: 10px; padding: .9rem; font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
-#dock .pick { background: rgba(244,235,217,.08); border: 1px solid rgba(244,235,217,.3); color: var(--paper); border-radius: 12px; padding: 1.05rem; margin-bottom: .55rem; font-size: 1.1rem; display: flex; justify-content: space-between; cursor: pointer; width: 100%; text-align: left; }
-
-/* tabs + vote */
-.tabs { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule); display: flex; z-index: 40; padding-bottom: env(safe-area-inset-bottom); }
-.tabs button { flex: 1; background: none; border: 0; padding: .7rem .3rem .6rem; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); cursor: pointer; border-top: 3px solid transparent; }
-.tabs button.on { color: var(--terracotta); border-top-color: var(--terracotta); font-weight: 600; }
-.votebar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule-strong); padding: .45rem .9rem calc(.45rem + env(safe-area-inset-bottom)); display: flex; gap: .55rem; z-index: 40; }
-.votebar a, .votebar button { flex: 1; text-decoration: none; text-align: center; border-radius: 9px; padding: .6rem .4rem; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
-.votebar .back { border: 1px solid var(--rule-strong); color: var(--ink); background: #fff; }
-.votebar .vote { background: #25D366; color: #fff; border: 0; font-weight: 600; }
-.reset { display: block; text-align: center; font-family: var(--mono); font-size: .62rem; color: var(--mute); margin-top: 1.2rem; cursor: pointer; text-decoration: underline; background: none; border: 0; width: 100%; }
-.toast { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; border-radius: 999px; padding: .55rem 1.1rem; font-family: var(--mono); font-size: .72rem; z-index: 60; display: none; max-width: 90vw; text-align: center; }
-.toast.err { background: var(--err); }
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;background:none;border:0;padding:.7rem .3rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);cursor:pointer;border-top:3px solid transparent;position:relative}
+.tabs button.on{color:var(--terracotta);border-top-color:var(--terracotta);font-weight:600}
+.tabs .badge{position:absolute;top:.45rem;margin-left:.2rem;background:var(--terracotta);color:#fff;border-radius:20px;font-size:.5rem;padding:.05rem .3rem;font-weight:700}
+.reset{display:block;text-align:center;font-family:var(--mono);font-size:.62rem;color:var(--mute);margin:1.2rem auto 0;cursor:pointer;text-decoration:underline;background:none;border:0}
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:var(--ok);color:#fff;border-radius:999px;padding:.55rem 1.1rem;font-family:var(--mono);font-size:.72rem;z-index:60;display:none;max-width:92vw;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div style="display:flex;gap:.4rem;align-items:center;background:var(--ink);border-radius:8px;padding:.35rem .45rem;margin-bottom:.9rem">
-    <span style="color:var(--terracotta);font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;padding:0 .35rem">Demo</span>
-    <a href="charter.html" style="flex:1;text-align:center;text-decoration:none;border-radius:6px;padding:.45rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--paper)">Whole-boat charter</a>
-    <a href="seat.html" style="flex:1;text-align:center;text-decoration:none;border-radius:6px;padding:.45rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;background:var(--paper);color:var(--ink)">Per-seat</a>
+  <div class="demobar">
+    <span>Demo</span>
+    <a href="charter.html">Whole-boat charter</a>
+    <a href="seat.html" class="on">Per-seat</a>
   </div>
-  <div class="proto-band">Per-seat layout · demo data only — nothing is real</div>
+  <div class="proto-band">Hosted plan · what your screen looks like · demo data</div>
   <header>
-    <span class="eyebrow">Sea Breeze Cruises · Per-seat</span>
-    <h1>Add First</h1>
-    <div class="sub">One big button to sell. The Overview tab manages everything else — edit, cancel, close a boat, move a departure.</div>
+    <span class="eyebrow">Sea Breeze Cruises</span>
+    <h1>Your bookings</h1>
+    <div class="sub">Seats sell online and confirm instantly. Phone &amp; walk-up enquiries land in Approvals. We handle payment and confirmation — you just keep an eye on the boat.</div>
   </header>
-
   <div id="view"></div>
-  <button class="reset" onclick="AC.reset('v4')">Reset demo data</button>
+  <button class="reset" id="resetBtn">Reset demo data</button>
 </div>
 
-<div id="dock"></div>
-
 <div class="tabs">
-  <button id="tab-add" class="on">＋ Add</button>
-  <button id="tab-today">Overview</button>
-  <button id="tab-dock">Dock</button>
+  <button id="tab-appr" class="on">Approvals</button>
+  <button id="tab-cal">Calendar</button>
+  <button id="tab-up">Upcoming</button>
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="shared/data.js"></script>
 <script>
-let store = AC.load("v4");
-let tab = "add";
-let wiz = null;
-let ovOpen = null;        /* "date|slot|boat" expanded row */
-let rowOpen = null, rowEdit = null, rowCancel = null;
-let slotMenu = null;      /* "date|slot" */
-let moveMode = false;
-let editState = null;
-let srcEditorOpen = false;
-
-function persist() { AC.save("v4", store); }
-function toast(msg, isErr) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.className = "toast" + (isErr ? " err" : ""); t.style.display = "block";
-  setTimeout(() => t.style.display = "none", 2600);
+/* Hosted demo — per-seat. Cap 40 per boat × 2 boats = 80 per departure. */
+var CAP=80, SLOTS=["09:30","14:30"];
+var KEY="hosted-demo-seat-v1";
+function iso(d){return d.toISOString().slice(0,10);}
+function off(n){var d=new Date();d.setDate(d.getDate()+n);return iso(d);}
+function fmt(s){var d=new Date(s+"T12:00:00");var t=iso(new Date());var l=d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});return s===t?"Today · "+l:l;}
+function seed(){
+  return { pending:[
+    {id:1,name:"Phone — Kowalski ×7",slot:"09:30",date:off(0),seats:7,via:"phone"},
+    {id:2,name:"Walk-up — Chen",slot:"14:30",date:off(0),seats:3,via:"walk-up"}
+  ],
+  /* seats already sold online (auto-confirmed) per date|slot */
+  sold:{} };
 }
-function setTab(t) {
-  tab = t;
-  document.getElementById("tab-add").className = t === "add" ? "on" : "";
-  document.getElementById("tab-today").className = t === "today" ? "on" : "";
-  document.getElementById("tab-dock").className = t === "dock" ? "on" : "";
-  render();
-}
-document.getElementById("tab-add").onclick = () => { wiz = null; setTab("add"); };
-document.getElementById("tab-today").onclick = () => setTab("today");
-document.getElementById("tab-dock").onclick = () => setTab("dock");
+function load(){try{var r=localStorage.getItem(KEY);if(r){var s=JSON.parse(r);if(s&&s.pending)return s;}}catch(e){}var s=seed();
+  // seed some sold seats
+  s.sold[off(0)+"|09:30"]=51; s.sold[off(0)+"|14:30"]=72;
+  s.sold[off(1)+"|09:30"]=18; s.sold[off(1)+"|14:30"]=33;
+  s.sold[off(2)+"|09:30"]=40; s.sold[off(2)+"|14:30"]=12;
+  return s;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+var store=load();
+function soldOf(date,slot){return store.sold[date+"|"+slot]||0;}
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.style.display="block";setTimeout(function(){t.style.display="none";},2800);}
 
-/* ============ ADD TAB (wizard) ============ */
-function renderAdd(el) {
-  if (!wiz) {
-    const today = AC.dayOffset(0);
-    const sold = AC.seats(store.bookings.filter(x => x.date === today));
-    el.innerHTML =
-      "<div class='sum'><div class='lbl'>Today — seats sold</div>" +
-      "<div class='big'>" + sold + "<span class='cap'> / 160</span></div>" +
-      "<div class='mini'><span>09:30 · <b>" + AC.slotLeft(store, today, "09:30") + " left</b></span><span>14:30 · <b>" + AC.slotLeft(store, today, "14:30") + " left</b></span></div></div>" +
-      "<button class='cta' id='start'>＋ Add a booking</button>" +
-      "<div class='hint' style='text-align:center;margin-top:.5rem'>Agent call · walk-up · phone — everything lands here, three taps.</div>";
-    el.querySelector("#start").onclick = () => { wiz = { step: 1, date: AC.dayOffset(0), pax: 2, source: null, name: "", slot: null, boat: null }; render(); };
-    return;
-  }
+var tab="appr";
+function setTab(t){tab=t;["appr","cal","up"].forEach(function(k){document.getElementById("tab-"+k).className=(k===t?"on":"");});render();}
+document.getElementById("tab-appr").onclick=function(){setTab("appr");};
+document.getElementById("tab-cal").onclick=function(){setTab("cal");};
+document.getElementById("tab-up").onclick=function(){setTab("up");};
+document.getElementById("resetBtn").onclick=function(){try{localStorage.removeItem(KEY);}catch(e){}location.reload();};
 
-  const steps = "<div class='steps'>" + [1,2,3,4].map(i => "<i class='" + (wiz.step >= i ? "on" : "") + "'></i>").join("") + "</div>";
-
-  if (wiz.step === 1) {
-    let dateChips = "<div class='dates'>";
-    for (let i = 0; i < 7; i++) {
-      const d = AC.dayOffset(i);
-      dateChips += "<button class='date-chip" + (d === wiz.date ? " active" : "") + "' data-d='" + d + "'>" + AC.fmtDay(d) + "</button>";
-    }
-    dateChips += "</div>";
-    el.innerHTML = steps + "<div class='q'>Which departure?</div>" + dateChips +
-      "<div class='bigbtns'>" + AC.SLOTS.map(s => {
-        const cancelled = AC.slotCancelled(store, wiz.date, s);
-        const left = AC.slotLeft(store, wiz.date, s);
-        const cls = (cancelled || left <= 0) ? "full" : (left <= 20 ? "warn" : "ok");
-        const lbl = cancelled ? "OFF" : (left <= 0 ? "FULL" : left + " seats left");
-        return "<button class='bigbtn' data-slot='" + s + "'" + (cancelled || left <= 0 ? " disabled" : "") + "><span>" + s + "</span><span class='left " + cls + "'>" + lbl + "</span></button>";
-      }).join("") + "</div>";
-    el.querySelectorAll("[data-d]").forEach(c => c.onclick = () => { wiz.date = c.dataset.d; render(); });
-    el.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { wiz.slot = b.dataset.slot; wiz.step = 2; render(); });
-    return;
-  }
-
-  if (wiz.step === 2) {
-    const left = AC.slotLeft(store, wiz.date, wiz.slot);
-    el.innerHTML = steps + "<div class='q'>How many seats?</div>" +
-      "<div class='stepper'><button id='mi'>−</button><span class='n'>" + wiz.pax + "</span><button id='pl'>+</button></div>" +
-      "<div class='hint' style='text-align:center'>" + left + " seats left at " + wiz.slot + "</div>" +
-      "<div class='guard" + (wiz.pax > left ? " err" : "") + "'>⛔ Only " + left + " seats left at " + wiz.slot + " — can't take " + wiz.pax + ".</div>" +
-      "<button class='cta' id='next'" + (wiz.pax > left ? " disabled style='opacity:.45'" : "") + ">Next</button>" +
-      "<button class='cta ghost' id='bk'>← Back</button>";
-    el.querySelector("#mi").onclick = () => { wiz.pax = Math.max(1, wiz.pax - 1); render(); };
-    el.querySelector("#pl").onclick = () => { wiz.pax++; render(); };
-    el.querySelector("#next").onclick = () => { if (wiz.pax <= left) { wiz.step = 3; render(); } };
-    el.querySelector("#bk").onclick = () => { wiz.step = 1; render(); };
-    return;
-  }
-
-  if (wiz.step === 3) {
-    el.innerHTML = steps + "<div class='q'>Who's it from?</div>" +
-      "<div class='bigbtns'>" + AC.sourcesOf(store).map(s =>
-        "<button class='bigbtn" + (wiz.source === s.id ? " on" : "") + "' data-src='" + s.id + "'><span>" + s.label + "</span></button>").join("") + "</div>" +
-      "<div class='hint' style='text-align:center;margin-top:.4rem'>Rename or add sources in the Overview tab → ✎ labels</div>" +
-      "<div class='q' style='font-size:1rem'>Name / group <span style='font-family:var(--sans);font-size:.75rem;color:var(--mute)'>(optional)</span></div>" +
-      "<input type='text' id='nm' placeholder='e.g. Agent group (Rossi)' value='" + wiz.name + "' />" +
-      "<button class='cta' id='next'>Next</button><button class='cta ghost' id='bk'>← Back</button>";
-    el.querySelectorAll("[data-src]").forEach(b => b.onclick = () => { wiz.source = b.dataset.src; render(); });
-    el.querySelector("#nm").oninput = e => wiz.name = e.target.value;
-    el.querySelector("#next").onclick = () => {
-      if (!wiz.source) { toast("Pick a source first", true); return; }
-      wiz.step = 4; render();
-    };
-    el.querySelector("#bk").onclick = () => { wiz.step = 2; render(); };
-    return;
-  }
-
-  if (wiz.step === 4) {
-    const lefts = AC.BOATS.map(b => ({ b, closed: !!AC.getClosure(store, wiz.date, wiz.slot, b.id), left: AC.boatLeft(store, wiz.date, wiz.slot, b.id) }));
-    const open = lefts.filter(x => !x.closed && x.left >= wiz.pax).sort((a, b2) => b2.left - a.left);
-    const suggested = open[0];
-    if (!wiz.boat && suggested) wiz.boat = suggested.b.id;
-    el.innerHTML = steps + "<div class='q'>Which boat?</div>" +
-      "<div class='bigbtns'>" + lefts.map(x =>
-        "<button class='bigbtn" + (wiz.boat === x.b.id ? " on" : "") + "' data-boat='" + x.b.id + "'" + (x.closed || x.left < wiz.pax ? " disabled" : "") + ">" +
-        "<span>" + x.b.name + (suggested && suggested.b.id === x.b.id ? "<span class='sug'>suggested</span>" : "") + "</span>" +
-        "<span class='left " + (x.closed || x.left < wiz.pax ? "full" : "ok") + "'>" + (x.closed ? "CLOSED" : x.left + " left") + "</span></button>").join("") + "</div>" +
-      (suggested ? "" : "<div class='guard err'>⛔ No boat can fit " + wiz.pax + " at " + wiz.slot + ".</div>") +
-      "<button class='cta' id='save'" + (suggested ? "" : " disabled style='opacity:.45'") + ">Confirm booking</button>" +
-      "<button class='cta ghost' id='bk'>← Back</button>";
-    el.querySelectorAll("[data-boat]").forEach(b => b.onclick = () => { wiz.boat = b.dataset.boat; render(); });
-    el.querySelector("#bk").onclick = () => { wiz.step = 3; render(); };
-    el.querySelector("#save").onclick = () => {
-      if (!wiz.boat) return;
-      const name = (wiz.name || "").trim() || "Unnamed group";
-      store.bookings.push({ id: "bk" + Date.now(), date: wiz.date, slot: wiz.slot, boat: wiz.boat, name, pax: wiz.pax, source: wiz.source, phone: "", boarded: false, status: "active", note: "" });
-      persist();
-      const boatName = AC.BOATS.find(x => x.id === wiz.boat).name;
-      const done = { pax: wiz.pax, slot: wiz.slot, boat: boatName };
-      wiz = null; render();
-      toast("✓ " + done.pax + " seats — " + done.boat + " " + done.slot);
-    };
-    return;
-  }
+function renderApprovals(el){
+  el.innerHTML="<div class='count-strip'>Online bookings confirm automatically</div>"+
+    "<div class='row'><div class='rname'>Nothing to approve 🎉</div><div class='rmeta'>Website seats are paid and confirmed instantly — they go straight onto your Calendar.</div></div>";
+  var h=document.createElement("div");h.className="hint";
+  h.innerHTML="On Hosted, every seat is sold through BookItMalta and confirmed automatically — nothing to chase, nothing to enter.<br><br><b>Add-on:</b> taking phone / walk-up / agent bookings yourself? We can switch on off-platform entry as a paid extra.";
+  el.appendChild(h);
 }
 
-/* ============ OVERVIEW TAB — the management hub ============ */
-function renderToday(el) {
-  el.innerHTML = "";
-
-  /* source label bar + editor */
-  const bar = document.createElement("div");
-  bar.className = "slot-strip";
-  bar.style.marginTop = "0";
-  bar.innerHTML = "<span>Sources: " + AC.sourcesOf(store).map(s => s.short).join(" · ") + "</span><button>✎ labels</button>";
-  bar.querySelector("button").onclick = () => { srcEditorOpen = !srcEditorOpen; render(); };
-  el.appendChild(bar);
-  if (srcEditorOpen) el.appendChild(buildSourceEditor());
-
-  for (let i = 0; i < 3; i++) {
-    const d = AC.dayOffset(i);
-    const h = document.createElement("div");
-    h.className = "ov-day"; h.textContent = AC.fmtDay(d);
-    el.appendChild(h);
-
-    AC.SLOTS.forEach(slot => {
-      const sk = d + "|" + slot;
-      const strip = document.createElement("div");
-      strip.className = "slot-strip";
-      strip.innerHTML = "<span>" + slot + " · " + AC.seats(AC.forDeparture(store, d, slot)) + "/80</span>" +
-        "<button>⋯ departure</button>";
-      strip.querySelector("button").onclick = () => { slotMenu = slotMenu === sk ? null : sk; moveMode = false; render(); };
-      el.appendChild(strip);
-
-      if (AC.slotCancelled(store, d, slot)) {
-        const c1 = AC.getClosure(store, d, slot, AC.BOATS[0].id);
-        const note = document.createElement("div");
-        note.className = "slot-cancelled";
-        note.textContent = "⛔ Departure off — " + (c1 ? c1.reason : "cancelled");
-        el.appendChild(note);
-      }
-      if (slotMenu === sk) el.appendChild(buildSlotPanel(d, slot));
-
-      AC.BOATS.forEach(boat => el.appendChild(buildOvRow(d, slot, boat)));
+function renderCalendar(el){
+  el.innerHTML="<div class='count-strip'>Next 7 days · seats fill automatically as customers pay online</div>";
+  for(var i=0;i<7;i++){
+    var date=off(i);
+    var h=document.createElement("div");h.className="day-h";h.textContent=fmt(date);el.appendChild(h);
+    SLOTS.forEach(function(slot){
+      var sold=soldOf(date,slot), pct=Math.min(100,Math.round(sold/CAP*100));
+      var cls=sold>=CAP?"full":(sold>=CAP*0.75?"warn":"ok");
+      var lbl=sold>=CAP?"FULL":(CAP-sold)+" left";
+      var d=document.createElement("div");d.className="dep";
+      d.innerHTML="<div class='top'><span class='slot'>"+slot+"</span><span class='seats "+cls+"'>"+sold+"/"+CAP+" · "+lbl+"</span></div><div class='bar'><i style='width:"+pct+"%'></i></div>";
+      el.appendChild(d);
     });
   }
 }
 
-function buildSourceEditor() {
-  const p = document.createElement("div");
-  p.className = "slot-panel";
-  p.innerHTML = "<div class='t'>Source labels — rename, add, remove</div>" +
-    AC.sourcesOf(store).map(s =>
-      "<div class='panel-row' style='align-items:center'>" +
-      "<input type='text' data-id='" + s.id + "' value='" + s.label.replace(/'/g, "&#39;") + "' style='flex:1' />" +
-      "<button class='pbtn danger' data-del='" + s.id + "' style='flex:0 0 44px'>✕</button></div>").join("") +
-    "<label>New source</label>" +
-    "<div class='panel-row' style='margin-top:0'>" +
-      "<input type='text' id='src-new' placeholder='e.g. Hotel desk' style='flex:1' />" +
-      "<button class='pbtn tc' id='src-add' style='flex:0 0 70px'>+ Add</button></div>" +
-    "<div class='guard err' id='src-guard' style='display:none'></div>" +
-    "<div class='panel-row'><button class='pbtn tc' id='src-save'>Save & close</button></div>";
-
-  function fail(msg) { const g = p.querySelector("#src-guard"); g.style.display = "block"; g.textContent = "⛔ " + msg; }
-  p.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
-    const err = AC.deleteSource(store, b.dataset.del);
-    if (err) { fail(err); return; }
-    persist(); render();
+function ymd(s){return s.replace(/-/g,"");}
+function nextDay(s){var d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
+function calLinks(title,date,details){
+  var s=ymd(date), e=ymd(nextDay(date));
+  var g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(title)+"&dates="+s+"/"+e+"&details="+encodeURIComponent(details);
+  var o="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject="+encodeURIComponent(title)+"&startdt="+date+"&enddt="+nextDay(date)+"&allday=true&body="+encodeURIComponent(details);
+  var ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//BookItMalta//demo//EN\nBEGIN:VEVENT\nUID:"+s+Math.random().toString(36).slice(2)+"@bookitmalta\nDTSTART;VALUE=DATE:"+s+"\nDTEND;VALUE=DATE:"+e+"\nSUMMARY:"+title+"\nDESCRIPTION:"+details+"\nEND:VEVENT\nEND:VCALENDAR";
+  return { g:g, o:o, ics:"data:text/calendar;charset=utf-8,"+encodeURIComponent(ics) };
+}
+function renderUpcoming(el){
+  var rows=[];
+  for(var i=0;i<7;i++){var date=off(i);SLOTS.forEach(function(slot){var s=soldOf(date,slot);if(s>0)rows.push({date:date,slot:slot,seats:s});});}
+  if(!rows.length){el.innerHTML="<div class='empty'>No departures booked yet.</div>";return;}
+  el.innerHTML="<div class='count-strip'><b>"+rows.length+"</b> departures with bookings</div>";
+  rows.forEach(function(x){
+    var r=document.createElement("div");r.className="row";
+    var L=calLinks("Sea Breeze Cruises — "+x.slot+" departure", x.date, x.seats+" of "+CAP+" seats sold · via BookItMalta");
+    r.innerHTML="<div class='rname'>"+fmt(x.date)+" · "+x.slot+"</div><div class='rmeta'>"+x.seats+" of "+CAP+" seats sold</div>"+
+      "<span class='calbtn'>＋ Add to calendar</span>"+
+      "<div class='callinks' style='display:none'><a href='"+L.g+"' target='_blank' rel='noopener'>Google</a><a href='"+L.ics+"' download='departure.ics'>Apple</a><a href='"+L.o+"' target='_blank' rel='noopener'>Outlook</a></div>";
+    r.querySelector(".calbtn").onclick=function(){var c=r.querySelector(".callinks");c.style.display=(c.style.display==="none")?"flex":"none";};
+    el.appendChild(r);
   });
-  p.querySelector("#src-add").onclick = () => {
-    const err = AC.addSource(store, p.querySelector("#src-new").value);
-    if (err) { fail(err); return; }
-    persist(); render();
-  };
-  p.querySelector("#src-save").onclick = () => {
-    p.querySelectorAll("input[data-id]").forEach(inp => AC.renameSource(store, inp.dataset.id, inp.value));
-    persist(); srcEditorOpen = false;
-    toast("✓ Source labels saved");
-    render();
-  };
-  return p;
 }
 
-function buildSlotPanel(date, slot) {
-  const p = document.createElement("div");
-  p.className = "slot-panel";
-  if (!moveMode) {
-    p.innerHTML = "<div class='t'>" + slot + " — whole departure</div>" +
-      "<label>Reason (weather, mechanical…)</label>" +
-      "<input type='text' id='sp-reason' placeholder='e.g. Force 6 westerly' />" +
-      "<div class='panel-row'>" +
-        "<button class='pbtn tc' id='sp-move'>Move to another date</button>" +
-        "<button class='pbtn danger' id='sp-cancel'>Cancel departure</button>" +
-      "</div>" +
-      "<div class='panel-row'><button class='pbtn' id='sp-close'>Close</button></div>";
-    p.querySelector("#sp-close").onclick = () => { slotMenu = null; render(); };
-    p.querySelector("#sp-move").onclick = () => { moveMode = p.querySelector("#sp-reason").value || "weather"; render(); };
-    p.querySelector("#sp-cancel").onclick = () => {
-      const reason = p.querySelector("#sp-reason").value || "cancelled by operator";
-      const n = AC.forDeparture(store, date, slot).length;
-      AC.cancelDeparture(store, date, slot, reason);
-      persist(); slotMenu = null;
-      toast("⛔ " + slot + " cancelled — " + n + " bookings marked, reason saved");
-      render();
-    };
-  } else {
-    let chips = "";
-    for (let i = 0; i < 7; i++) {
-      const d2 = AC.dayOffset(i);
-      if (d2 === date) continue;
-      chips += "<button class='date-chip' data-d='" + d2 + "'>" + AC.fmtDay(d2) + " · " + AC.slotLeft(store, d2, slot) + " free</button>";
-    }
-    p.innerHTML = "<div class='t'>Move " + slot + " (" + AC.seats(AC.forDeparture(store, date, slot)) + " pax) to…</div>" +
-      "<div class='dates' style='padding:.4rem 0'>" + chips + "</div>" +
-      "<div class='guard err' id='sp-guard' style='display:none'></div>" +
-      "<div class='panel-row'><button class='pbtn' id='sp-back'>← Back</button></div>";
-    p.querySelector("#sp-back").onclick = () => { moveMode = false; render(); };
-    p.querySelectorAll("[data-d]").forEach(c => c.onclick = () => {
-      const err = AC.moveDeparture(store, date, slot, c.dataset.d, moveMode);
-      if (err) { const g = p.querySelector("#sp-guard"); g.style.display = "block"; g.textContent = "⛔ " + err; return; }
-      persist(); slotMenu = null; moveMode = false;
-      toast("✓ Moved to " + AC.fmtDay(c.dataset.d) + " — same boats, same time");
-      render();
-    });
-  }
-  return p;
-}
-
-function buildOvRow(date, slot, boat) {
-  const key = date + "|" + slot + "|" + boat.id;
-  const closure = AC.getClosure(store, date, slot, boat.id);
-  const all = AC.forDeparture(store, date, slot, boat.id, true);
-  const active = all.filter(x => x.status === "active");
-  const sold = AC.seats(active);
-  const cls = sold >= boat.cap ? "full" : (sold >= boat.cap * .75 ? "warn" : "ok");
-  const srcs = AC.bySource(store, active);
-  const srcLine = AC.sourcesOf(store).map(s => s.short + " " + (srcs[s.id] || 0)).join(" · ");
-
-  const row = document.createElement("div");
-  row.className = "ov-row" + (cls === "full" && !closure ? " full" : "") + (closure ? " closed" : "");
-  row.innerHTML = "<div class='line1'><span class='nm'>" + boat.name +
-    "<small>" + (closure ? "closed — " + closure.reason : srcLine) + "</small></span>" +
-    (closure ? "<span class='ct closed'>Closed</span>" : "<span class='ct " + cls + "'>" + sold + "/" + boat.cap + "</span>") + "</div>";
-
-  row.querySelector(".line1").onclick = () => { ovOpen = ovOpen === key ? null : key; rowOpen = rowEdit = rowCancel = null; render(); };
-
-  if (ovOpen === key) {
-    const det = document.createElement("div");
-    det.className = "ov-detail";
-
-    /* boat-level actions */
-    const acts = document.createElement("div");
-    acts.className = "boat-acts";
-    const tbtn = document.createElement("button");
-    tbtn.className = "sbtn" + (closure ? " tc" : "");
-    tbtn.textContent = closure ? "▶ Reopen boat" : "⏸ Close this boat";
-    tbtn.onclick = () => toggleBoat(date, slot, boat, closure);
-    acts.appendChild(tbtn);
-    det.appendChild(acts);
-
-    /* manifest with edit/cancel */
-    if (!all.length) {
-      const empty = document.createElement("div");
-      empty.style.cssText = "font-size:.82rem;color:var(--mute);padding:.3rem 0";
-      empty.textContent = "No bookings yet.";
-      det.appendChild(empty);
-    } else {
-      all.forEach(x => det.appendChild(buildMRow(x, date, slot, boat)));
-    }
-    row.appendChild(det);
-  }
-  return row;
-}
-
-function toggleBoat(date, slot, boat, closure) {
-  if (closure) {
-    AC.clearClosure(store, date, slot, boat.id);
-    persist(); toast("▶ " + boat.name + " " + slot + " reopened"); render();
-    return;
-  }
-  const mine = AC.forDeparture(store, date, slot, boat.id);
-  const other = AC.BOATS.find(b2 => b2.id !== boat.id);
-  const movingPax = AC.seats(mine);
-  const otherRoom = AC.boatLeft(store, date, slot, other.id);
-  let msg = "Close " + boat.name + " for " + slot + "?";
-  if (movingPax > 0 && otherRoom >= movingPax) {
-    if (confirm(msg + "\n\nMove its " + movingPax + " pax to " + other.name + " (" + otherRoom + " free)?\nOK = move them · Cancel = keep here")) {
-      mine.forEach(x => x.boat = other.id);
-      toast("✓ " + movingPax + " pax moved to " + other.name);
-    }
-  } else if (movingPax > 0) {
-    if (!confirm(msg + "\n\n⚠ It has " + movingPax + " pax and " + other.name + " only has " + otherRoom + " free — bookings stay put for manual sorting.")) return;
-  } else {
-    if (!confirm(msg)) return;
-  }
-  AC.setClosure(store, date, slot, boat.id, "only one boat running");
-  persist(); render();
-}
-
-function buildMRow(x, date, slot, boat) {
-  const r = document.createElement("div");
-  r.className = "mrow" + (x.status === "cancelled" ? " cancelled" : "");
-  const src = AC.srcOf(store, x.source);
-  let html = "<div class='line1'><span>" + x.name + "<span class='src'>" + src.short + "</span></span><span class='pax'>" + x.pax + " pax</span></div>";
-  if (x.status === "cancelled") html += "<div class='cnote'>cancelled — " + (x.note || "no note") + "</div>";
-  r.innerHTML = html;
-  r.querySelector(".line1").onclick = (e) => { e.stopPropagation(); rowOpen = rowOpen === x.id ? null : x.id; rowEdit = rowCancel = null; render(); };
-
-  if (rowOpen === x.id) {
-    const d = document.createElement("div");
-    d.className = "detail";
-    if (x.status === "cancelled") {
-      d.innerHTML = "<div class='tel'>" + (x.phone || "no phone on file") + "</div>" +
-        "<div class='acts'><button class='sbtn tc' data-a='restore'>Restore booking</button></div>";
-      d.querySelector("[data-a=restore]").onclick = () => {
-        const err = AC.restoreBooking(store, x.id);
-        if (err) { toast("⛔ " + err, true); return; }
-        persist(); toast("✓ Restored"); render();
-      };
-    } else if (rowEdit === x.id) {
-      d.appendChild(buildEditForm(x, date, slot, boat));
-    } else if (rowCancel === x.id) {
-      d.innerHTML = "<div class='iform'><label>Why? (kept on record)</label>" +
-        "<input type='text' id='cx-note' placeholder='e.g. customer cancelled by phone' />" +
-        "<div class='acts' style='margin-top:.5rem'>" +
-        "<button class='sbtn danger' data-a='confirm'>Confirm cancel</button>" +
-        "<button class='sbtn' data-a='back'>Keep booking</button></div></div>";
-      d.querySelector("[data-a=confirm]").onclick = () => {
-        AC.cancelBooking(store, x.id, d.querySelector("#cx-note").value || "no note");
-        persist(); rowCancel = rowOpen = null;
-        toast("✓ Cancelled — " + x.pax + " seats freed, note saved");
-        render();
-      };
-      d.querySelector("[data-a=back]").onclick = () => { rowCancel = null; render(); };
-    } else {
-      d.innerHTML = "<div class='tel'>" + (x.phone || "no phone on file") + "</div>" +
-        "<div class='acts'>" +
-        "<button class='sbtn' data-a='edit'>✎ Edit</button>" +
-        "<button class='sbtn danger' data-a='cancel'>Cancel booking</button></div>";
-      d.querySelector("[data-a=edit]").onclick = () => {
-        rowEdit = x.id;
-        editState = { name: x.name, pax: x.pax, source: x.source };
-        render();
-      };
-      d.querySelector("[data-a=cancel]").onclick = () => { rowCancel = x.id; render(); };
-    }
-    r.appendChild(d);
-  }
-  return r;
-}
-
-function buildEditForm(x, date, slot, boat) {
-  const f = document.createElement("div");
-  f.className = "iform";
-  const left = AC.boatLeft(store, date, slot, boat.id) + x.pax;
-  f.innerHTML =
-    "<label>Name / group</label><input type='text' id='ef-name' value='" + editState.name.replace(/'/g, "&#39;") + "' />" +
-    "<label>Seats</label><div class='stepper'>" +
-      "<button id='ef-minus'>−</button><span class='n' id='ef-n'>" + editState.pax + "</span><button id='ef-plus'>+</button>" +
-      "<span style='font-family:var(--mono);font-size:.66rem;color:var(--mute)'>max " + left + "</span></div>" +
-    "<label>Who's it from</label><div class='srcpick'>" +
-      AC.sourcesOf(store).map(s => "<button class='sp" + (editState.source === s.id ? " on" : "") + "' data-src='" + s.id + "'>" + s.label + "</button>").join("") + "</div>" +
-    "<div class='guard' id='ef-guard'></div>" +
-    "<div class='acts' style='margin-top:.55rem'>" +
-      "<button class='sbtn tc' id='ef-save'>Save changes</button>" +
-      "<button class='sbtn' id='ef-back'>Discard</button></div>";
-  function check() {
-    const g = f.querySelector("#ef-guard");
-    if (editState.pax > left) { g.className = "guard err"; g.textContent = "⛔ Only " + left + " seats possible on " + boat.name + "."; return false; }
-    g.className = "guard"; return true;
-  }
-  f.querySelector("#ef-minus").onclick = () => { editState.pax = Math.max(1, editState.pax - 1); f.querySelector("#ef-n").textContent = editState.pax; check(); };
-  f.querySelector("#ef-plus").onclick = () => { editState.pax++; f.querySelector("#ef-n").textContent = editState.pax; check(); };
-  f.querySelectorAll("[data-src]").forEach(b2 => b2.onclick = () => {
-    editState.source = b2.dataset.src;
-    f.querySelectorAll("[data-src]").forEach(o => o.classList.toggle("on", o.dataset.src === editState.source));
-  });
-  f.querySelector("#ef-name").oninput = e => editState.name = e.target.value;
-  f.querySelector("#ef-save").onclick = () => {
-    if (!check()) return;
-    x.name = (editState.name || "").trim() || x.name;
-    x.pax = editState.pax;
-    x.source = editState.source;
-    persist(); rowEdit = rowOpen = null;
-    toast("✓ Booking updated");
-    render();
-  };
-  f.querySelector("#ef-back").onclick = () => { rowEdit = null; render(); };
-  return f;
-}
-
-/* ============ DOCK TAB ============ */
-function renderDockPick(el) {
-  const today = AC.dayOffset(0);
-  el.innerHTML = "<div class='q'>Boarding which departure?</div>";
-  AC.SLOTS.forEach(slot => AC.BOATS.forEach(boat => {
-    const list = AC.forDeparture(store, today, slot, boat.id);
-    const closure = AC.getClosure(store, today, slot, boat.id);
-    const btn = document.createElement("button");
-    btn.className = "bigbtn";
-    btn.style.marginBottom = ".55rem"; btn.style.width = "100%";
-    btn.innerHTML = "<span>" + slot + " — " + boat.name + "</span><span class='left " + (closure ? "full" : "ok") + "'>" + (closure ? "CLOSED" : AC.seats(list) + " expected") + "</span>";
-    if (closure) btn.disabled = true;
-    btn.onclick = () => openDock(today, slot, boat);
-    el.appendChild(btn);
-  }));
-}
-
-function openDock(date, slot, boat) {
-  const dock = document.getElementById("dock");
-  function paint() {
-    const list = AC.forDeparture(store, date, slot, boat.id);
-    const aboard = list.filter(x => x.boarded).reduce((s, x) => s + x.pax, 0);
-    dock.innerHTML =
-      "<div><div class='d-sub'>Dock mode · " + AC.fmtDay(date) + "</div>" +
-      "<div class='d-title'>" + boat.name + " — " + slot + "</div></div>" +
-      "<div class='d-count'>" + aboard + " / " + AC.seats(list) + "<small>aboard / expected</small></div>" +
-      list.map(x => "<div class='drow" + (x.boarded ? " on" : "") + "' data-id='" + x.id + "'><span>" + x.name + "</span><span class='pax'>" + x.pax + "</span></div>").join("") +
-      (list.length ? "" : "<div style='text-align:center;opacity:.6;padding:2rem 0'>No bookings for this departure.</div>") +
-      "<button class='exit'>Exit dock mode</button>";
-    dock.querySelectorAll(".drow").forEach(r => r.onclick = () => {
-      const bk = store.bookings.find(x => x.id === r.dataset.id);
-      bk.boarded = !bk.boarded; persist(); paint();
-    });
-    dock.querySelector(".exit").onclick = () => { dock.classList.remove("open"); render(); };
-  }
-  paint();
-  dock.classList.add("open");
-}
-
-function render() {
-  const el = document.getElementById("view");
-  if (tab === "add") renderAdd(el);
-  else if (tab === "today") renderToday(el);
-  else renderDockPick(el);
+function render(){
+  var n=store.pending.length;
+  document.getElementById("tab-appr").innerHTML="Approvals"+(n?" <span class='badge'>"+n+"</span>":"");
+  var el=document.getElementById("view");
+  if(tab==="appr")renderApprovals(el);
+  else if(tab==="cal")renderCalendar(el);
+  else renderUpcoming(el);
 }
 render();
 </script>
