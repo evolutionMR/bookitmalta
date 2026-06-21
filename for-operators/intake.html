@@ -310,9 +310,9 @@ form.addEventListener("submit", async function(e){
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    showErr((j && j.error) ? j.error : "Something went wrong sending the form. Please email hello@bookitmalta.com directly.");
+    showErr((j && j.error) ? j.error : "Something went wrong sending the form. Please try again in a moment, or reach us on Facebook.");
   } catch (err) {
-    showErr("Couldn't reach the server. Please check your connection, or email hello@bookitmalta.com directly.");
+    showErr("Couldn't reach the server. Please check your connection and try again.");
   } finally {
     btn.disabled = false; btn.textContent = "Send to BookItMalta";
   }
