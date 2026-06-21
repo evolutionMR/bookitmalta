@@ -35,6 +35,11 @@ const {
   getCaptainFromRequest,
   isAllowed,
   LOGIN_TOKEN_TTL_SECS,
+  isValidPin,
+  hashPin,
+  verifyPin,
+  PIN_MAX_ATTEMPTS,
+  PIN_LOCKOUT_MINUTES,
 } = require('./_lib/captain-auth.js');
 const crypto = require('crypto');
 
@@ -47,6 +52,8 @@ module.exports = async function handler(req, res) {
   if (mode === 'auth')           return await handleAuth(req, res);
   if (mode === 'logout')         return await handleLogout(req, res);
   if (mode === 'me')             return await handleMe(req, res);
+  if (mode === 'pin-login')      return await handlePinLogin(req, res);
+  if (mode === 'pin-set')        return await handlePinSet(req, res);
   if (mode === 'dashboard-data') return await handleDashboardData(req, res);
 
   // ---------- PER-ENQUIRY MAGIC LINK (existing) ----------
@@ -450,14 +457,14 @@ async function handleLogin(req, res) {
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch { /* leave string */ }
   }
-  const tenant = (body && body.tenant) || (req.query && req.query.tenant);
   const email  = (body && body.email)  || (req.query && req.query.email);
-
-  if (!tenant || typeof tenant !== 'string') {
-    return jsonError(res, 400, 'Missing tenant');
-  }
   if (!email || typeof email !== 'string' || !/^.+@.+\..+$/.test(email)) {
     return jsonError(res, 400, 'Invalid email');
+  }
+  // Operator is derived from the email's allowlist membership — no picker.
+  const tenant = (body && body.tenant) || (req.query && req.query.tenant) || resolveTenantByEmail(email);
+  if (!tenant || typeof tenant !== 'string') {
+    return res.status(200).json({ ok: true }); // anti-enumeration: don't reveal unknown emails
   }
 
   let config;
@@ -465,7 +472,7 @@ async function handleLogin(req, res) {
     const { getTenant } = require('../config/tenants.js');
     config = getTenant(tenant);
   } catch (e) {
-    return jsonError(res, 400, 'Unknown tenant');
+    return res.status(200).json({ ok: true });
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -567,6 +574,169 @@ async function handleLogout(req, res) {
   res.setHeader('Set-Cookie', buildClearCookie());
   res.setHeader('Location', '/captain/login');
   return res.status(302).end();
+}
+
+// =============================================================================
+// EMAIL + PIN auth — fast re-entry on a known device
+// =============================================================================
+// PINs live in each tenant's `captain_pins` table (service-role only). Issued
+// at onboarding with must_change=true. Magic-link (mode=login) is the reset path.
+
+function pinBody(req) {
+  let body = req.body;
+  if (typeof body === 'string') { try { body = JSON.parse(body); } catch { /* leave */ } }
+  return body || {};
+}
+
+function resolveTenantByEmail(email) {
+  const e = String(email || '').trim().toLowerCase();
+  if (!e) return null;
+  try {
+    const { TENANTS } = require('../config/tenants.js');
+    for (const slug of Object.keys(TENANTS)) {
+      const al = TENANTS[slug].captainAllowlist;
+      if (Array.isArray(al) && al.some((x) => String(x).trim().toLowerCase() === e)) return slug;
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
+function resolvePinTenant(body, req) {
+  // Operator is derived from the email's allowlist membership — no picker needed.
+  let tenant = (body && body.tenant) || (req.query && req.query.tenant);
+  if (!tenant) tenant = resolveTenantByEmail(body && body.email);
+  if (!tenant || typeof tenant !== 'string') return { error: 'We could not find an operator for that email.' };
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    return { tenant, config: getTenant(tenant) };
+  } catch {
+    return { error: 'Unknown tenant' };
+  }
+}
+
+/**
+ * POST /api/captain?mode=pin-login  { tenant, email, pin }
+ * Verifies email+PIN against captain_pins (rate-limited, locks after N tries).
+ * On success: sets session cookie — unless must_change, in which case it
+ * returns { mustChange: true } so the client collects a new PIN via pin-set.
+ * Generic 401 ("Wrong email or PIN") to avoid revealing which is wrong.
+ */
+async function handlePinLogin(req, res) {
+  if (req.method !== 'POST') return jsonError(res, 405, 'Method not allowed');
+  const body = pinBody(req);
+  const { tenant, config, error } = resolvePinTenant(body, req);
+  if (error) return jsonError(res, 400, error);
+
+  const email = String((body && body.email) || '').trim().toLowerCase();
+  const pin   = String((body && body.pin) || '');
+
+  // Validate shape + allowlist behind one generic error.
+  if (!/^.+@.+\..+$/.test(email) || !isValidPin(pin) || !isAllowed(config, email)) {
+    return jsonError(res, 401, 'Wrong email or PIN');
+  }
+
+  let supa;
+  try { supa = getSupabase(tenant); }
+  catch { return jsonError(res, 500, 'Sign-in is not available for this operator yet.'); }
+
+  const { data: row, error: dbErr } = await supa
+    .from('captain_pins').select('*').eq('email', email).maybeSingle();
+  if (dbErr) {
+    console.error('[captain-auth] pin-login db error:', dbErr.message || dbErr);
+    return jsonError(res, 500, 'Could not sign you in right now.');
+  }
+
+  const now = Date.now();
+  if (row && row.locked_until && new Date(row.locked_until).getTime() > now) {
+    return jsonError(res, 429, 'Too many attempts. Try again later, or use “Forgot PIN”.');
+  }
+
+  if (!row || !verifyPin(pin, row.pin_hash, row.pin_salt)) {
+    if (row) {
+      const attempts = (row.failed_attempts || 0) + 1;
+      const patch = { failed_attempts: attempts, updated_at: new Date().toISOString() };
+      if (attempts >= PIN_MAX_ATTEMPTS) {
+        patch.failed_attempts = 0;
+        patch.locked_until = new Date(now + PIN_LOCKOUT_MINUTES * 60000).toISOString();
+      }
+      await supa.from('captain_pins').update(patch).eq('email', email);
+    }
+    return jsonError(res, 401, 'Wrong email or PIN');
+  }
+
+  // Correct PIN — clear the attempt counter.
+  await supa.from('captain_pins')
+    .update({ failed_attempts: 0, locked_until: null }).eq('email', email);
+
+  if (row.must_change) {
+    // No session yet — client must set a new PIN first (pin-set with currentPin).
+    return res.status(200).json({ ok: true, mustChange: true });
+  }
+
+  res.setHeader('Set-Cookie', buildSessionCookie(issueSessionToken({ tenant, email })));
+  return res.status(200).json({ ok: true });
+}
+
+/**
+ * POST /api/captain?mode=pin-set  { tenant, email, newPin, currentPin? }
+ * Sets/changes the PIN. Authorised by EITHER a valid session cookie for this
+ * tenant+email (the magic-link "forgot PIN" reset path) OR a correct currentPin
+ * (first-login forced change / voluntary change). On success: sets session.
+ */
+async function handlePinSet(req, res) {
+  if (req.method !== 'POST') return jsonError(res, 405, 'Method not allowed');
+  const body = pinBody(req);
+  const { tenant, config, error } = resolvePinTenant(body, req);
+  if (error) return jsonError(res, 400, error);
+
+  const email      = String((body && body.email) || '').trim().toLowerCase();
+  const currentPin = String((body && body.currentPin) || '');
+  const newPin     = String((body && body.newPin) || '');
+
+  if (!/^.+@.+\..+$/.test(email) || !isAllowed(config, email)) {
+    return jsonError(res, 403, 'Not allowed');
+  }
+  if (!isValidPin(newPin)) {
+    return jsonError(res, 400, 'PIN must be 4–6 digits.');
+  }
+
+  let supa;
+  try { supa = getSupabase(tenant); }
+  catch { return jsonError(res, 500, 'Not available for this operator yet.'); }
+
+  const { data: row } = await supa
+    .from('captain_pins').select('*').eq('email', email).maybeSingle();
+
+  // Authorise: a valid session (forgot-PIN reset via magic link) bypasses the
+  // currentPin check; otherwise the current PIN must match.
+  const sess = getCaptainFromRequest(req);
+  const sessionOk = !!(sess && sess.tenant === tenant && sess.email === email);
+  if (!sessionOk) {
+    if (!row || !verifyPin(currentPin, row.pin_hash, row.pin_salt)) {
+      return jsonError(res, 401, 'Current PIN is incorrect.');
+    }
+    if (newPin === currentPin) {
+      return jsonError(res, 400, 'Please choose a PIN different from the one we sent you.');
+    }
+  }
+
+  const { hash, salt } = hashPin(newPin);
+  const { error: upErr } = await supa.from('captain_pins').upsert({
+    email,
+    pin_hash: hash,
+    pin_salt: salt,
+    must_change: false,
+    failed_attempts: 0,
+    locked_until: null,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'email' });
+  if (upErr) {
+    console.error('[captain-auth] pin-set db error:', upErr.message || upErr);
+    return jsonError(res, 500, 'Could not save your PIN. Please try again.');
+  }
+
+  res.setHeader('Set-Cookie', buildSessionCookie(issueSessionToken({ tenant, email })));
+  return res.status(200).json({ ok: true });
 }
 
 /**

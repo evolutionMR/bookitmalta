@@ -220,6 +220,54 @@ function isAllowed(tenantConfig, email) {
   );
 }
 
+// -----------------------------------------------------------------------------
+// PIN auth (fast re-entry on a known device)
+// -----------------------------------------------------------------------------
+// PINs are stored hashed (scrypt + per-PIN random salt) in each tenant's
+// `captain_pins` table — never in plaintext, never logged. Issued at onboarding
+// with must_change=true so the operator sets their own on first sign-in.
+const PIN_MIN_LEN          = 4;
+const PIN_MAX_LEN          = 6;
+const PIN_MAX_ATTEMPTS     = 5;          // wrong tries before lockout
+const PIN_LOCKOUT_MINUTES  = 15;
+const SCRYPT_KEYLEN        = 32;
+
+function isValidPin(pin) {
+  return typeof pin === 'string' && new RegExp(`^[0-9]{${PIN_MIN_LEN},${PIN_MAX_LEN}}$`).test(pin);
+}
+
+function hashPin(pin) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(String(pin), salt, SCRYPT_KEYLEN).toString('hex');
+  return { hash, salt };
+}
+
+// Constant-time PIN verification. Returns false on any malformed input.
+function verifyPin(pin, hashHex, saltHex) {
+  if (!pin || !hashHex || !saltHex) return false;
+  let candidate;
+  try {
+    candidate = crypto.scryptSync(String(pin), saltHex, SCRYPT_KEYLEN);
+  } catch {
+    return false;
+  }
+  let expected;
+  try {
+    expected = Buffer.from(hashHex, 'hex');
+  } catch {
+    return false;
+  }
+  return candidate.length === expected.length && crypto.timingSafeEqual(candidate, expected);
+}
+
+// Generate a random numeric PIN (used by the onboarding issue script).
+function generatePin(len = 6) {
+  const n = Math.max(PIN_MIN_LEN, Math.min(PIN_MAX_LEN, len));
+  let out = '';
+  for (let i = 0; i < n; i++) out += crypto.randomInt(0, 10).toString();
+  return out;
+}
+
 module.exports = {
   COOKIE_NAME,
   SESSION_TTL_SECONDS,
@@ -232,4 +280,13 @@ module.exports = {
   buildClearCookie,
   getCaptainFromRequest,
   isAllowed,
+  // PIN auth
+  isValidPin,
+  hashPin,
+  verifyPin,
+  generatePin,
+  PIN_MIN_LEN,
+  PIN_MAX_LEN,
+  PIN_MAX_ATTEMPTS,
+  PIN_LOCKOUT_MINUTES,
 };
