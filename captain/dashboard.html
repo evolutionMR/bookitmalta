@@ -72,6 +72,19 @@ h1{font-family:var(--serif);font-size:1.4rem;font-weight:380;line-height:1.15}
 .d-quote{font-style:italic;color:var(--ink-soft);line-height:1.55;padding:.2rem .1rem 0;margin-bottom:.4rem}
 .d-actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1.1rem}
 .d-actions .btn{flex:0 0 auto;padding:.95rem;font-size:.72rem}
+.btn.ghost{background:#fff;color:var(--ink-soft);border-color:var(--rule-strong)}
+.row.archived{border-left-color:var(--rule-strong);opacity:.82}
+.archbtn{color:var(--mute)}
+.tidybar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:var(--warn-bg);border:1px solid var(--rule);border-radius:9px;padding:.55rem .4rem .55rem .75rem;margin-bottom:.7rem;font-size:.82rem;color:#5b4300}
+.tidybar button{flex:0 0 auto;padding:.4rem .7rem;font-size:.6rem;background:#fff}
+.archwrap{position:fixed;inset:0;background:rgba(11,37,69,.45);display:none;align-items:flex-end;justify-content:center;z-index:80}
+.archcard{background:var(--card);border-radius:14px 14px 0 0;max-width:600px;width:100%;padding:1.2rem 1.1rem calc(1.6rem + env(safe-area-inset-bottom))}
+.archtitle{font-family:var(--serif);font-size:1.25rem;font-weight:380}
+.archlabel{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:.3rem}
+.archselect,.archinput{width:100%;padding:.7rem;border:1px solid var(--rule-strong);border-radius:8px;background:#fff;font-family:var(--sans);font-size:.95rem;color:var(--ink)}
+.archinput{display:none;margin-top:.5rem}
+.archacts{display:flex;gap:.5rem;margin-top:1rem}
+.archacts .btn{padding:.85rem;font-size:.7rem}
 </style>
 </head>
 <body>
@@ -91,8 +104,29 @@ h1{font-family:var(--serif);font-size:1.4rem;font-weight:380;line-height:1.15}
   <button id="tab-appr" class="on">Approvals</button>
   <button id="tab-cal">Calendar</button>
   <button id="tab-up">Upcoming</button>
+  <button id="tab-arch">Archived</button>
 </div>
 <div class="toast" id="toast"></div>
+
+<div class="archwrap" id="archModal">
+  <div class="archcard">
+    <div class="archtitle">Archive this item</div>
+    <div class="hint" style="margin:.1rem 0 .9rem">It leaves your active tabs but stays in Archived — you can restore it anytime.</div>
+    <label class="archlabel" for="archReason">Reason</label>
+    <select id="archReason" class="archselect">
+      <option value="Past date">Past date</option>
+      <option value="No-show / didn't pay">No-show / didn't pay</option>
+      <option value="Duplicate">Duplicate</option>
+      <option value="Test data">Test data</option>
+      <option value="Other">Other</option>
+    </select>
+    <input id="archOther" class="archinput" placeholder="Add a note (optional)" />
+    <div class="archacts">
+      <button class="btn" id="archCancel" style="background:#fff">Cancel</button>
+      <button class="btn" id="archGo" style="background:var(--terracotta);color:#fff;border-color:var(--terracotta)">Archive</button>
+    </div>
+  </div>
+</div>
 
 <script>
 var DATA=null, tab="appr", loading=true, errMsg=null;
@@ -116,10 +150,11 @@ function calLinks(title,date,details){
   return {g:g,o:o,ics:"data:text/calendar;charset=utf-8,"+encodeURIComponent(ics)};
 }
 
-function setTab(t){tab=t;["appr","cal","up"].forEach(function(k){document.getElementById("tab-"+k).className=(k===t?"on":"");});render();}
+function setTab(t){tab=t;["appr","cal","up","arch"].forEach(function(k){document.getElementById("tab-"+k).className=(k===t?"on":"");});render();}
 document.getElementById("tab-appr").onclick=function(){setTab("appr");};
 document.getElementById("tab-cal").onclick=function(){setTab("cal");};
 document.getElementById("tab-up").onclick=function(){setTab("up");};
+document.getElementById("tab-arch").onclick=function(){setTab("arch");};
 document.getElementById("signout").onclick=async function(){try{await fetch("/api/captain?mode=logout",{method:"POST",credentials:"include"});}catch(e){}window.location.href="/captain/login";};
 
 async function load(){
@@ -183,12 +218,14 @@ function paintDetail(x){
     "<div class='d-actions'>"+
       "<button class='btn ok' id='dOk'>Confirm &amp; send payment link</button>"+
       "<button class='btn no' id='dNo'>Decline</button>"+
+      "<button class='btn ghost' id='dArch'>Archive</button>"+
     "</div>"+
-    "<div class='hint'>Confirm sends the customer a secure payment link automatically. The booking locks the moment they pay.</div>";
+    "<div class='hint'>Confirm sends the customer a secure payment link automatically. The booking locks the moment they pay. Archive just clears it from your list — no email to the customer.</div>";
   document.getElementById("backLink").onclick=function(){history.back();};
   var ok=document.getElementById("dOk"),no=document.getElementById("dNo");
   ok.onclick=function(){act(x.id,"confirm",[ok,no]);};
   no.onclick=function(){if(confirm("Decline this enquiry? The customer will be told the date isn't available."))act(x.id,"decline",[ok,no]);};
+  document.getElementById("dArch").onclick=function(){askArchive(x.id,"enquiry");};
   window.scrollTo(0,0);
 }
 window.addEventListener("popstate",function(){
@@ -253,8 +290,8 @@ function renderCalendarSeats(el){
 function renderUpcoming(el){
   var rows=[];
   var ps=(DATA&&DATA.model==="per_seat");
-  DATA.booked.forEach(function(x){rows.push({status:"booked",name:x.customer_name,date:x.charter_date,party:x.party_size,slot:(ps?(x.slot_time||x.tour_option):null),email:x.customer_email,phone:x.customer_phone});});
-  DATA.awaiting.forEach(function(x){rows.push({status:"held",name:x.customer_name,date:x.preferred_date,party:x.party_size,slot:(ps?(x.slot_time||x.tour_option):null)});});
+  DATA.booked.forEach(function(x){rows.push({status:"booked",id:x.id,kind:"booking",name:x.customer_name,date:x.charter_date,party:x.party_size,slot:(ps?(x.slot_time||x.tour_option):null),email:x.customer_email,phone:x.customer_phone});});
+  DATA.awaiting.forEach(function(x){rows.push({status:"held",id:x.id,kind:"enquiry",name:x.customer_name,date:x.preferred_date,party:x.party_size,slot:(ps?(x.slot_time||x.tour_option):null),email:x.customer_email});});
   rows.sort(function(a,b){return (a.date||"")<(b.date||"")?-1:1;});
   if(!rows.length){el.innerHTML="<div class='empty'>No upcoming bookings yet.</div>";return;}
   el.innerHTML="<div class='count-strip'><b>"+rows.length+"</b> upcoming</div>";
@@ -267,8 +304,10 @@ function renderUpcoming(el){
       "<div class='rmeta'>"+fmt(x.date)+(x.slot?(" · "+esc(x.slot)):"")+" · "+(x.party||1)+" "+gunit()+"</div>"+
       (x.email?"<div class='contact'>"+esc(x.email)+(x.phone?(" · "+esc(x.phone)):"")+"</div>":"")+
       "<span class='calbtn'>＋ Add to calendar</span>"+
+      "<span class='calbtn archbtn' style='margin-left:.4rem'>Archive</span>"+
       "<div class='callinks' style='display:none'><a href='"+L.g+"' target='_blank' rel='noopener'>Google</a><a href='"+L.ics+"' download='booking.ics'>Apple</a><a href='"+L.o+"' target='_blank' rel='noopener'>Outlook</a></div>";
     r.querySelector(".calbtn").onclick=function(){var c=r.querySelector(".callinks");c.style.display=(c.style.display==="none")?"flex":"none";};
+    r.querySelector(".archbtn").onclick=function(){askArchive(x.id,x.kind);};
     el.appendChild(r);
   });
 }
@@ -278,9 +317,86 @@ function render(){
   if(loading){el.innerHTML="<div class='spin'>Loading your bookings…</div>";return;}
   if(errMsg){el.innerHTML="<div class='errbar'>"+esc(errMsg)+"</div><div class='spin' id='retry' style='cursor:pointer'>Tap to retry</div>";var rt=document.getElementById("retry");if(rt)rt.onclick=load;return;}
   badge();
-  if(tab==="appr")renderApprovals(el);
+  if(tab==="appr"){renderApprovals(el);tidyBar(el);}
   else if(tab==="cal")renderCalendar(el);
-  else renderUpcoming(el);
+  else if(tab==="arch")renderArchived(el);
+  else {renderUpcoming(el);tidyBar(el);}
+}
+
+// ---- archive (soft, never delete) ----
+var pendingArchive=null;
+function isTest(name,email){var s=((name||"")+" "+(email||"")).toLowerCase();return /(\btest\b|smoke|e2e|probe|delete me|dummy)/.test(s)||/\+[^@]*@/.test(email||"")||/@example\./.test(email||"");}
+function collectTestLooking(){
+  var out=[];if(!DATA)return out;
+  (DATA.pending||[]).forEach(function(x){if(isTest(x.customer_name,x.customer_email))out.push({id:x.id,kind:"enquiry"});});
+  (DATA.awaiting||[]).forEach(function(x){if(isTest(x.customer_name,x.customer_email))out.push({id:x.id,kind:"enquiry"});});
+  (DATA.booked||[]).forEach(function(x){if(isTest(x.customer_name,x.customer_email))out.push({id:x.id,kind:"booking"});});
+  return out;
+}
+function tidyBar(el){
+  var t=collectTestLooking();if(!t.length)return;
+  var bar=document.createElement("div");bar.className="tidybar";
+  bar.innerHTML="<span>"+t.length+" test-looking item"+(t.length>1?"s":"")+" here</span><button class='btn'>Archive all</button>";
+  bar.querySelector("button").onclick=function(){
+    if(confirm("Archive "+t.length+" test-looking item"+(t.length>1?"s":"")+"? You can restore them from the Archived tab."))archiveMany(t);
+  };
+  el.insertBefore(bar,el.firstChild);
+}
+function askArchive(id,kind){
+  pendingArchive={id:id,kind:kind};
+  document.getElementById("archReason").value="Past date";
+  var o=document.getElementById("archOther");o.value="";o.style.display="none";
+  document.getElementById("archModal").style.display="flex";
+}
+function hideArch(){document.getElementById("archModal").style.display="none";pendingArchive=null;}
+document.getElementById("archReason").onchange=function(){document.getElementById("archOther").style.display=(this.value==="Other")?"block":"none";};
+document.getElementById("archCancel").onclick=hideArch;
+document.getElementById("archModal").onclick=function(e){if(e.target===this)hideArch();};
+document.getElementById("archGo").onclick=function(){
+  if(!pendingArchive)return;
+  var sel=document.getElementById("archReason").value;
+  var reason=(sel==="Other")?(document.getElementById("archOther").value.trim()||"Other"):sel;
+  var p=pendingArchive;hideArch();doArchive(p.id,p.kind,reason);
+};
+async function doArchive(id,kind,reason){
+  try{
+    var res=await fetch("/api/captain?mode=archive-action",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({id:id,kind:kind,action:"archive",reason:reason})});
+    var j={};try{j=await res.json();}catch(e){}
+    if(res.ok&&j.ok){toast("Archived — see the Archived tab");finishMutation();}
+    else toast((j&&j.error)||"Could not archive",true);
+  }catch(e){toast("Network error",true);}
+}
+async function doUnarchive(id,kind){
+  try{
+    var res=await fetch("/api/captain?mode=archive-action",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({id:id,kind:kind,action:"unarchive"})});
+    var j={};try{j=await res.json();}catch(e){}
+    if(res.ok&&j.ok){toast("Restored");load();}
+    else toast((j&&j.error)||"Could not restore",true);
+  }catch(e){toast("Network error",true);}
+}
+async function archiveMany(list){
+  var okc=0;
+  for(var i=0;i<list.length;i++){
+    try{var res=await fetch("/api/captain?mode=archive-action",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({id:list[i].id,kind:list[i].kind,action:"archive",reason:"Test data"})});if(res.ok)okc++;}catch(e){}
+  }
+  toast("Archived "+okc+" item"+(okc===1?"":"s"));load();
+}
+function finishMutation(){
+  if(detailOpen && history.state && history.state.detailOpen){pendingReload=true;history.back();}
+  else{detailOpen=false;currentDetail=null;document.querySelector(".tabs").style.display="flex";load();}
+}
+function renderArchived(el){
+  var xs=(DATA&&DATA.archived)||[];
+  if(!xs.length){el.innerHTML="<div class='empty'>Nothing archived. Items you archive land here — restore any of them with one tap.</div>";return;}
+  el.innerHTML="<div class='count-strip'><b>"+xs.length+"</b> archived · kept for your records</div>";
+  xs.forEach(function(x){
+    var r=document.createElement("div");r.className="row archived";
+    r.innerHTML="<div class='rname' style='color:var(--ink-soft)'>"+esc(x.name||"Item")+"</div>"+
+      "<div class='rmeta'>"+fmt(x.date)+(x.slot?(" · "+esc(x.slot)):"")+" · "+(x.party||1)+" "+gunit()+(x.reason?(" · "+esc(x.reason)):"")+"</div>"+
+      "<div class='acts'><button class='btn ghost' style='flex:0 0 auto;padding:.5rem .9rem'>Restore</button></div>";
+    r.querySelector("button").onclick=function(){doUnarchive(x.id,x.kind);};
+    el.appendChild(r);
+  });
 }
 
 load();

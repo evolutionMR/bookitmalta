@@ -57,6 +57,7 @@ module.exports = async function handler(req, res) {
   if (mode === 'dashboard-data') return await handleDashboardData(req, res);
   if (mode === 'ops-data')       return await handleOpsData(req, res);
   if (mode === 'enquiry-action') return await handleEnquiryAction(req, res);
+  if (mode === 'archive-action') return await handleArchiveAction(req, res);
 
   // ---------- PER-ENQUIRY MAGIC LINK (existing) ----------
   let tenant, config;
@@ -991,20 +992,24 @@ async function handleOpsData(req, res) {
     const isPerSeat = (config.pricingModel === 'per_seat');
     const seat = isPerSeat ? ',slot_time' : '';
 
+    // Active lists exclude anything the operator has archived (archived_at set).
     const pendingQ = await supabase
       .from('enquiries')
       .select('id,customer_name,customer_email,customer_phone,preferred_date,alt_dates,party_size,tour_option,message,created_at' + seat)
       .eq('status', 'received')
+      .is('archived_at', null)
       .order('created_at', { ascending: true });
     const awaitingQ = await supabase
       .from('enquiries')
-      .select('id,customer_name,preferred_date,party_size,tour_option,stripe_link_expires_at' + seat)
+      .select('id,customer_name,customer_email,preferred_date,party_size,tour_option,stripe_link_expires_at' + seat)
       .eq('status', 'confirmed')
+      .is('archived_at', null)
       .order('preferred_date', { ascending: true });
     const bookedQ = await supabase
       .from('bookings')
       .select('id,customer_name,customer_email,customer_phone,charter_date,party_size,tour_option' + seat)
       .eq('status', 'booked')
+      .is('archived_at', null)
       .gte('charter_date', today)
       .order('charter_date', { ascending: true });
 
@@ -1012,6 +1017,37 @@ async function handleOpsData(req, res) {
       console.error('[captain] ops-data query error', pendingQ.error || awaitingQ.error || bookedQ.error);
       return jsonError(res, 500, 'Could not load your bookings.');
     }
+
+    // Archived list — enquiries + bookings the operator has archived, newest
+    // first. Kept for records (accounts, VAT, repeat customers); restorable.
+    // Tolerant: an archive-query error never blocks the active dashboard.
+    const archEnqQ = await supabase
+      .from('enquiries')
+      .select('id,customer_name,customer_email,preferred_date,party_size,tour_option,status,archive_reason,archived_at' + seat)
+      .not('archived_at', 'is', null)
+      .order('archived_at', { ascending: false })
+      .limit(200);
+    const archBookQ = await supabase
+      .from('bookings')
+      .select('id,customer_name,customer_email,charter_date,party_size,tour_option,status,archive_reason,archived_at' + seat)
+      .not('archived_at', 'is', null)
+      .order('archived_at', { ascending: false })
+      .limit(200);
+    if (archEnqQ.error || archBookQ.error) {
+      console.error('[captain] ops-data archived query error', archEnqQ.error || archBookQ.error);
+    }
+    const archived = [];
+    (archEnqQ.data || []).forEach((x) => archived.push({
+      kind: 'enquiry', id: x.id, name: x.customer_name, date: x.preferred_date,
+      party: x.party_size, slot: (isPerSeat ? (x.slot_time || x.tour_option) : null),
+      reason: x.archive_reason, origin: x.status, archived_at: x.archived_at,
+    }));
+    (archBookQ.data || []).forEach((x) => archived.push({
+      kind: 'booking', id: x.id, name: x.customer_name, date: x.charter_date,
+      party: x.party_size, slot: (isPerSeat ? (x.slot_time || x.tour_option) : null),
+      reason: x.archive_reason, origin: x.status, archived_at: x.archived_at,
+    }));
+    archived.sort((a, b) => (String(a.archived_at) < String(b.archived_at) ? 1 : -1));
 
     // For per-seat, the calendar needs the departure slots, default capacity,
     // and any per-date capacity overrides so it can show seats sold / capacity.
@@ -1040,6 +1076,7 @@ async function handleOpsData(req, res) {
       pending: pendingQ.data || [],
       awaiting: awaitingQ.data || [],
       booked: bookedQ.data || [],
+      archived: archived,
     });
   } catch (e) {
     console.error('[captain] ops-data error', e);
@@ -1155,6 +1192,55 @@ async function handleEnquiryAction(req, res) {
   } catch (e) { console.error('[captain] ops decline ack email fail', e); }
 
   return res.status(200).json({ ok: true, action: 'decline' });
+}
+
+/**
+ * POST /api/captain?mode=archive-action  (session cookie auth)
+ * Body: { id, kind: 'enquiry' | 'booking', action: 'archive' | 'unarchive', reason? }
+ *
+ * Soft archive — NEVER deletes. Sets/clears archived_at (+ archive_reason) so the
+ * item leaves the active tabs but is retained for records (accounts, VAT, repeat
+ * customers) and can be restored. Works on both enquiries (pending/awaiting) and
+ * bookings (paid & upcoming).
+ */
+async function handleArchiveAction(req, res) {
+  if (req.method !== 'POST') return jsonError(res, 405, 'Method not allowed');
+  const cap = getCaptainFromRequest(req);
+  if (!cap) return jsonError(res, 401, 'Not signed in');
+
+  let body = req.body;
+  if (typeof body === 'string') { try { body = JSON.parse(body); } catch { /* leave */ } }
+  const id     = (body && body.id) || '';
+  const kind   = ((body && body.kind) === 'booking') ? 'booking' : 'enquiry';
+  const action = (body && body.action) || '';
+  const reason = (body && body.reason) ? String(body.reason).slice(0, 200) : null;
+  if (!id || (action !== 'archive' && action !== 'unarchive')) {
+    return jsonError(res, 400, 'Missing id or action');
+  }
+
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(cap.tenant);
+  } catch {
+    return jsonError(res, 401, 'Unknown tenant in session');
+  }
+  if (!isAllowed(config, cap.email)) return jsonError(res, 403, 'Not allowed');
+
+  const supabase = getSupabase(cap.tenant);
+  const table = (kind === 'booking') ? 'bookings' : 'enquiries';
+  const patch = (action === 'archive')
+    ? { archived_at: new Date().toISOString(), archive_reason: reason }
+    : { archived_at: null, archive_reason: null };
+
+  const { data, error } = await supabase.from(table).update(patch).eq('id', id).select('id');
+  if (error) {
+    console.error('[captain] archive-action error', error);
+    return jsonError(res, 500, 'Could not update the item.');
+  }
+  if (!data || data.length === 0) return jsonError(res, 404, 'Item not found');
+
+  return res.status(200).json({ ok: true, action });
 }
 
 // -----------------------------------------------------------------------------
