@@ -55,6 +55,17 @@ h2 em{font-style:italic;color:var(--bm-terracotta);font-variation-settings:"SOFT
 .poweredby .pre{font-family:var(--mono);font-size:.62rem;color:var(--bm-on-ink-soft);text-transform:uppercase;letter-spacing:.1em;display:block}
 .poweredby .lk{font-family:var(--serif);font-size:1.05rem;color:var(--bm-paper);font-weight:400}
 .poweredby .lk em{font-style:italic;color:var(--bm-terracotta)}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:1rem;height:52px;padding:0 clamp(1rem,4vw,3rem);background:var(--bm-paper);border-bottom:1px solid var(--bm-rule)}
+.tb-back{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--bm-ink);text-decoration:none;transition:color var(--dur-fast) var(--ease)}
+.tb-back .chev{color:var(--bm-terracotta);font-size:1.15rem;line-height:1;margin-top:-2px}
+.tb-back:hover{color:var(--bm-terracotta)}
+.tb-home{display:inline-flex;align-items:center;min-height:44px;font-family:var(--serif);font-size:1.1rem;color:var(--bm-ink);text-decoration:none;transition:opacity var(--dur-fast) var(--ease)}
+.tb-home em{font-style:italic;color:var(--bm-terracotta)}
+.tb-home:hover{opacity:.85}
+.breadcrumb a{color:var(--bm-on-ink-soft);text-decoration:none;border-bottom:1px solid transparent;transition:color var(--dur-fast) var(--ease)}
+.breadcrumb a:hover{color:var(--bm-paper);border-bottom-color:rgba(244,235,217,.4)}
+.footbottom a.lk{text-decoration:none;transition:opacity var(--dur-fast) var(--ease)}
+.footbottom a.lk:hover{opacity:.85}
 .hero-copy{position:relative;z-index:2;max-width:var(--maxw);width:100%;margin:0 auto;padding:0 clamp(1.5rem,4vw,3rem) clamp(1.5rem,4vw,3rem);
   text-shadow:0 2px 28px rgba(11,37,69,.5),0 1px 4px rgba(11,37,69,.4)}
 .breadcrumb{font-family:var(--mono);font-size:.62rem;color:var(--bm-on-ink-mute);letter-spacing:.06em;margin-bottom:1rem;word-break:break-word}
@@ -192,6 +203,11 @@ body{padding-bottom:5rem}
 </head>
 <body>
 
+<nav class="topbar" aria-label="Site">
+  <a class="tb-back" href="/#charters"><span class="chev" aria-hidden="true">‹</span> All charters</a>
+  <a class="tb-home" href="/" aria-label="BookItMalta home">BookIt<em>Malta</em></a>
+</nav>
+
 <header class="hero">
   <img class="hero-photo" src="/charters/unexpected-charters-malta-images/uc-hero-golden.jpg" alt="Unexpected at golden hour off Comino" />
   <div class="hero-scrim"></div>
@@ -208,7 +224,7 @@ body{padding-bottom:5rem}
     </div>
   </div>
   <div class="hero-copy">
-    <div class="breadcrumb">bookitmalta.com / charters / unexpected-charters-malta</div>
+    <div class="breadcrumb"><a href="/">bookitmalta.com</a> / <a href="/#charters">charters</a> / unexpected-charters-malta</div>
     <div class="live"><span class="dot"></span><span class="lbl">Private charter · Comino &amp; south Gozo</span></div>
     <div class="boatname">UNEXPECTED</div>
     <h1>Comino, the Blue Lagoon &amp; south Gozo — <em>your own private boat</em> for the day</h1>
@@ -317,8 +333,8 @@ body{padding-bottom:5rem}
     <div class="footvat">VAT № 22086613M</div>
     <div class="footrule"></div>
     <div class="footbottom">
-      <span class="lk">Powered by BookIt<em>Malta</em></span>
-      <div class="footlinks"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+      <a class="lk" href="/">Powered by BookIt<em>Malta</em></a>
+      <div class="footlinks"><a href="/#charters">All charters</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
     </div>
   </div>
 </footer>

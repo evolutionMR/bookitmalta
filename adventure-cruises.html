@@ -108,6 +108,11 @@ em { font-style: italic; color: var(--terracotta); }
   font-family: var(--mono); font-size: 0.66rem;
   color: var(--mute); letter-spacing: 0.05em; text-transform: uppercase;
 }
+.nav a.metalink {
+  color: var(--ink); text-decoration: none; display: inline-flex; align-items: center;
+  min-height: 44px; border-bottom: 1px solid var(--rule-strong); transition: color .15s, border-color .15s;
+}
+.nav a.metalink:hover { color: var(--terracotta); border-color: var(--terracotta); }
 
 /* shared buttons */
 .btn {
@@ -566,7 +571,7 @@ body.cm-locked { overflow: hidden; }
 <nav class="nav">
   <div class="wrap">
     <a href="/" class="brand">Book<em>It</em>Malta</a>
-    <div class="meta">Operator listing</div>
+    <a class="meta metalink" href="/#charters">All charters</a>
   </div>
 </nav>
 
