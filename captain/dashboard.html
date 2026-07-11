@@ -4,566 +4,286 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
-
 <title>Captain dashboard — BookItMalta</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Manrope:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
 <style>
-:root {
-  --ink: #0B2545;
-  --ink-soft: #1C3558;
-  --paper: #F4EBD9;
-  --paper-deep: #EBDFC6;
-  --terracotta: #C85C2E;
-  --mute: rgba(11, 37, 69, 0.55);
-  --rule: rgba(11, 37, 69, 0.15);
-  --rule-strong: rgba(11, 37, 69, 0.35);
-  --ok: #1B4332;
-  --ok-bg: #D8F3DC;
-  --warn-bg: #FFF3D6;
-  --warn: #7A5B00;
-  --err: #B3261E;
-  --err-bg: rgba(179, 38, 30, 0.08);
-  --serif: "Fraunces", Georgia, serif;
-  --sans:  "Manrope", -apple-system, sans-serif;
-  --mono:  "JetBrains Mono", ui-monospace, monospace;
+:root{
+  --ink:#0B2545; --ink-soft:#1C3558; --paper:#F4EBD9; --paper-deep:#EBDFC6; --card:#FFFAF1;
+  --terracotta:#C85C2E; --mute:rgba(11,37,69,.55); --rule:rgba(11,37,69,.15); --rule-strong:rgba(11,37,69,.35);
+  --ok:#1B7A4B; --ok-bg:#D8F3DC; --warn:#7A5B00; --warn-bg:#FFF3D6; --err:#B3261E; --err-bg:rgba(179,38,30,.1);
+  --serif:"Fraunces",Georgia,serif; --sans:"Manrope",-apple-system,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 16px;
-  line-height: 1.5;
-  min-height: 100vh;
-  padding: 1rem 1rem 4rem;
-  -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: "";
-  position: fixed; inset: 0;
-  background-image: radial-gradient(rgba(11,37,69,0.035) 1px, transparent 1px);
-  background-size: 3px 3px;
-  pointer-events: none;
-  z-index: 0;
-}
-.wrap { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; }
-
-/* ---- Header ---- */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 1.4rem;
-}
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--terracotta);
-  display: block;
-  margin-bottom: 0.15rem;
-}
-h1 {
-  font-family: var(--serif);
-  font-size: 1.5rem;
-  font-weight: 380;
-  letter-spacing: -0.015em;
-  line-height: 1.15;
-  margin-bottom: 0.2rem;
-}
-.signed-in {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--mute);
-  letter-spacing: 0.04em;
-}
-.signed-in strong { color: var(--ink); font-weight: 600; }
-.logout-btn {
-  background: white;
-  color: var(--ink);
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.logout-btn:hover { background: var(--ink); color: var(--paper); }
-
-/* ---- Summary strip ---- */
-.summary-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
-  margin-bottom: 1.4rem;
-}
-.summary-tile {
-  background: #FFFAF1;
-  border: 1px solid var(--rule);
-  border-radius: 8px;
-  padding: 0.75rem 0.7rem;
-  text-align: left;
-}
-.summary-tile .label {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mute);
-  display: block;
-  margin-bottom: 0.2rem;
-}
-.summary-tile .value {
-  font-family: var(--serif);
-  font-size: 1.3rem;
-  font-weight: 420;
-  color: var(--ink);
-  line-height: 1;
-}
-.summary-tile .value.zero { color: var(--mute); font-weight: 380; }
-
-/* ---- Day cards ---- */
-.day-card {
-  background: #FFFAF1;
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  margin-bottom: 0.9rem;
-  overflow: hidden;
-}
-.day-card.is-today { border-color: var(--terracotta); box-shadow: 0 6px 24px rgba(200, 92, 46, 0.12); }
-.day-card.is-empty { opacity: 0.7; }
-
-.day-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0.8rem 1rem 0.6rem;
-  border-bottom: 1px solid var(--rule);
-  gap: 0.6rem;
-}
-.day-date {
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  font-weight: 420;
-  color: var(--ink);
-}
-.day-date .dow {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin-right: 0.4rem;
-}
-.is-today .day-date .dow { color: var(--terracotta); }
-.day-meta {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.06em;
-  color: var(--mute);
-  text-transform: uppercase;
-  text-align: right;
-}
-.day-meta strong { color: var(--ink); font-weight: 600; }
-
-/* ---- Slot row ---- */
-.slot-list { padding: 0.2rem 0; }
-.slot {
-  padding: 0.65rem 1rem 0.85rem;
-  border-bottom: 1px dashed var(--rule);
-}
-.slot:last-child { border-bottom: none; }
-.slot-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  margin-bottom: 0.45rem;
-}
-.slot-time {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: 0.04em;
-}
-.slot-count {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-.slot-count.ok      { color: var(--ink-soft); }
-.slot-count.warn    { color: var(--warn); }
-.slot-count.full    { color: var(--err); font-weight: 600; }
-.slot-count.blocked { color: var(--err); font-weight: 600; }
-
-.slot-blocked-tag {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: var(--err-bg);
-  color: var(--err);
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid rgba(179, 38, 30, 0.25);
-  margin-top: 0.3rem;
-}
-
-.manifest {
-  list-style: none;
-  display: grid;
-  gap: 0.35rem;
-  margin-top: 0.4rem;
-}
-.manifest li {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
-  font-size: 0.88rem;
-  color: var(--ink);
-  padding: 0.3rem 0.55rem;
-  background: var(--paper);
-  border-radius: 6px;
-  border: 1px solid var(--rule);
-}
-.manifest .name {
-  font-weight: 500;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.manifest .party {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--mute);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-.manifest .contact {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  color: var(--mute);
-  letter-spacing: 0.03em;
-}
-.manifest details { width: 100%; }
-.manifest summary {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
-  cursor: pointer; list-style: none;
-}
-.manifest summary::-webkit-details-marker { display: none; }
-.manifest details[open] .contact { display: block; margin-top: 0.25rem; }
-
-.empty-note {
-  padding: 0.7rem 1rem 0.9rem;
-  color: var(--mute);
-  font-size: 0.88rem;
-  font-style: italic;
-}
-
-/* ---- Loading / error states ---- */
-.spinner {
-  text-align: center;
-  padding: 2rem 1rem;
-  color: var(--mute);
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.error-banner {
-  background: var(--err-bg);
-  color: var(--err);
-  border: 1px solid rgba(179, 38, 30, 0.25);
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.88rem;
-}
-.refresh-btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  background: white;
-  color: var(--ink);
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  margin-left: 0.5rem;
-}
-.refresh-btn:hover { background: var(--ink); color: var(--paper); }
-
-footer.dash-footer {
-  text-align: center;
-  padding-top: 1.5rem;
-  margin-top: 1rem;
-  border-top: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-
-@media (max-width: 480px) {
-  .summary-row { grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
-  .summary-tile .value { font-size: 1.1rem; }
-  h1 { font-size: 1.3rem; }
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;min-height:100vh;padding:1rem 1rem 5.5rem;-webkit-font-smoothing:antialiased}
+.wrap{max-width:600px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}
+.eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);display:block}
+h1{font-family:var(--serif);font-size:1.4rem;font-weight:380;line-height:1.15}
+.who{font-family:var(--mono);font-size:.66rem;color:var(--mute);margin-top:.15rem;word-break:break-all}
+.signout{flex:0 0 auto;background:#fff;border:1px solid var(--rule-strong);border-radius:999px;padding:.45rem .8rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:var(--ink)}
+.count-strip{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:.2rem 0 .7rem}
+.count-strip b{color:var(--terracotta)}
+.row{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:.8rem .9rem;margin-bottom:.6rem;border-left:3px solid var(--rule-strong)}
+.row.pending{border-left-color:var(--terracotta)} .row.booked{border-left-color:var(--ok)} .row.held{border-left-color:var(--warn)}
+.rname{font-weight:600;font-size:.98rem}
+.rmeta{font-family:var(--mono);font-size:.68rem;color:var(--mute);margin-top:.2rem}
+.chip{float:right;font-family:var(--mono);font-size:.54rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:5px;padding:.18rem .45rem}
+.c-booked{color:#fff;background:var(--ok)} .c-held{color:#5b4300;background:var(--warn-bg)}
+.contact{font-family:var(--mono);font-size:.66rem;color:var(--ink-soft);margin-top:.45rem}
+.acts{display:flex;gap:.5rem;margin-top:.8rem}
+.btn{flex:1;border-radius:9px;padding:.65rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;border:1px solid var(--rule-strong)}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)} .btn.no{background:#fff;color:var(--err);border-color:var(--err)}
+.btn:disabled{opacity:.5}
+.hint{font-size:.8rem;color:var(--mute);margin-top:.7rem;line-height:1.5}
+.empty{color:var(--mute);font-style:italic;font-size:.9rem;padding:1.6rem .2rem;text-align:center}
+.spin{text-align:center;color:var(--mute);font-family:var(--mono);font-size:.78rem;padding:2rem 0;text-transform:uppercase;letter-spacing:.06em}
+.errbar{background:var(--err-bg);color:var(--err);border:1px solid var(--err);border-radius:9px;padding:.7rem .9rem;font-size:.88rem;margin-bottom:.7rem}
+.cal-day{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:.6rem .8rem;margin-bottom:.4rem}
+.cal-day .d{font-size:.9rem}.cal-day .d small{display:block;font-family:var(--mono);font-size:.64rem;color:var(--mute)}
+.cal-tag{font-family:var(--mono);font-size:.56rem;font-weight:700;text-transform:uppercase;border-radius:5px;padding:.2rem .5rem}
+.t-free{color:var(--ok);background:var(--ok-bg)} .t-held{color:#5b4300;background:var(--warn-bg)} .t-booked{color:#fff;background:var(--ok)}
+.calbtn{display:inline-block;margin-top:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);cursor:pointer;border:1px solid var(--rule-strong);border-radius:7px;padding:.4rem .65rem;background:#fff}
+.callinks{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap}
+.callinks a{flex:1;min-width:78px;text-align:center;text-decoration:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);border:1px solid var(--rule-strong);border-radius:7px;padding:.45rem .3rem;background:#fff}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;background:none;border:0;padding:.75rem .3rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);cursor:pointer;border-top:3px solid transparent;position:relative}
+.tabs button.on{color:var(--terracotta);border-top-color:var(--terracotta);font-weight:600}
+.tabs .badge{position:absolute;top:.5rem;margin-left:.2rem;background:var(--terracotta);color:#fff;border-radius:20px;font-size:.5rem;padding:.05rem .3rem;font-weight:700}
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:var(--ok);color:#fff;border-radius:999px;padding:.55rem 1.1rem;font-family:var(--mono);font-size:.72rem;z-index:60;display:none;max-width:92vw;text-align:center}
+.toast.err{background:var(--err)}
+.lrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--rule-strong);border-radius:11px;padding:.85rem .9rem;margin-bottom:.55rem;cursor:pointer}
+.lrow.pending{border-left-color:var(--terracotta)}
+.lrow:active{background:#fff}
+.lrow-main{flex:1;min-width:0}
+.chev{font-style:normal;font-size:1.5rem;color:var(--mute);line-height:1;flex:0 0 auto}
+.backlink{display:inline-flex;align-items:center;gap:.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);margin-bottom:1rem;cursor:pointer;text-decoration:none}
+.d-eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta)}
+.d-name{font-family:var(--serif);font-size:1.5rem;font-weight:380;margin:.15rem 0 .5rem;color:var(--ink);line-height:1.15}
+.d-pill{display:inline-block;font-family:var(--mono);font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#5b4300;background:var(--warn-bg);border-radius:6px;padding:.25rem .55rem;margin-bottom:1.1rem}
+.d-block{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:.2rem .9rem;margin-bottom:.7rem}
+.d-row{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--rule);font-size:.92rem}
+.d-row:last-child{border-bottom:none}
+.d-row span{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);flex:0 0 auto}
+.d-row b{font-weight:600;color:var(--ink);text-align:right;word-break:break-word}
+.d-contact{display:block;padding:.6rem 0;font-family:var(--mono);font-size:.82rem;color:#185FA5;text-decoration:none;border-bottom:1px solid var(--rule);word-break:break-all}
+.d-contact:last-child{border-bottom:none}
+.d-quote{font-style:italic;color:var(--ink-soft);line-height:1.55;padding:.2rem .1rem 0;margin-bottom:.4rem}
+.d-actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1.1rem}
+.d-actions .btn{flex:0 0 auto;padding:.95rem;font-size:.72rem}
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
-<header>
-  <div>
-    <span class="eyebrow">Captain dashboard</span>
-    <h1 id="tenantName">Loading…</h1>
-    <span class="signed-in">Signed in as <strong id="userEmail">—</strong></span>
-  </div>
-  <button class="logout-btn" id="logoutBtn">Sign out</button>
-</header>
-
-<div id="topNotice"></div>
-
-<div class="summary-row" id="summary" hidden>
-  <div class="summary-tile">
-    <span class="label">Today</span>
-    <span class="value" id="sumToday">0</span>
-  </div>
-  <div class="summary-tile">
-    <span class="label">Next 14d bookings</span>
-    <span class="value" id="sumBookings">0</span>
-  </div>
-  <div class="summary-tile">
-    <span class="label">Seats sold</span>
-    <span class="value" id="sumSeats">0</span>
-  </div>
+  <header>
+    <div>
+      <span class="eyebrow">Captain dashboard</span>
+      <h1 id="opName">Loading…</h1>
+      <div class="who">Signed in as <span id="opEmail">—</span></div>
+    </div>
+    <button class="signout" id="signout">Sign out</button>
+  </header>
+  <div id="view"><div class="spin">Loading your bookings…</div></div>
 </div>
 
-<div id="dashContent">
-  <div class="spinner">Loading next 14 days…</div>
+<div class="tabs">
+  <button id="tab-appr" class="on">Approvals</button>
+  <button id="tab-cal">Calendar</button>
+  <button id="tab-up">Upcoming</button>
 </div>
-
-<footer class="dash-footer">
-  BookItMalta · captain v0.3
-  <button class="refresh-btn" id="refreshBtn">Refresh</button>
-</footer>
-
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-// =============================================================================
-// /captain/dashboard — B2.3 read-only operations view
-// =============================================================================
-// Fetches /api/captain?mode=dashboard-data (HttpOnly cookie auth) and renders
-// next 14 days of departures + manifests. No interactivity yet — block
-// actions land in B2.4, manual booking in B2.5.
+var DATA=null, tab="appr", loading=true, errMsg=null;
+var currentDetail=null, detailOpen=false, pendingReload=false;
 
-function fmtDateHuman(iso) {
-  try {
-    return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', {
-      day: 'numeric', month: 'long',
-    });
-  } catch { return iso; }
-}
-function fmtDow(dow, isoDate) {
-  try {
-    return new Date(isoDate + 'T00:00:00').toLocaleDateString('en-GB', {
-      weekday: 'short',
-    });
-  } catch {
-    return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dow] || '';
-  }
-}
-function escapeHtml(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+function toast(m,err){var t=document.getElementById("toast");t.textContent=m;t.className="toast"+(err?" err":"");t.style.display="block";setTimeout(function(){t.style.display="none";},2800);}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function iso(d){return d.toISOString().slice(0,10);}
+function offDay(n){var d=new Date();d.setDate(d.getDate()+n);return iso(d);}
+function fmt(s){if(!s)return"";var d=new Date(s+"T12:00:00");var t=iso(new Date());var l=d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});return s===t?"Today · "+l:l;}
+function slot(x){if(!(DATA&&DATA.model==="per_seat"))return "";var s=x&&(x.slot_time||x.tour_option);return s?(" · "+s):"";}
+function gunit(){return (DATA&&DATA.model==="per_seat")?"seats":"guests";}
+
+function ymd(s){return s.replace(/-/g,"");}
+function nextDay(s){var d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return iso(d);}
+function calLinks(title,date,details){
+  var s=ymd(date),e=ymd(nextDay(date));
+  var g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(title)+"&dates="+s+"/"+e+"&details="+encodeURIComponent(details);
+  var o="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject="+encodeURIComponent(title)+"&startdt="+date+"&enddt="+nextDay(date)+"&allday=true&body="+encodeURIComponent(details);
+  var ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//BookItMalta//captain//EN\nBEGIN:VEVENT\nUID:"+s+Math.random().toString(36).slice(2)+"@bookitmalta\nDTSTART;VALUE=DATE:"+s+"\nDTEND;VALUE=DATE:"+e+"\nSUMMARY:"+title+"\nDESCRIPTION:"+details+"\nEND:VEVENT\nEND:VCALENDAR";
+  return {g:g,o:o,ics:"data:text/calendar;charset=utf-8,"+encodeURIComponent(ics)};
 }
 
-function pickSlotCountClass(seats_taken, total_cap, is_blocked) {
-  if (is_blocked) return 'blocked';
-  if (total_cap <= 0) return 'blocked';
-  const pct = seats_taken / total_cap;
-  if (pct >= 1) return 'full';
-  if (pct >= 0.75) return 'warn';
-  return 'ok';
+function setTab(t){tab=t;["appr","cal","up"].forEach(function(k){document.getElementById("tab-"+k).className=(k===t?"on":"");});render();}
+document.getElementById("tab-appr").onclick=function(){setTab("appr");};
+document.getElementById("tab-cal").onclick=function(){setTab("cal");};
+document.getElementById("tab-up").onclick=function(){setTab("up");};
+document.getElementById("signout").onclick=async function(){try{await fetch("/api/captain?mode=logout",{method:"POST",credentials:"include"});}catch(e){}window.location.href="/captain/login";};
+
+async function load(){
+  loading=true;errMsg=null;render();
+  try{
+    var res=await fetch("/api/captain?mode=ops-data",{credentials:"include"});
+    if(res.status===401){window.location.href="/captain/login?error=expired";return;}
+    var j=await res.json();
+    if(!res.ok||!j.ok){errMsg=(j&&j.error)||"Could not load your bookings.";loading=false;render();return;}
+    DATA=j;loading=false;
+    document.getElementById("opName").textContent=j.name||"Dashboard";
+    document.getElementById("opEmail").textContent=j.email||"—";
+    render();
+  }catch(e){errMsg="Network error — tap retry below.";loading=false;render();}
 }
 
-function renderSlot(slot, schedulingModel) {
-  const showTime = schedulingModel === 'multi_slot_per_day' && slot.slot_time;
-  const cls = pickSlotCountClass(slot.seats_taken, slot.total_cap, slot.is_blocked);
-  const count = slot.is_blocked
-    ? 'Blocked'
-    : (showTime
-      ? `${slot.seats_taken} / ${slot.total_cap} seats`
-      : (slot.seats_taken > 0 ? 'Booked' : 'Available'));
+function badge(){var n=DATA?DATA.pending.length:0;document.getElementById("tab-appr").innerHTML="Approvals"+(n?" <span class='badge'>"+n+"</span>":"");}
 
-  let manifestHtml = '';
-  if (slot.bookings && slot.bookings.length) {
-    manifestHtml = '<ul class="manifest">' + slot.bookings.map((b) => {
-      const phone = b.customer_phone ? escapeHtml(b.customer_phone) : '';
-      const email = b.customer_email ? escapeHtml(b.customer_email) : '';
-      const partyLabel = b.party_size === 1 ? '1 pax' : `${b.party_size} pax`;
-      return `
-        <li>
-          <details>
-            <summary>
-              <span class="name">${escapeHtml(b.customer_name) || '(unnamed)'}</span>
-              <span class="party">${partyLabel}</span>
-            </summary>
-            <div class="contact">
-              ${email}${email && phone ? ' · ' : ''}${phone}
-            </div>
-          </details>
-        </li>`;
-    }).join('') + '</ul>';
-  } else if (!slot.is_blocked) {
-    manifestHtml = '';   // no bookings, no list
-  }
-
-  const blockedTag = slot.is_blocked
-    ? `<div class="slot-blocked-tag">${escapeHtml(slot.block_reason || 'Blocked')}</div>`
-    : '';
-
-  return `
-    <div class="slot">
-      <div class="slot-head">
-        <span class="slot-time">${showTime ? escapeHtml(slot.slot_time) : 'Departure'}</span>
-        <span class="slot-count ${cls}">${count}</span>
-      </div>
-      ${blockedTag}
-      ${manifestHtml}
-    </div>
-  `;
+function renderApprovals(el){
+  var ps=DATA.pending;
+  if(!ps.length){el.innerHTML="<div class='empty'>Nothing waiting — you're all caught up.</div>";return;}
+  el.innerHTML="<div class='count-strip'><b>"+ps.length+"</b> enquir"+(ps.length===1?"y":"ies")+" waiting — tap to review</div>";
+  ps.forEach(function(x){
+    var r=document.createElement("div");r.className="lrow pending";
+    r.innerHTML="<div class='lrow-main'><div class='rname'>"+esc(x.customer_name||"Enquiry")+"</div>"+
+      "<div class='rmeta'>"+fmt(x.preferred_date)+slot(x)+" · "+(x.party_size||1)+" "+gunit()+"</div></div>"+
+      "<span class='chev'>›</span>";
+    r.onclick=function(){openDetail(x);};
+    el.appendChild(r);
+  });
 }
 
-function renderDay(day, isToday, schedulingModel) {
-  const totalSeats = day.slots.reduce((s, sl) => s + (sl.seats_taken || 0), 0);
-  const totalBookings = day.slots.reduce((s, sl) => s + (sl.bookings ? sl.bookings.length : 0), 0);
-  const isEmpty = totalBookings === 0 && !day.slots.some((s) => s.is_blocked);
-
-  const cardClass = ['day-card', isToday ? 'is-today' : '', isEmpty ? 'is-empty' : '']
-    .filter(Boolean).join(' ');
-
-  const dateLabel = `<span class="dow">${escapeHtml(fmtDow(day.dow, day.date))}</span>${escapeHtml(fmtDateHuman(day.date))}${isToday ? ' · today' : ''}`;
-  const metaLabel = totalBookings === 0
-    ? 'No bookings'
-    : `<strong>${totalBookings}</strong> booking${totalBookings === 1 ? '' : 's'} · ${totalSeats} pax`;
-
-  return `
-    <div class="${cardClass}">
-      <div class="day-head">
-        <span class="day-date">${dateLabel}</span>
-        <span class="day-meta">${metaLabel}</span>
-      </div>
-      <div class="slot-list">
-        ${day.slots.map((s) => renderSlot(s, schedulingModel)).join('')}
-      </div>
-    </div>
-  `;
+// ---- enquiry detail screen (V1) with real back-button support ----
+function openDetail(x){
+  currentDetail=x; detailOpen=true;
+  history.pushState({detailOpen:true},"");
+  paintDetail(x);
 }
-
-function renderSummary(data) {
-  const todayDay = data.days[0];
-  const todayBookings = todayDay
-    ? todayDay.slots.reduce((s, sl) => s + (sl.bookings ? sl.bookings.length : 0), 0)
-    : 0;
-  const totalBookings = data.days.reduce(
-    (s, d) => s + d.slots.reduce((s2, sl) => s2 + (sl.bookings ? sl.bookings.length : 0), 0),
-    0
-  );
-  const totalSeats = data.days.reduce(
-    (s, d) => s + d.slots.reduce((s2, sl) => s2 + (sl.seats_taken || 0), 0),
-    0
-  );
-  document.getElementById('sumToday').textContent       = todayBookings;
-  document.getElementById('sumToday').classList.toggle('zero', todayBookings === 0);
-  document.getElementById('sumBookings').textContent    = totalBookings;
-  document.getElementById('sumBookings').classList.toggle('zero', totalBookings === 0);
-  document.getElementById('sumSeats').textContent       = totalSeats;
-  document.getElementById('sumSeats').classList.toggle('zero', totalSeats === 0);
-  document.getElementById('summary').hidden = false;
+function paintDetail(x){
+  document.querySelector(".tabs").style.display="none";
+  var el=document.getElementById("view");
+  var glabel=(DATA&&DATA.model==="per_seat")?"Seats":"Guests";
+  var rows=
+    "<div class='d-row'><span>Date</span><b>"+fmt(x.preferred_date)+"</b></div>"+
+    ((DATA&&DATA.model==="per_seat"&&x.slot_time)?"<div class='d-row'><span>Departure</span><b>"+esc(x.slot_time)+"</b></div>":"")+
+    ((DATA&&DATA.model==="per_seat"&&x.tour_option&&!x.slot_time)?"<div class='d-row'><span>Option</span><b>"+esc(x.tour_option)+"</b></div>":"")+
+    "<div class='d-row'><span>"+glabel+"</span><b>"+(x.party_size||1)+"</b></div>"+
+    (x.alt_dates?"<div class='d-row'><span>Alt dates</span><b>"+esc(x.alt_dates)+"</b></div>":"")+
+    (x.created_at?"<div class='d-row'><span>Received</span><b>"+fmt(String(x.created_at).slice(0,10))+"</b></div>":"");
+  var contact=
+    (x.customer_email?"<a class='d-contact' href='mailto:"+esc(x.customer_email)+"'>"+esc(x.customer_email)+"</a>":"")+
+    (x.customer_phone?"<a class='d-contact' href='tel:"+esc(x.customer_phone)+"'>"+esc(x.customer_phone)+"</a>":"");
+  el.innerHTML=
+    "<a class='backlink' id='backLink'>‹ Approvals</a>"+
+    "<div class='d-eyebrow'>Enquiry</div>"+
+    "<div class='d-name'>"+esc(x.customer_name||"Enquiry")+"</div>"+
+    "<div class='d-pill'>Awaiting your decision</div>"+
+    "<div class='d-block'>"+rows+"</div>"+
+    (contact?"<div class='d-block'>"+contact+"</div>":"")+
+    (x.message?"<div class='d-quote'>“"+esc(x.message)+"”</div>":"")+
+    "<div class='d-actions'>"+
+      "<button class='btn ok' id='dOk'>Confirm &amp; send payment link</button>"+
+      "<button class='btn no' id='dNo'>Decline</button>"+
+    "</div>"+
+    "<div class='hint'>Confirm sends the customer a secure payment link automatically. The booking locks the moment they pay.</div>";
+  document.getElementById("backLink").onclick=function(){history.back();};
+  var ok=document.getElementById("dOk"),no=document.getElementById("dNo");
+  ok.onclick=function(){act(x.id,"confirm",[ok,no]);};
+  no.onclick=function(){if(confirm("Decline this enquiry? The customer will be told the date isn't available."))act(x.id,"decline",[ok,no]);};
+  window.scrollTo(0,0);
 }
-
-async function loadDashboard() {
-  const content = document.getElementById('dashContent');
-  const notice  = document.getElementById('topNotice');
-  notice.innerHTML = '';
-  content.innerHTML = '<div class="spinner">Loading next 14 days…</div>';
-
-  // me: identity for the header
-  try {
-    const meRes = await fetch('/api/captain?mode=me', { credentials: 'include' });
-    if (meRes.status === 401) {
-      window.location.href = '/captain/login?error=expired';
-      return;
-    }
-    if (meRes.ok) {
-      const j = await meRes.json();
-      document.getElementById('tenantName').textContent = j.tenant_name || j.tenant || '—';
-      document.getElementById('userEmail').textContent  = j.email || '—';
-    }
-  } catch (e) {
-    notice.innerHTML = '<div class="error-banner">Could not verify session. Refresh to retry.</div>';
-  }
-
-  // dashboard data
-  try {
-    const res = await fetch('/api/captain?mode=dashboard-data', { credentials: 'include' });
-    if (res.status === 401) {
-      window.location.href = '/captain/login?error=expired';
-      return;
-    }
-    if (!res.ok) {
-      let err = 'Could not load dashboard data.';
-      try { err = (await res.json()).error || err; } catch {}
-      content.innerHTML = `<div class="error-banner">${escapeHtml(err)}</div>`;
-      return;
-    }
-    const data = await res.json();
-    renderSummary(data);
-    const todayIso = data.today_iso;
-    content.innerHTML = data.days
-      .map((d) => renderDay(d, d.date === todayIso, data.scheduling_model))
-      .join('');
-  } catch (e) {
-    content.innerHTML = '<div class="error-banner">Network error — please refresh.</div>';
-    console.error('[dashboard] load failed', e);
-  }
-}
-
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  try {
-    await fetch('/api/captain?mode=logout', { method: 'POST', credentials: 'include' });
-  } catch {}
-  window.location.href = '/captain/login';
+window.addEventListener("popstate",function(){
+  if(detailOpen){ detailOpen=false; currentDetail=null; document.querySelector(".tabs").style.display="flex"; }
+  if(pendingReload){ pendingReload=false; load(); } else { render(); }
 });
-document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
 
-loadDashboard();
+async function act(id,action,btns){
+  btns.forEach(function(b){b.disabled=true;});
+  try{
+    var res=await fetch("/api/captain?mode=enquiry-action",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({id:id,action:action})});
+    var j={};try{j=await res.json();}catch(e){}
+    if(res.ok&&j.ok){
+      toast(action==="confirm"?"✓ Confirmed — payment link sent":"Declined — customer notified");
+      pendingReload=true;
+      if(detailOpen && history.state && history.state.detailOpen){ history.back(); }
+      else { detailOpen=false; currentDetail=null; document.querySelector(".tabs").style.display="flex"; pendingReload=false; load(); }
+    } else {
+      toast((j&&j.error)||"Something went wrong",true);
+      btns.forEach(function(b){b.disabled=false;});
+    }
+  }catch(e){toast("Network error",true);btns.forEach(function(b){b.disabled=false;});}
+}
+
+function renderCalendar(el){
+  if(DATA.model==="per_seat")return renderCalendarSeats(el);
+  el.innerHTML="<div class='count-strip'>Next 14 days · paid bookings lock the date automatically</div>";
+  for(var i=0;i<14;i++){
+    var date=offDay(i);
+    var b=DATA.booked.find(function(x){return x.charter_date===date;});
+    var hld=DATA.awaiting.find(function(x){return x.preferred_date===date;});
+    var tag=b?"booked":(hld?"held":"free");
+    var who=b?esc(b.customer_name)+slot(b):(hld?esc(hld.customer_name)+" (awaiting payment)":"Open");
+    var row=document.createElement("div");row.className="cal-day";
+    row.innerHTML="<div class='d'>"+fmt(date)+"<small>"+who+"</small></div><span class='cal-tag t-"+tag+"'>"+(tag==="booked"?"Booked":tag==="held"?"Held":"Free")+"</span>";
+    el.appendChild(row);
+  }
+  var note=document.createElement("div");note.className="hint";note.textContent="Your calendar fills from BookItMalta bookings — a paid booking locks the date so you can't be double-booked.";el.appendChild(note);
+}
+
+function renderCalendarSeats(el){
+  el.innerHTML="<div class='count-strip'>Next 14 days · seats sold per departure</div>";
+  var slots=(DATA.slots&&DATA.slots.length)?DATA.slots:["—"];
+  for(var i=0;i<14;i++){
+    var date=offDay(i);
+    var card=document.createElement("div");card.className="cal-day";card.style.display="block";
+    var html="<div class='d' style='margin-bottom:.3rem'>"+fmt(date)+"</div>";
+    slots.forEach(function(s){
+      var sold=DATA.booked.filter(function(b){return b.charter_date===date&&((b.slot_time||b.tour_option)===s);}).reduce(function(a,b){return a+(b.party_size||0);},0);
+      var ov=(DATA.capOverrides||[]).find(function(o){return o.charter_date===date&&o.slot_time===s;});
+      var cap=ov?ov.max_seats:DATA.defaultCap;
+      var tag=sold===0?"t-free":((cap&&sold>=cap)?"t-booked":"t-held");
+      var label=sold+(cap?(" / "+cap):"")+" seats";
+      html+="<div style='display:flex;justify-content:space-between;align-items:center;padding:.32rem 0'><small style='font-family:var(--mono);font-size:.74rem;color:var(--ink-soft)'>"+esc(s)+"</small><span class='cal-tag "+tag+"'>"+label+"</span></div>";
+    });
+    card.innerHTML=html;
+    el.appendChild(card);
+  }
+  var note=document.createElement("div");note.className="hint";note.textContent="Each departure fills independently. Seats sold come from paid BookItMalta bookings; capacity follows your default or any cap override.";el.appendChild(note);
+}
+
+function renderUpcoming(el){
+  var rows=[];
+  var ps=(DATA&&DATA.model==="per_seat");
+  DATA.booked.forEach(function(x){rows.push({status:"booked",name:x.customer_name,date:x.charter_date,party:x.party_size,slot:(ps?(x.slot_time||x.tour_option):null),email:x.customer_email,phone:x.customer_phone});});
+  DATA.awaiting.forEach(function(x){rows.push({status:"held",name:x.customer_name,date:x.preferred_date,party:x.party_size,slot:(ps?(x.slot_time||x.tour_option):null)});});
+  rows.sort(function(a,b){return (a.date||"")<(b.date||"")?-1:1;});
+  if(!rows.length){el.innerHTML="<div class='empty'>No upcoming bookings yet.</div>";return;}
+  el.innerHTML="<div class='count-strip'><b>"+rows.length+"</b> upcoming</div>";
+  rows.forEach(function(x){
+    var r=document.createElement("div");r.className="row "+(x.status==="booked"?"booked":"held");
+    var title=(DATA.name||"Charter")+" — "+fmt(x.date)+(x.slot?(" "+x.slot):"");
+    var L=calLinks(title,x.date,(x.party||1)+" guests · via BookItMalta");
+    r.innerHTML="<span class='chip c-"+(x.status==="booked"?"booked":"held")+"'>"+(x.status==="booked"?"Booked":"Held")+"</span>"+
+      "<div class='rname'>"+esc(x.name||"Booking")+"</div>"+
+      "<div class='rmeta'>"+fmt(x.date)+(x.slot?(" · "+esc(x.slot)):"")+" · "+(x.party||1)+" "+gunit()+"</div>"+
+      (x.email?"<div class='contact'>"+esc(x.email)+(x.phone?(" · "+esc(x.phone)):"")+"</div>":"")+
+      "<span class='calbtn'>＋ Add to calendar</span>"+
+      "<div class='callinks' style='display:none'><a href='"+L.g+"' target='_blank' rel='noopener'>Google</a><a href='"+L.ics+"' download='booking.ics'>Apple</a><a href='"+L.o+"' target='_blank' rel='noopener'>Outlook</a></div>";
+    r.querySelector(".calbtn").onclick=function(){var c=r.querySelector(".callinks");c.style.display=(c.style.display==="none")?"flex":"none";};
+    el.appendChild(r);
+  });
+}
+
+function render(){
+  var el=document.getElementById("view");
+  if(loading){el.innerHTML="<div class='spin'>Loading your bookings…</div>";return;}
+  if(errMsg){el.innerHTML="<div class='errbar'>"+esc(errMsg)+"</div><div class='spin' id='retry' style='cursor:pointer'>Tap to retry</div>";var rt=document.getElementById("retry");if(rt)rt.onclick=load;return;}
+  badge();
+  if(tab==="appr")renderApprovals(el);
+  else if(tab==="cal")renderCalendar(el);
+  else renderUpcoming(el);
+}
+
+load();
 </script>
-
 </body>
 </html>

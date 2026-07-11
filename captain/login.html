@@ -192,19 +192,26 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 .footer a { color: var(--terracotta); text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
 
-/* Big, thumb-friendly PIN inputs (mobile-first) */
-#pin, #newPin, #newPin2 {
-  font-size: 1.7rem;
-  letter-spacing: 0.45em;
+/* Segmented PIN — one box per digit, thumb-friendly (mobile-first) */
+.pin-group { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+.pin-group input {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  padding: 0;
   text-align: center;
-  padding: 1.05rem 0.8rem;
+  font-size: 1.5rem;
   font-family: "JetBrains Mono", ui-monospace, monospace;
-  border-radius: 14px;
+  border-radius: 12px;
+  -webkit-appearance: none;
+  appearance: none;
 }
-#pin::placeholder, #newPin::placeholder, #newPin2::placeholder {
-  letter-spacing: normal;
-  font-size: 0.95rem;
-  font-family: "Manrope", -apple-system, sans-serif;
+.pin-group input:focus {
+  border-color: var(--terracotta);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(200, 92, 46, 0.18);
 }
 .submit { padding: 1.05rem; font-size: 0.9rem; border-radius: 14px; }
 </style>
@@ -223,18 +230,39 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
     <label for="email">Email address</label>
     <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@operator.com" />
 
-    <label for="pin">PIN</label>
-    <input type="password" id="pin" name="pin" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="6" placeholder="4–6 digits" />
+    <label>PIN</label>
+    <div class="pin-group" id="pinGroup" role="group" aria-label="6-digit PIN">
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="PIN digit 1" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="PIN digit 2" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="PIN digit 3" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="PIN digit 4" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="PIN digit 5" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="PIN digit 6" />
+    </div>
 
     <button type="submit" class="submit" id="submitBtn">Sign in</button>
   </form>
 
   <!-- First sign-in / reset: choose a new PIN. Hidden until needed. -->
   <form id="setPinForm" novalidate style="display:none">
-    <label for="newPin">Choose a new PIN</label>
-    <input type="password" id="newPin" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="6" placeholder="4–6 digits" />
-    <label for="newPin2">Confirm new PIN</label>
-    <input type="password" id="newPin2" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="6" placeholder="repeat it" />
+    <label>Choose a new PIN</label>
+    <div class="pin-group" id="pinGroupNew" role="group" aria-label="Choose a 6-digit PIN">
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="New PIN digit 1" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="New PIN digit 2" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="New PIN digit 3" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="New PIN digit 4" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="New PIN digit 5" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="New PIN digit 6" />
+    </div>
+    <label>Confirm new PIN</label>
+    <div class="pin-group" id="pinGroupNew2" role="group" aria-label="Confirm your 6-digit PIN">
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="Confirm PIN digit 1" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="Confirm PIN digit 2" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="Confirm PIN digit 3" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="Confirm PIN digit 4" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="Confirm PIN digit 5" />
+      <input type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*" maxlength="1" aria-label="Confirm PIN digit 6" />
+    </div>
     <button type="submit" class="submit" id="setPinBtn">Set PIN &amp; sign in</button>
   </form>
 
@@ -249,6 +277,10 @@ button.submit:disabled { opacity: 0.5; cursor: wait; }
 
 // ---- error from URL (?error=expired / not_allowed / missing_token) ----
 const params = new URLSearchParams(window.location.search);
+// Optional ?tenant= hint. Only needed when an email is on more than one
+// operator's allowlist (e.g. the owner). Normal operators omit it and the
+// tenant is derived from their email server-side.
+const TPARAM = params.get('tenant');
 const errMap = {
   expired:        'The sign-in link expired or had been used already. Sign in with your PIN, or request a new link.',
   missing_token:  'That sign-in link looked invalid. Sign in with your PIN, or request a new link.',
@@ -263,13 +295,51 @@ if (params.get('error') && errMap[params.get('error')]) {
 // re-verify it server-side as the currentPin.
 let pendingCurrentPin = '';
 
+// ---- segmented PIN boxes: auto-advance, backspace, paste ----
+function setupSegmented(group) {
+  const boxes = [...group.querySelectorAll('input')];
+  boxes.forEach((box, i) => {
+    box.addEventListener('input', () => {
+      box.value = box.value.replace(/[^0-9]/g, '').slice(0, 1);
+      if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+    });
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !box.value && i > 0) {
+        boxes[i - 1].focus(); boxes[i - 1].value = ''; e.preventDefault();
+      } else if (e.key === 'ArrowLeft' && i > 0) {
+        boxes[i - 1].focus(); e.preventDefault();
+      } else if (e.key === 'ArrowRight' && i < boxes.length - 1) {
+        boxes[i + 1].focus(); e.preventDefault();
+      }
+    });
+    box.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const digits = ((e.clipboardData || window.clipboardData).getData('text') || '')
+        .replace(/[^0-9]/g, '').slice(0, boxes.length);
+      if (!digits) return;
+      digits.split('').forEach((d, j) => { if (boxes[j]) boxes[j].value = d; });
+      boxes[Math.min(digits.length, boxes.length - 1)].focus();
+    });
+  });
+}
+function readPin(group) {
+  return [...group.querySelectorAll('input')].map((b) => b.value).join('');
+}
+function clearPin(group) {
+  [...group.querySelectorAll('input')].forEach((b) => { b.value = ''; });
+  const first = group.querySelector('input'); if (first) first.focus();
+}
+['pinGroup', 'pinGroupNew', 'pinGroupNew2'].forEach((id) => {
+  const g = document.getElementById(id); if (g) setupSegmented(g);
+});
+
 // ---- email + PIN sign-in ----
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value.trim().toLowerCase();
-  const pin = document.getElementById('pin').value.trim();
+  const pin = readPin(document.getElementById('pinGroup'));
   if (!email) return showNotice('err', 'Please enter your email address.');
-  if (!/^[0-9]{4,6}$/.test(pin)) return showNotice('err', 'Your PIN is 4–6 digits.');
+  if (!/^[0-9]{6}$/.test(pin)) return showNotice('err', 'Your PIN is 6 digits.');
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Signing in…';
@@ -277,7 +347,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const res = await fetch('/api/captain?mode=pin-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, pin }),
+      body: JSON.stringify(Object.assign({ email, pin }, TPARAM ? { tenant: TPARAM } : {})),
     });
     let data = {};
     try { data = await res.json(); } catch {}
@@ -287,10 +357,12 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       document.getElementById('loginForm').style.display = 'none';
       document.getElementById('setPinForm').style.display = 'block';
       showNotice('ok', 'Welcome — set your own PIN to finish signing in.');
+      const f = document.querySelector('#pinGroupNew input'); if (f) f.focus();
       return;
     }
     if (res.ok && data.ok) { window.location.href = '/captain/dashboard'; return; }
     showNotice('err', data.error || 'Could not sign you in. Please try again.');
+    clearPin(document.getElementById('pinGroup'));
     btn.disabled = false; btn.textContent = 'Sign in';
   } catch (err) {
     showNotice('err', 'Network error — please try again.');
@@ -302,9 +374,9 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 document.getElementById('setPinForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value.trim().toLowerCase();
-  const newPin = document.getElementById('newPin').value.trim();
-  const newPin2 = document.getElementById('newPin2').value.trim();
-  if (!/^[0-9]{4,6}$/.test(newPin)) return showNotice('err', 'Your new PIN must be 4–6 digits.');
+  const newPin = readPin(document.getElementById('pinGroupNew'));
+  const newPin2 = readPin(document.getElementById('pinGroupNew2'));
+  if (!/^[0-9]{6}$/.test(newPin)) return showNotice('err', 'Your new PIN must be 6 digits.');
   if (newPin !== newPin2) return showNotice('err', 'The two PINs don\'t match.');
 
   const btn = document.getElementById('setPinBtn');
@@ -313,7 +385,7 @@ document.getElementById('setPinForm').addEventListener('submit', async (e) => {
     const res = await fetch('/api/captain?mode=pin-set', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, currentPin: pendingCurrentPin, newPin }),
+      body: JSON.stringify(Object.assign({ email, currentPin: pendingCurrentPin, newPin }, TPARAM ? { tenant: TPARAM } : {})),
     });
     let data = {};
     try { data = await res.json(); } catch {}

@@ -55,6 +55,8 @@ module.exports = async function handler(req, res) {
   if (mode === 'pin-login')      return await handlePinLogin(req, res);
   if (mode === 'pin-set')        return await handlePinSet(req, res);
   if (mode === 'dashboard-data') return await handleDashboardData(req, res);
+  if (mode === 'ops-data')       return await handleOpsData(req, res);
+  if (mode === 'enquiry-action') return await handleEnquiryAction(req, res);
 
   // ---------- PER-ENQUIRY MAGIC LINK (existing) ----------
   let tenant, config;
@@ -954,6 +956,205 @@ async function handleMe(req, res) {
     tenant:      session.tenant,
     tenant_name: tenantName,
   });
+}
+
+// =============================================================================
+// STAGE 2 — operator screens (session-authed, model-aware)
+// =============================================================================
+
+/**
+ * GET /api/captain?mode=ops-data  (session cookie auth)
+ * Returns the three lists the dashboard renders:
+ *   pending   — enquiries awaiting your yes/no (status 'received')
+ *   awaiting  — confirmed, payment-link sent, not yet paid (status 'confirmed')
+ *   booked    — paid & locked upcoming bookings (bookings.status 'booked')
+ */
+async function handleOpsData(req, res) {
+  const cap = getCaptainFromRequest(req);
+  if (!cap) return jsonError(res, 401, 'Not signed in');
+
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(cap.tenant);
+  } catch {
+    return jsonError(res, 401, 'Unknown tenant in session');
+  }
+
+  const supabase = getSupabase(cap.tenant);
+  const today = new Date().toISOString().slice(0, 10);
+
+  try {
+    // Per-seat tenants (e.g. Adventure Cruises) carry a slot_time column and
+    // fill seats per departure; flat_charter tenants (e.g. Bandama) don't have
+    // slot_time at all, so only select it when the model calls for it.
+    const isPerSeat = (config.pricingModel === 'per_seat');
+    const seat = isPerSeat ? ',slot_time' : '';
+
+    const pendingQ = await supabase
+      .from('enquiries')
+      .select('id,customer_name,customer_email,customer_phone,preferred_date,alt_dates,party_size,tour_option,message,created_at' + seat)
+      .eq('status', 'received')
+      .order('created_at', { ascending: true });
+    const awaitingQ = await supabase
+      .from('enquiries')
+      .select('id,customer_name,preferred_date,party_size,tour_option,stripe_link_expires_at' + seat)
+      .eq('status', 'confirmed')
+      .order('preferred_date', { ascending: true });
+    const bookedQ = await supabase
+      .from('bookings')
+      .select('id,customer_name,customer_email,customer_phone,charter_date,party_size,tour_option' + seat)
+      .eq('status', 'booked')
+      .gte('charter_date', today)
+      .order('charter_date', { ascending: true });
+
+    if (pendingQ.error || awaitingQ.error || bookedQ.error) {
+      console.error('[captain] ops-data query error', pendingQ.error || awaitingQ.error || bookedQ.error);
+      return jsonError(res, 500, 'Could not load your bookings.');
+    }
+
+    // For per-seat, the calendar needs the departure slots, default capacity,
+    // and any per-date capacity overrides so it can show seats sold / capacity.
+    let slots = [], defaultCap = null, capOverrides = [];
+    if (isPerSeat) {
+      slots = config.departureSlots || [];
+      defaultCap = config.defaultCapPerDeparture || null;
+      const capQ = await supabase
+        .from('cap_overrides')
+        .select('charter_date,slot_time,max_seats')
+        .gte('charter_date', today);
+      if (!capQ.error) capOverrides = capQ.data || [];
+    }
+
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    return res.status(200).json({
+      ok: true,
+      tenant: cap.tenant,
+      name: config.name || cap.tenant,
+      email: cap.email,
+      model: config.pricingModel || 'flat_charter',
+      meetingPoint: config.meetingPointAddress || '',
+      slots,
+      defaultCap,
+      capOverrides,
+      pending: pendingQ.data || [],
+      awaiting: awaitingQ.data || [],
+      booked: bookedQ.data || [],
+    });
+  } catch (e) {
+    console.error('[captain] ops-data error', e);
+    return jsonError(res, 500, 'Could not load your bookings.');
+  }
+}
+
+/**
+ * POST /api/captain?mode=enquiry-action  (session cookie auth)
+ * Body: { id, action: 'confirm' | 'decline', note? }
+ * Same money path as the magic-link confirm/decline, but authed by the PIN
+ * session cookie + allowlist. Kept self-contained so the magic-link flow is
+ * untouched.
+ */
+async function handleEnquiryAction(req, res) {
+  if (req.method !== 'POST') return jsonError(res, 405, 'Method not allowed');
+  const cap = getCaptainFromRequest(req);
+  if (!cap) return jsonError(res, 401, 'Not signed in');
+
+  let body = req.body;
+  if (typeof body === 'string') { try { body = JSON.parse(body); } catch { /* leave */ } }
+  const id = (body && body.id) || '';
+  const action = (body && body.action) || '';
+  const note = (body && body.note) || null;
+  if (!id || (action !== 'confirm' && action !== 'decline')) {
+    return jsonError(res, 400, 'Missing id or action');
+  }
+
+  let config;
+  try {
+    const { getTenant } = require('../config/tenants.js');
+    config = getTenant(cap.tenant);
+  } catch {
+    return jsonError(res, 401, 'Unknown tenant in session');
+  }
+  if (!isAllowed(config, cap.email)) return jsonError(res, 403, 'Not allowed');
+
+  const supabase = getSupabase(cap.tenant);
+  const { data: enquiry, error: lookErr } = await supabase
+    .from('enquiries').select('*').eq('id', id).maybeSingle();
+  if (lookErr) return jsonError(res, 500, 'Lookup failed');
+  if (!enquiry) return jsonError(res, 404, 'Enquiry not found');
+  if (enquiry.status !== 'received') return jsonError(res, 409, 'This enquiry was already actioned.');
+
+  if (action === 'confirm') {
+    const baseUrl = getTenantEnvOptional(cap.tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+    const successParams = new URLSearchParams({
+      tenant: cap.tenant,
+      code:  String(enquiry.id || '').replace(/-/g, '').slice(0, 8).toUpperCase(),
+      date:  enquiry.preferred_date || '',
+      slot:  enquiry.tour_option || '',
+      party: String(enquiry.party_size || 1),
+    });
+    const successUrl = `${baseUrl}/booking-confirmed?${successParams.toString()}`;
+
+    let paymentLink;
+    try {
+      paymentLink = await createDepositPaymentLink({ tenantSlug: cap.tenant, tenantConfig: config, enquiry, successUrl });
+    } catch (e) {
+      console.error('[captain] ops confirm stripe fail', e);
+      return jsonError(res, 500, 'Could not create the payment link — the enquiry was NOT confirmed.');
+    }
+
+    const { data: updated, error: updErr } = await supabase
+      .from('enquiries')
+      .update({
+        status: 'confirmed',
+        captain_action_at: new Date().toISOString(),
+        captain_note: note,
+        stripe_payment_link_id: paymentLink.id,
+        stripe_payment_link_url: paymentLink.url,
+        stripe_link_expires_at: paymentLink.expiresAt.toISOString(),
+      })
+      .eq('id', enquiry.id).eq('status', 'received').select();
+    if (updErr) {
+      try { await deactivatePaymentLink(cap.tenant, paymentLink.id); } catch {}
+      return jsonError(res, 500, 'Could not update the enquiry — payment link revoked.');
+    }
+    if (!updated || updated.length === 0) {
+      try { await deactivatePaymentLink(cap.tenant, paymentLink.id); } catch {}
+      return jsonError(res, 409, 'This enquiry was already actioned.');
+    }
+
+    try {
+      const msg = customerDepositLinkEmail({ tenantConfig: config, enquiry, paymentUrl: paymentLink.url });
+      await sendEmail({ tenantSlug: cap.tenant, tenantConfig: config, to: enquiry.customer_email, subject: msg.subject, text: msg.text });
+    } catch (e) { console.error('[captain] ops confirm customer email fail', e); }
+    try {
+      const capAddr = getTenantEnv(cap.tenant, 'OPERATOR_EMAIL');
+      const msg = captainActionConfirmedEmail({ tenantConfig: config, enquiry, action: 'confirm' });
+      await sendEmail({ tenantSlug: cap.tenant, tenantConfig: config, to: capAddr, subject: msg.subject, text: msg.text });
+    } catch (e) { console.error('[captain] ops confirm ack email fail', e); }
+
+    return res.status(200).json({ ok: true, action: 'confirm' });
+  }
+
+  // decline
+  const { data: updated, error: updErr } = await supabase
+    .from('enquiries')
+    .update({ status: 'declined', captain_action_at: new Date().toISOString(), captain_note: note })
+    .eq('id', enquiry.id).eq('status', 'received').select();
+  if (updErr) return jsonError(res, 500, 'Could not update the enquiry.');
+  if (!updated || updated.length === 0) return jsonError(res, 409, 'This enquiry was already actioned.');
+
+  try {
+    const msg = customerDeclineEmail({ tenantConfig: config, enquiry, captainNote: note });
+    await sendEmail({ tenantSlug: cap.tenant, tenantConfig: config, to: enquiry.customer_email, subject: msg.subject, text: msg.text });
+  } catch (e) { console.error('[captain] ops decline customer email fail', e); }
+  try {
+    const capAddr = getTenantEnv(cap.tenant, 'OPERATOR_EMAIL');
+    const msg = captainActionConfirmedEmail({ tenantConfig: config, enquiry, action: 'decline' });
+    await sendEmail({ tenantSlug: cap.tenant, tenantConfig: config, to: capAddr, subject: msg.subject, text: msg.text });
+  } catch (e) { console.error('[captain] ops decline ack email fail', e); }
+
+  return res.status(200).json({ ok: true, action: 'decline' });
 }
 
 // -----------------------------------------------------------------------------
