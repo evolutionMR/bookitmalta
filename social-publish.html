@@ -41,7 +41,7 @@
 
   <label for="secret">Publish secret</label>
   <input id="secret" type="password" placeholder="SOCIAL_PUBLISH_SECRET" autocomplete="off" />
-  <div class="note">Stored only in this browser tab. Click "Check connection" to verify it works.</div>
+  <div class="note">Saved in this browser so you only enter it once. <a href="#" id="forget-secret" style="color:var(--terracotta);font-weight:600;">Forget it</a> to clear. Click "Check connection" to verify it works.</div>
 
   <label for="message">Caption</label>
   <textarea id="message" placeholder="Write the post caption…"></textarea>
@@ -88,9 +88,22 @@
   var $ = function (id) { return document.getElementById(id); };
   var mode = 'photo';
 
-  try { $('secret').value = sessionStorage.getItem('bim_pub_secret') || ''; } catch (e) {}
+  // Persist the secret in localStorage (survives tab close + new tabs on this
+  // origin) so a fresh daily draft link doesn't force a re-paste. Migrate any
+  // value left in the old per-tab sessionStorage. Still NEVER travels in a URL.
+  try {
+    var saved = localStorage.getItem('bim_pub_secret') || sessionStorage.getItem('bim_pub_secret') || '';
+    $('secret').value = saved;
+    if (saved) { try { localStorage.setItem('bim_pub_secret', saved); sessionStorage.removeItem('bim_pub_secret'); } catch (e) {} }
+  } catch (e) {}
   $('secret').addEventListener('input', function () {
-    try { sessionStorage.setItem('bim_pub_secret', $('secret').value); } catch (e) {}
+    try { localStorage.setItem('bim_pub_secret', $('secret').value); } catch (e) {}
+  });
+  $('forget-secret').addEventListener('click', function (e) {
+    e.preventDefault();
+    try { localStorage.removeItem('bim_pub_secret'); sessionStorage.removeItem('bim_pub_secret'); } catch (e2) {}
+    $('secret').value = '';
+    $('secret').focus();
   });
 
   function setMode(m) {
