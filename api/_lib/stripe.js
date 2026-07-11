@@ -37,7 +37,7 @@ function getStripe(tenantSlug) {
  * Throws if the tenant's pricingModel is missing or unknown — money math
  * should fail loudly rather than silently default to a wrong value.
  */
-function computeBookingFee(tenantConfig, partySize) {
+function computeBookingFee(tenantConfig, partySize, chosenOption) {
   const model = tenantConfig.pricingModel;
   if (!model) {
     throw new Error(
@@ -47,7 +47,24 @@ function computeBookingFee(tenantConfig, partySize) {
   }
 
   if (model === 'flat_charter') {
-    const unitAmount = tenantConfig.depositAmountCents;
+    // Multi-duration tenants (e.g. Unexpected Charters: full / half day) declare
+    // a `charterOptions` map; the deposit comes from the selected option. Tenants
+    // without it (Bandama) keep using the single depositAmountCents — unchanged.
+    let unitAmount = tenantConfig.depositAmountCents;
+    let optionLabel = '';
+    if (tenantConfig.charterOptions) {
+      const key = (chosenOption && tenantConfig.charterOptions[chosenOption])
+        ? chosenOption
+        : tenantConfig.defaultCharterOption;
+      const opt = key ? tenantConfig.charterOptions[key] : null;
+      if (!opt || !opt.depositAmountCents) {
+        throw new Error(
+          `Tenant "${tenantConfig.slug}" charterOptions misconfigured for option "${key}"`
+        );
+      }
+      unitAmount = opt.depositAmountCents;
+      optionLabel = opt.label ? ` (${opt.label})` : '';
+    }
     if (!unitAmount || unitAmount <= 0) {
       throw new Error(
         `Tenant "${tenantConfig.slug}" pricingModel=flat_charter but ` +
@@ -59,7 +76,7 @@ function computeBookingFee(tenantConfig, partySize) {
       quantity:        1,
       totalCents:      unitAmount,
       summary: formatMoney(unitAmount, tenantConfig.currency)
-        + ' booking fee',
+        + ' booking fee' + optionLabel,
     };
   }
 
@@ -123,8 +140,9 @@ async function createDepositPaymentLink({ tenantSlug, tenantConfig, enquiry, suc
   const stripe = getStripe(tenantSlug);
 
   // 1. Resolve the per-tenant pricing math (flat charter or per seat).
-  //    This throws if config is malformed — better than a silent wrong amount.
-  const fee = computeBookingFee(tenantConfig, enquiry.party_size);
+  //    For multi-duration tenants the deposit follows the enquiry's chosen
+  //    option (full / half day). This throws if config is malformed.
+  const fee = computeBookingFee(tenantConfig, enquiry.party_size, enquiry.tour_option);
 
   // 2. Build a product description that includes the seat-math for per_seat
   //    tenants. Customers see "4 × €10 = €40 booking fee" in Stripe checkout.

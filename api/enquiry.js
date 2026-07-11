@@ -102,13 +102,12 @@ async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, r
   const audit = auditFields(req);
 
   // Compute the pricing snapshot for this enquiry. Bandama → flat charter
-  // values from config. AC → party_size × per-seat fees from stripe.js.
-  // computeBookingFee throws if the tenant config is malformed; we'd rather
-  // fail loudly than silently insert wrong numbers.
-  const fee = computeBookingFee(config, input.party_size);
-  const charterTotalCents = config.pricingModel === 'per_seat'
-    ? (config.pricePerSeatCents || 0) * input.party_size
-    : config.charterPriceCents;
+  // values from config. AC → party_size × per-seat fees. Multi-duration tenants
+  // (Unexpected Charters) → the selected option's price. computeBookingFee
+  // throws if the tenant config is malformed; fail loudly over wrong numbers.
+  normalizeCharterOption(config, input);
+  const fee = computeBookingFee(config, input.party_size, input.tour_option);
+  const charterTotalCents = charterTotalCentsFor(config, input);
 
   // 1. Insert enquiry
   const { data: enquiry, error: insertErr } = await supabase
@@ -244,11 +243,10 @@ async function routeToQuote({ tenant, config, body, res }) {
 async function routeToWaitlist({ supabase, tenant, config, input, baseUrl, req, res }) {
   const audit = auditFields(req);
 
-  // Pricing snapshot — same as the enquiry path (per-seat math for AC).
-  const fee = computeBookingFee(config, input.party_size);
-  const charterTotalCents = config.pricingModel === 'per_seat'
-    ? (config.pricePerSeatCents || 0) * input.party_size
-    : config.charterPriceCents;
+  // Pricing snapshot — same as the enquiry path (per-seat / multi-duration aware).
+  normalizeCharterOption(config, input);
+  const fee = computeBookingFee(config, input.party_size, input.tour_option);
+  const charterTotalCents = charterTotalCentsFor(config, input);
 
   // We still create an enquiry row to keep the history clean — but mark its
   // status so it doesn't sit in the captain's "received" queue.
@@ -350,6 +348,32 @@ async function routeToWaitlist({ supabase, tenant, config, input, baseUrl, req, 
 // =============================================================================
 // helpers
 // =============================================================================
+// For multi-duration flat_charter tenants (charterOptions), force tour_option
+// to a valid key so the stored value + pricing are always one of the configured
+// durations. No-op for single-price tenants (Bandama) and per-seat (AC).
+function normalizeCharterOption(config, input) {
+  if (config.pricingModel === 'flat_charter' && config.charterOptions) {
+    if (!(input.tour_option && config.charterOptions[input.tour_option])) {
+      input.tour_option = config.defaultCharterOption;
+    }
+  }
+}
+
+// Resolve the full charter value (what the booking is worth) for the snapshot.
+function charterTotalCentsFor(config, input) {
+  if (config.pricingModel === 'per_seat') {
+    return (config.pricePerSeatCents || 0) * input.party_size;
+  }
+  if (config.charterOptions) {
+    const key = (input.tour_option && config.charterOptions[input.tour_option])
+      ? input.tour_option
+      : config.defaultCharterOption;
+    const opt = config.charterOptions[key];
+    if (opt && opt.charterPriceCents) return opt.charterPriceCents;
+  }
+  return config.charterPriceCents;
+}
+
 function auditFields(req) {
   const ua = req.headers['user-agent'] || null;
   const ref = req.headers['referer'] || req.headers['referrer'] || null;

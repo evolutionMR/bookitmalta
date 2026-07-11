@@ -24,6 +24,7 @@
     { "source": "/for-operators/intake", "destination": "/for-operators/intake.html" },
     { "source": "/demo", "destination": "/demo.html" },
     { "source": "/adventure-cruises", "destination": "/adventure-cruises.html" },
+    { "source": "/charters/unexpected-charters-malta", "destination": "/charters/unexpected-charters-malta.html" },
     { "source": "/catamaran", "destination": "/catamaran.html" },
     { "source": "/booking-confirmed", "destination": "/booking-confirmed.html" }
   ],

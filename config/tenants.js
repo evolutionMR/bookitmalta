@@ -138,6 +138,65 @@ const TENANTS = {
     emailReplyTo: null,             // resolved from CATAMARAN_OPERATOR_EMAIL if set
     schedulingModel: 'quote',
   },
+
+  // Hosted whole-boat charter operator. Lives in its own Postgres schema
+  // inside the shared Supabase project (like adventure-cruises). Two durations
+  // (full / half day) priced via `charterOptions` — the engine reads the
+  // selected option off the enquiry's tour_option. Platform Stripe (Bandama
+  // model: deposit = BookItMalta's 12%, balance paid to the operator on the
+  // day) — NOT Stripe Connect.
+  'unexpected-charters-malta': {
+    slug: 'unexpected-charters-malta',
+    name: 'Unexpected Charters Malta',
+    operatorFirstName: 'Darren',
+    boat: 'Sagittarius Dart 436 (2000) · up to 10 guests',
+    schema: 'unexpected_charters',
+
+    pricingModel: 'flat_charter',
+    // Per-duration pricing. charterPriceCents = full price the booking is worth;
+    // depositAmountCents = the 12% taken online by BookItMalta at checkout; the
+    // balance is collected by the operator on the day.
+    charterOptions: {
+      full: { label: 'Full day · 8h', charterPriceCents: 112000, depositAmountCents: 12000 },
+      half: { label: 'Half day · 4h', charterPriceCents: 78400,  depositAmountCents: 8400  },
+    },
+    defaultCharterOption: 'full',
+    // Fallbacks for any code path that doesn't pass an option (defaults to full day).
+    charterPriceCents: 112000,
+    depositAmountCents: 12000,
+    currency: 'EUR',
+
+    // Whole boat, single charter per day. defaultCapPerDeparture doubles as the
+    // max party size in validation (whole-boat cap = 10 guests).
+    defaultCapPerDeparture: 10,
+    schedulingModel: 'single_slot_per_day',
+
+    // Policy
+    cancellationWindowDays: 7,        // full refund 7+ days before departure
+    confirmationExpiryHours: 24,
+    waitlistOfferExpiryHours: 24,
+
+    // Routing
+    publicPagePath: '/charters/unexpected-charters-malta',
+    confirmationAnchor: '#enquiry-confirmed',
+
+    // Stripe Payment Link config (platform Stripe)
+    stripeProductName: 'BookItMalta booking fee — Unexpected Charters Malta',
+    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your private whole-boat charter around Comino, the Blue Lagoon and the south coast of Gozo. The balance is paid to the operator on the day.',
+
+    emailFromName: 'Unexpected Charters Malta (via BookItMalta)',
+    emailReplyTo: null,               // resolved from UNEXPECTED_CHARTERS_MALTA_OPERATOR_EMAIL
+
+    // Calendar event fields
+    experienceDurationHours: 8,
+    meetingPointAddress: "Fekruna Jetty, St Paul's Bay, Malta",
+    calendarEventTitle: 'Unexpected Charters — private day charter',
+
+    captainAllowlist: [
+      'darrenmizzi46@gmail.com',        // Darren (operator)
+      'true-northdigital@outlook.com',  // Julian (owner)
+    ],
+  },
 };
 
 function getTenant(slug) {
