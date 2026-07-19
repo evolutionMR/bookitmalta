@@ -118,25 +118,81 @@ const TENANTS = {
     ],
   },
 
-  // Quote-only listing — no Supabase schema, no Stripe, no DB writes. Catamaran
-  // (La Zingara + Chardonnay) is operated by Simon (same operator as Bandama).
-  // Enquiries are captured via the /api/enquiry quote path (kind:'private_charter')
-  // which only emails — it never touches the booking tables. Set the optional
-  // env var CATAMARAN_OPERATOR_EMAIL to route quote emails to the operator
-  // (auto-BCC'd to ADMIN_BCC_EMAIL); if unset, they fall back to the platform
-  // admin / hello@bookitmalta.com so a lead is never dropped.
+  // Catamaran Malta — PROMOTED from quote-only to full booking tenant.
+  // Multi-boat (La Zingara + Chardonnay), two experiences, availability read
+  // live from the operator's own Fleet Admin system (catamaranmalta.com) —
+  // BookItMalta NEVER writes to that system's booking engine; it only reads
+  // the public availability feed and posts an anonymised enquiry (no customer
+  // PII) via track-enquiry, storing the returned TND ref for reconciliation.
+  //
+  // Deposit model: percent_deposit — customer pays 20% of the charter price
+  // (snapshotted on the enquiry) to BookItMalta. 10% = BIM commission,
+  // 10% remitted to the operator as the customer's deposit; balance (80%)
+  // paid to the operator on the day. Fleet Admin platform-commission = €0
+  // for BIM bookings.
+  //
+  // The legacy quote path (kind:'private_charter') still works — it is gated
+  // on body.kind, not pricingModel — until the new booking page ships.
   catamaran: {
     slug: 'catamaran',
     name: 'Catamaran Malta — La Zingara & Chardonnay',
-    operatorFirstName: 'Simon',
+    operatorFirstName: 'Julian',    // BIM manages this operator relationship
     boat: 'La Zingara (Lagoon 450) + Chardonnay (Lagoon 440)',
-    pricingModel: 'quote',          // quote-only: never hits stripe/supabase math
+
+    // Own Postgres schema in the shared Supabase project (catamaran_init_engine).
+    schema: 'catamaran',
+
+    // Pricing — 20% of the live charter price (from the availability feed,
+    // snapshotted onto the enquiry as charter_price_cents at submission).
+    pricingModel: 'percent_deposit',
+    depositPercent: 0.20,
+    charterPriceCents: 0,           // unused — price is per boat×experience×season
+    depositAmountCents: 0,          // unused — see depositPercent
     currency: 'EUR',
+
+    // Multi-boat fleet + external Fleet Admin integration (read-only + relay)
+    boats: {
+      'la-zingara':  { name: 'La Zingara',  model: 'Lagoon 450', capacity: 28 },
+      'chardonnay':  { name: 'Chardonnay',  model: 'Lagoon 440', capacity: 24 },
+    },
+    // Validation cap for party_size (largest boat); per-boat capacity is
+    // enforced again in the live-availability enquiry route.
+    defaultCapPerDeparture: 28,
+    availabilityFeedUrl: 'https://catamaranmalta.com/api/supabase-availability',
+    enquiryRelayUrl:     'https://catamaranmalta.com/api/track-enquiry',
+    waitlistRelayUrl:    'https://catamaranmalta.com/api/waitlist',
+    relayEnquiryEmail:   'hello@bookitmalta.com',  // PII-free contact sent to Fleet Admin
+    relayUtmSource:      'bookitmalta',
+
+    // Policy
+    cancellationWindowDays: 7,
+    confirmationExpiryHours: 48,
+    waitlistOfferExpiryHours: 24,
+
+    // Routing
     publicPagePath: '/catamaran',
     confirmationAnchor: '#enquiry-confirmed',
+
+    // Stripe Payment Link config (platform Stripe, like Bandama/UC)
+    stripeProductName: 'BookItMalta deposit — Catamaran Malta private charter',
+    stripeProductDescription: 'Deposit (20% of the charter price) charged by BookItMalta to secure your date and boat. The remaining balance is paid directly to Catamaran Malta on the day, as a separate transaction.',
+
+    // Email branding
     emailFromName: 'Catamaran Malta (via BookItMalta)',
     emailReplyTo: null,             // resolved from CATAMARAN_OPERATOR_EMAIL if set
-    schedulingModel: 'quote',
+
+    // Whole-boat per date×boat×experience; treated as single-slot by the
+    // legacy dashboard feed (multi-boat labels arrive with the ops UI phase).
+    schedulingModel: 'single_slot_per_day',
+
+    // Calendar event fields
+    experienceDurationHours: 8,
+    defaultStartTime: '10:00',
+    meetingPointAddress: 'Sliema Ferries, Sliema, Malta',
+    calendarEventTitle: 'Catamaran Malta — Private Charter',
+    captainAllowlist: [
+      'true-northdigital@outlook.com',             // Julian (BIM manages this tenant)
+    ],
   },
 
   // Hosted whole-boat charter operator. Lives in its own Postgres schema

@@ -30,14 +30,16 @@ function getStripe(tenantSlug) {
  * shape (unit_amount + quantity) plus a human-readable amount summary for
  * the Payment Link product description.
  *
- * Two pricing models supported:
+ * Three pricing models supported:
  *   • 'flat_charter' (Bandama-style) — fixed deposit per booking, quantity 1
  *   • 'per_seat' (Adventure Cruises-style) — per-seat fee × party_size
+ *   • 'percent_deposit' (Catamaran-style) — depositPercent × the charter price
+ *     snapshotted on the enquiry (charter_price_cents), quantity 1
  *
  * Throws if the tenant's pricingModel is missing or unknown — money math
  * should fail loudly rather than silently default to a wrong value.
  */
-function computeBookingFee(tenantConfig, partySize, chosenOption) {
+function computeBookingFee(tenantConfig, partySize, chosenOption, priceCents) {
   const model = tenantConfig.pricingModel;
   if (!model) {
     throw new Error(
@@ -106,6 +108,34 @@ function computeBookingFee(tenantConfig, partySize, chosenOption) {
     };
   }
 
+  if (model === 'percent_deposit') {
+    // Deposit = depositPercent × the charter price snapshotted on the enquiry
+    // at submission time (charter_price_cents). The price is snapshotted so a
+    // seasonal price change can never shift an in-flight deposit.
+    const pct = tenantConfig.depositPercent;
+    if (!pct || pct <= 0 || pct >= 1) {
+      throw new Error(
+        `Tenant "${tenantConfig.slug}" pricingModel=percent_deposit but ` +
+        `depositPercent is ${pct} (expected 0 < pct < 1, e.g. 0.20)`
+      );
+    }
+    const price = Number(priceCents);
+    if (!Number.isInteger(price) || price <= 0) {
+      throw new Error(
+        `percent_deposit pricing requires the enquiry's charter_price_cents, got ${priceCents}`
+      );
+    }
+    const unit = Math.round(pct * price);
+    return {
+      unitAmountCents: unit,
+      quantity:        1,
+      totalCents:      unit,
+      summary: `${Math.round(pct * 100)}% deposit — `
+        + `${formatMoney(unit, tenantConfig.currency)} of `
+        + `${formatMoney(price, tenantConfig.currency)} charter price`,
+    };
+  }
+
   throw new Error(
     `Unknown pricingModel "${model}" for tenant "${tenantConfig.slug}"`
   );
@@ -142,7 +172,12 @@ async function createDepositPaymentLink({ tenantSlug, tenantConfig, enquiry, suc
   // 1. Resolve the per-tenant pricing math (flat charter or per seat).
   //    For multi-duration tenants the deposit follows the enquiry's chosen
   //    option (full / half day). This throws if config is malformed.
-  const fee = computeBookingFee(tenantConfig, enquiry.party_size, enquiry.tour_option);
+  const fee = computeBookingFee(
+    tenantConfig,
+    enquiry.party_size,
+    enquiry.tour_option,
+    enquiry.charter_price_cents   // used by percent_deposit only; ignored otherwise
+  );
 
   // 2. Build a product description that includes the seat-math for per_seat
   //    tenants. Customers see "4 × €10 = €40 booking fee" in Stripe checkout.

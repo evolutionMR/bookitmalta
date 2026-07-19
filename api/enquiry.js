@@ -28,14 +28,11 @@ module.exports = async function handler(req, res) {
   // CORS — the form is on bookitmalta.com hitting this same domain, so
   // technically we don't need CORS, but allow common cases for safety.
   res.setHeader('Access-Control-Allow-Origin', getAllowOrigin(req));
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
-  }
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   let tenant, config;
@@ -43,6 +40,20 @@ module.exports = async function handler(req, res) {
     ({ slug: tenant, config } = resolveTenant(req));
   } catch (e) {
     return res.status(400).json({ error: e.message });
+  }
+
+  // ---- GET ?mode=availability — server-side proxy for tenants whose
+  // availability lives in an external system (Catamaran → Fleet Admin feed).
+  // The upstream feed has no CORS headers, so the browser can't read it
+  // directly; we fetch it server-side with a short cache. Read-only.
+  if (req.method === 'GET') {
+    if ((req.query && req.query.mode) === 'availability' && config.availabilityFeedUrl) {
+      return await handleAvailabilityProxy({ config, res });
+    }
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   // Parse form body (Vercel auto-parses application/x-www-form-urlencoded
@@ -76,6 +87,14 @@ module.exports = async function handler(req, res) {
 
   const supabase = getSupabase(tenant);
   const baseUrl = getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+
+  // ---- Live-availability tenants (Catamaran): availability is checked
+  // against the operator's external Fleet Admin feed + a boat-aware BIM-side
+  // guard; price is snapshotted from the feed. Separate path — the 1-arg
+  // is_date_taken RPC below doesn't exist in multi-boat schemas.
+  if (config.pricingModel === 'percent_deposit') {
+    return await routeToLiveAvailabilityEnquiry({ supabase, tenant, config, input, body, baseUrl, req, res });
+  }
 
   // ---- Step 1: is the preferred date already booked? ----
   const { data: dateTaken, error: rpcErr } = await supabase
@@ -342,6 +361,224 @@ async function routeToWaitlist({ supabase, tenant, config, input, baseUrl, req, 
     position,
     redirect: `${baseUrl}${config.publicPagePath}#waitlist-confirmed`,
     message: `Date is already booked. You're position ${position} on the waitlist.`,
+  });
+}
+
+// =============================================================================
+// LIVE-AVAILABILITY TENANTS (Catamaran) — external Fleet Admin integration
+// =============================================================================
+// BookItMalta NEVER writes to the operator's booking engine. It only:
+//   1. reads the public availability feed (proxied below for CORS), and
+//   2. posts an anonymised enquiry via the same track-enquiry endpoint the
+//      operator's own website uses (no customer PII — contact is
+//      hello@bookitmalta.com), storing the returned ref for reconciliation.
+
+let _availCache = { t: 0, data: null, url: null };
+
+async function fetchAvailabilityFeed(config) {
+  const now = Date.now();
+  if (_availCache.data && _availCache.url === config.availabilityFeedUrl && now - _availCache.t < 60000) {
+    return _availCache.data;
+  }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const r = await fetch(config.availabilityFeedUrl, { signal: ctrl.signal, headers: { accept: 'application/json' } });
+    if (!r.ok) throw new Error(`feed HTTP ${r.status}`);
+    const data = await r.json();
+    _availCache = { t: now, data, url: config.availabilityFeedUrl };
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function handleAvailabilityProxy({ config, res }) {
+  try {
+    const data = await fetchAvailabilityFeed(config);
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
+    return res.status(200).json({
+      boats:        data.boats || [],
+      experiences:  data.experiences || [],
+      availability: data.availability || [],
+    });
+  } catch (e) {
+    console.error('[enquiry] availability proxy failed:', e.message || e);
+    return res.status(502).json({ error: 'Availability is temporarily unavailable.' });
+  }
+}
+
+// Resolve the charter price (cents) for boat × experience × date from the
+// feed's experience entry: month in priceShoulderMonths → priceShoulder,
+// otherwise priceRegular. Prices in the feed are whole EUR.
+function priceCentsForDate(expEntry, isoDate) {
+  const month = Number(String(isoDate).slice(5, 7));
+  const shoulder = Array.isArray(expEntry.priceShoulderMonths) && expEntry.priceShoulderMonths.includes(month);
+  const eur = shoulder && expEntry.priceShoulder ? expEntry.priceShoulder : expEntry.priceRegular;
+  if (!eur || eur <= 0) return null;
+  return Math.round(eur * 100);
+}
+
+// A boat×date×experience is unavailable if the feed shows ANY confirmed
+// reservation on it (whole-boat private charters — one booking takes the day
+// for that experience).
+function isTakenInFeed(feed, boatSlug, isoDate, experienceId) {
+  const boatEntry = (feed.availability || []).find((b) => b.boatId === boatSlug);
+  if (!boatEntry) return false;
+  const day = (boatEntry.dates || []).find((d) => d.date === isoDate);
+  if (!day) return false;
+  const dayConfirmed = (day.reservations || []).some((r) => r.status === 'confirmed');
+  const exp = (day.experiences || []).find((e) => e.experienceId === experienceId);
+  const expConfirmed = exp ? (exp.reservations || []).some((r) => r.status === 'confirmed') : false;
+  // Day-level confirmed reservations with no experience breakdown block the
+  // whole day; otherwise only the matching experience blocks.
+  return expConfirmed || (dayConfirmed && !(day.experiences || []).length);
+}
+
+async function routeToLiveAvailabilityEnquiry({ supabase, tenant, config, input, body, baseUrl, req, res }) {
+  const audit = auditFields(req);
+  const trim = (s) => (typeof s === 'string' ? s.trim() : '');
+
+  // 1. Boat — must be one of the tenant's fleet; party must fit the boat.
+  const boatSlug = trim(body && body.boat_slug);
+  const boat = config.boats && config.boats[boatSlug];
+  if (!boat) {
+    return res.status(400).json({ error: 'Please pick a boat.' });
+  }
+  if (input.party_size > boat.capacity) {
+    return res.status(400).json({ error: `${boat.name} takes up to ${boat.capacity} guests.` });
+  }
+
+  // 2. Feed — experience must exist, be offered on this boat, and the combo
+  //    must be free. The feed is also the price source (snapshotted).
+  let feed;
+  try {
+    feed = await fetchAvailabilityFeed(config);
+  } catch (e) {
+    console.error('[enquiry] catamaran feed unavailable:', e.message || e);
+    return res.status(502).json({ error: 'Live availability is temporarily unavailable — please try again in a minute.' });
+  }
+  const expEntry = (feed.experiences || []).find((x) => x.id === input.tour_option);
+  if (!expEntry) {
+    return res.status(400).json({ error: 'Please pick an experience.' });
+  }
+  if (Array.isArray(expEntry.boats) && !expEntry.boats.includes(boatSlug)) {
+    return res.status(400).json({ error: `${expEntry.name} is not offered on ${boat.name}.` });
+  }
+  const priceCents = priceCentsForDate(expEntry, input.preferred_date);
+  if (!priceCents) {
+    console.error('[enquiry] catamaran price missing for', input.tour_option, input.preferred_date);
+    return res.status(502).json({ error: 'Pricing is temporarily unavailable — please try again in a minute.' });
+  }
+
+  // 3. Availability — external feed + BIM-side boat-aware duplicate guard.
+  if (isTakenInFeed(feed, boatSlug, input.preferred_date, input.tour_option)) {
+    return res.status(200).json({
+      type: 'enquiry', status: 'date_taken',
+      message: 'That date has just been taken for this boat — pick another date and we\'ll get you on the water.',
+    });
+  }
+  const { data: bimTaken, error: rpcErr } = await supabase
+    .rpc('is_date_taken', { p_date: input.preferred_date, p_boat_slug: boatSlug, p_tour: input.tour_option });
+  if (rpcErr) {
+    console.error('[enquiry] catamaran is_date_taken RPC error:', rpcErr);
+    return res.status(500).json({ error: 'Database error' });
+  }
+  if (bimTaken) {
+    return res.status(200).json({
+      type: 'enquiry', status: 'date_taken',
+      message: 'That date has just been taken for this boat — pick another date and we\'ll get you on the water.',
+    });
+  }
+
+  // 4. Insert the enquiry — price snapshotted so a seasonal price change can
+  //    never shift an in-flight deposit. Deposit math via percent_deposit.
+  const fee = computeBookingFee(config, input.party_size, input.tour_option, priceCents);
+  const { data: enquiry, error: insertErr } = await supabase
+    .from('enquiries')
+    .insert({
+      ...input,
+      boat_slug:            boatSlug,
+      charter_price_cents:  priceCents,
+      deposit_amount_cents: fee.totalCents,
+      currency:             config.currency,
+      source:               'web',
+      user_agent:           audit.user_agent,
+      referrer:             audit.referrer,
+      ip_hash:              audit.ip_hash,
+      terms_accepted_at:    new Date().toISOString(),
+    })
+    .select()
+    .single();
+  if (insertErr) {
+    console.error('[enquiry] catamaran insert error:', insertErr);
+    return res.status(500).json({ error: 'Could not save enquiry' });
+  }
+
+  // 5. Relay an ANONYMISED enquiry into the operator's Fleet Admin via the
+  //    same endpoint their own site uses. No customer PII — contact email is
+  //    the platform's. Best-effort: a relay failure never loses the lead
+  //    (it's already saved on BIM and emailed to the operator contact).
+  try {
+    const ref = String(enquiry.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const relayRes = await fetch(config.enquiryRelayUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: ctrl.signal,
+      body: JSON.stringify({
+        boat_slug:     boatSlug,
+        experience_id: input.tour_option,
+        date:          input.preferred_date,
+        guests:        input.party_size,
+        email:         config.relayEnquiryEmail,
+        wa_message:    `BookItMalta booking — ref BIM-${ref}. ${input.party_size} guests. Customer details held by BookItMalta (hello@bookitmalta.com).`,
+        utm_source:    config.relayUtmSource || 'bookitmalta',
+        utm_medium:    'platform',
+        utm_campaign:  'bim-booking',
+        referrer:      'https://bookitmalta.com/catamaran',
+        landing_page:  '/catamaran',
+      }),
+    }).finally(() => clearTimeout(timer));
+    let relayJson = null;
+    try { relayJson = await relayRes.json(); } catch { /* non-JSON */ }
+    const fleetRef = relayJson && (relayJson.booking_code || relayJson.bookingCode || relayJson.code);
+    if (fleetRef) {
+      await supabase.from('enquiries').update({ fleet_admin_ref: String(fleetRef) }).eq('id', enquiry.id);
+      enquiry.fleet_admin_ref = String(fleetRef);
+    } else {
+      console.warn('[enquiry] catamaran relay returned no booking_code', relayRes && relayRes.status);
+    }
+  } catch (e) {
+    console.error('[enquiry] catamaran relay failed (non-fatal):', e.message || e);
+  }
+
+  // 6. Notify the BIM operator contact + customer ack (existing templates).
+  try {
+    const captainEmailAddr = getTenantEnv(tenant, 'OPERATOR_EMAIL');
+    const captainMsg = captainEnquiryEmail({ tenantConfig: config, enquiry, baseUrl });
+    await sendEmail({
+      tenantSlug: tenant, tenantConfig: config, to: captainEmailAddr,
+      subject: captainMsg.subject, text: captainMsg.text, replyTo: enquiry.customer_email,
+    });
+  } catch (e) { console.error('[enquiry] catamaran captain email failed:', e); }
+  try {
+    const customerMsg = customerEnquiryAckEmail({ tenantConfig: config, enquiry });
+    await sendEmail({
+      tenantSlug: tenant, tenantConfig: config, to: enquiry.customer_email,
+      subject: customerMsg.subject, text: customerMsg.text,
+    });
+  } catch (e) { console.error('[enquiry] catamaran customer ack failed:', e); }
+
+  return respond(req, res, {
+    type: 'enquiry',
+    status: 'received',
+    enquiry_id: enquiry.id,
+    deposit_cents: fee.totalCents,
+    charter_price_cents: priceCents,
+    redirect: `${baseUrl}${config.publicPagePath}${config.confirmationAnchor}`,
+    message: 'Request received. We\'ll confirm availability within 24 hours, then send a secure deposit link to lock your date.',
   });
 }
 

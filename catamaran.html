@@ -409,6 +409,50 @@ em { font-style: italic; color: var(--terracotta); }
   .to-top { bottom: 24px; }
 }
 
+/* ---- Live booking card (V3) ---- */
+.bk-card { background: var(--paper); color: var(--ink); border-radius: 14px; padding: 1.1rem; box-shadow: 0 12px 32px rgba(0,0,0,0.25); }
+.bk-label { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sea); margin: 0.8rem 0 0.4rem; }
+.bk-label:first-child { margin-top: 0; }
+.bk-row { display: flex; gap: 0.5rem; }
+.bk-opt { flex: 1; min-width: 0; background: #fff; border: 1.5px solid var(--rule); border-radius: 10px; padding: 0.65rem 0.5rem; text-align: center; cursor: pointer; font-family: inherit; transition: border-color .15s, background .15s; min-height: 44px; }
+.bk-opt.sel { border-color: var(--terracotta); background: rgba(200,92,46,0.07); }
+.bk-opt .t { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); display: block; }
+.bk-opt .p { font-size: 0.85rem; font-weight: 600; color: var(--ink); display: block; margin-top: 0.15rem; }
+.bk-opt .s { font-size: 0.7rem; color: var(--mute); display: block; margin-top: 0.1rem; }
+.bk-opt:disabled { opacity: 0.45; cursor: not-allowed; }
+.bk-fields { display: flex; gap: 0.5rem; margin-top: 0.2rem; }
+.bk-fields > label { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.bk-fields span { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sea); }
+.bk-fields input, .bk-fields select { width: 100%; padding: 0.65rem; border: 1px solid var(--rule-strong); border-radius: 8px; background: #fff; color: var(--ink); font-family: var(--sans); font-size: 0.95rem; min-height: 44px; }
+.bk-fields input:focus, .bk-fields select:focus { outline: 2px solid var(--terracotta); outline-offset: -1px; }
+.bk-status { display: none; margin-top: 0.7rem; border-radius: 8px; padding: 0.55rem 0.8rem; font-size: 0.85rem; }
+.bk-status.ok { display: block; background: var(--ok-soft); color: var(--ok); }
+.bk-status.no { display: block; background: var(--warn-soft); color: #7C2D12; }
+.bk-deposit { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--rule); font-size: 0.88rem; color: var(--ink-soft); }
+.bk-deposit b { color: var(--ink); }
+.bk-cta { width: 100%; margin-top: 0.8rem; background: var(--terracotta); color: #fff; border: 0; border-radius: 10px; padding: 0.95rem; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; cursor: pointer; min-height: 48px; }
+.bk-cta:hover { background: var(--terracotta-deep); }
+.bk-cta:disabled { opacity: 0.55; cursor: not-allowed; }
+.bk-note { font-size: 0.76rem; color: var(--mute); margin-top: 0.6rem; line-height: 1.45; }
+.bk-live { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sea); }
+.bk-live .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: bkpulse 2.4s ease infinite; }
+@keyframes bkpulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+/* modal */
+.bk-modal { position: fixed; inset: 0; background: rgba(11,37,69,0.55); display: none; align-items: flex-end; justify-content: center; z-index: 90; }
+.bk-modal.open { display: flex; }
+.bk-sheet { background: var(--paper); color: var(--ink); width: 100%; max-width: 560px; border-radius: 16px 16px 0 0; padding: 1.2rem 1.1rem calc(1.4rem + env(safe-area-inset-bottom)); max-height: 88vh; overflow: auto; }
+.bk-sheet h3 { font-family: var(--serif); font-size: 1.3rem; font-weight: 500; margin-bottom: 0.2rem; }
+.bk-summary { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.9rem; }
+.bk-sheet input, .bk-sheet textarea { width: 100%; padding: 0.7rem; border: 1px solid var(--rule-strong); border-radius: 8px; background: #fff; color: var(--ink); font-family: var(--sans); font-size: 0.95rem; margin-bottom: 0.55rem; }
+.bk-sheet textarea { min-height: 70px; resize: vertical; }
+.bk-terms { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.8rem; color: var(--ink-soft); margin: 0.3rem 0 0.7rem; }
+.bk-terms a { color: var(--terracotta); }
+.bk-err { display: none; background: var(--warn-soft); color: #7C2D12; border: 1px solid #FCD34D; border-radius: 8px; padding: 0.55rem 0.8rem; font-size: 0.85rem; margin-bottom: 0.6rem; }
+.bk-cancel { width: 100%; margin-top: 0.5rem; background: transparent; border: 1px solid var(--rule-strong); color: var(--ink); border-radius: 10px; padding: 0.8rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.bk-done { text-align: left; }
+.bk-done h3 { color: var(--ok); }
+@media (min-width: 640px) { .bk-modal { align-items: center; } .bk-sheet { border-radius: 16px; } }
+
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition: none !important; }
 }
@@ -604,73 +648,36 @@ em { font-style: italic; color: var(--terracotta); }
   <div class="wrap">
     <div class="private-grid">
       <div>
-        <div class="eyebrow">§ Request a quote</div>
-        <h2>Tell us your day. <em>We'll send a quote.</em></h2>
-        <p>Pricing varies with the boat, the season, and your group — share a few details and we'll come back with a tailored quote, usually the same day.</p>
-        <form id="quoteForm" class="quote-form" onsubmit="submitQuote(event)">
-          <div class="qf-row">
-            <label class="qf-field"><span>Experience</span>
-              <select id="qExperience">
-                <option value="Day charter">Day charter (10:00–18:00)</option>
-                <option value="Sunset cruise">Sunset cruise (19:00–00:00)</option>
-              </select>
-            </label>
-            <label class="qf-field"><span>Preferred date</span><input type="date" id="qDates" /></label>
+        <div class="eyebrow">§ Book your charter</div>
+        <h2>Pick your day. <em>Live availability.</em></h2>
+        <p>Choose the experience, the boat and your date — availability comes straight from the fleet calendar. A 20% deposit locks your date once we confirm; the balance is paid on the day.</p>
+
+        <div class="bk-card" id="bkCard">
+          <span class="bk-live"><span class="dot"></span> Live fleet availability</span>
+
+          <div class="bk-label">Experience</div>
+          <div class="bk-row" id="bkExpRow"></div>
+
+          <div class="bk-label">Boat</div>
+          <div class="bk-row" id="bkBoatRow"></div>
+
+          <div class="bk-fields">
+            <label><span>Date</span><input type="date" id="bkDate" /></label>
+            <label><span>Guests</span><select id="bkGuests"></select></label>
           </div>
-          <div class="qf-row">
-            <label class="qf-field"><span>Number of guests</span>
-              <select id="qGroup">
-                <option value="">Select…</option>
-                <option value="1">1 guest</option>
-                <option value="2">2 guests</option>
-                <option value="3">3 guests</option>
-                <option value="4">4 guests</option>
-                <option value="5">5 guests</option>
-                <option value="6">6 guests</option>
-                <option value="7">7 guests</option>
-                <option value="8">8 guests</option>
-                <option value="9">9 guests</option>
-                <option value="10">10 guests</option>
-                <option value="11">11 guests</option>
-                <option value="12">12 guests</option>
-                <option value="13">13 guests</option>
-                <option value="14">14 guests</option>
-                <option value="15">15 guests</option>
-                <option value="16">16 guests</option>
-                <option value="17">17 guests</option>
-                <option value="18">18 guests</option>
-                <option value="19">19 guests</option>
-                <option value="20">20 guests</option>
-                <option value="21">21 guests</option>
-                <option value="22">22 guests</option>
-                <option value="23">23 guests</option>
-                <option value="24">24 guests</option>
-                <option value="25">25 guests</option>
-                <option value="26">26 guests</option>
-                <option value="27">27 guests</option>
-                <option value="28">28 guests</option>
-              </select>
-            </label>
-            <label class="qf-field"><span>Boat preference</span>
-              <select id="qBoat">
-                <option value="Either">Either</option>
-                <option value="La Zingara">La Zingara</option>
-                <option value="Chardonnay">Chardonnay</option>
-              </select>
-            </label>
+
+          <div class="bk-status" id="bkStatus"></div>
+
+          <div class="bk-deposit" id="bkDeposit" hidden>
+            Charter price: <b id="bkPrice">—</b> · Deposit today (20%): <b id="bkDep">—</b><br/>
+            <span style="font-size:0.8rem;color:var(--mute)">Balance paid directly to the crew on the day.</span>
           </div>
-          <div class="qf-row">
-            <input type="text" id="qName" placeholder="Your name" autocomplete="name" required />
-            <input type="email" id="qEmail" placeholder="Email" autocomplete="email" required />
-          </div>
-          <textarea id="qMsg" placeholder="Occasion &amp; anything else (optional)"></textarea>
-          <div id="quoteError" class="quote-error" hidden></div>
-          <div class="private-cta">
-            <button type="submit" class="btn-light" id="qSubmit">Request a quote →</button>
-            <button type="button" class="btn-wa" id="qWa" onclick="quoteViaWhatsApp()">Ask on WhatsApp</button>
-          </div>
-        </form>
-        <p class="private-note">Your request goes straight to BookItMalta — we handle the quote and reply, usually the same day. By sending, you agree to our <a href="/privacy.html" target="_blank">privacy policy</a>.</p>
+
+          <button type="button" class="bk-cta" id="bkCta" onclick="bkOpenSheet()" disabled>Pick a date to continue</button>
+          <button type="button" class="btn-wa" id="qWa" style="width:100%;margin-top:0.55rem" onclick="quoteViaWhatsApp()">Ask on WhatsApp instead</button>
+          <p class="bk-note">No payment now — we confirm availability first (usually within hours), then email you a secure Stripe link for the deposit. By continuing you agree to our <a href="/privacy.html" target="_blank" style="color:var(--terracotta)">privacy policy</a>.</p>
+        </div>
+
       </div>
       <div class="private-image">
         <img src="https://cdn.sanity.io/images/xy4l8931/production/4cfa873c713f5aa4c0e2571c2a4a22b31dbfdc79-1440x1309.jpg?w=1280&q=80&auto=format"
@@ -749,174 +756,307 @@ em { font-style: italic; color: var(--terracotta); }
 <!-- ============================ BACK TO TOP ============================ -->
 <button id="toTop" class="to-top" type="button" aria-label="Back to top" onclick="scrollToTop()">↑</button>
 
+<!-- ============================ BOOKING DETAILS SHEET ============================ -->
+<div class="bk-modal" id="bkModal" role="dialog" aria-modal="true" aria-label="Your details">
+  <div class="bk-sheet">
+    <div id="bkFormWrap">
+      <h3>Nearly there</h3>
+      <div class="bk-summary" id="bkSummary">—</div>
+      <div class="bk-err" id="bkErr"></div>
+      <input type="text" id="bkName" placeholder="Your name" autocomplete="name" />
+      <input type="email" id="bkEmail" placeholder="Email" autocomplete="email" />
+      <input type="tel" id="bkPhone" placeholder="Mobile (WhatsApp preferred)" autocomplete="tel" />
+      <textarea id="bkMsg" placeholder="Occasion &amp; anything else (optional)"></textarea>
+      <label class="bk-terms"><input type="checkbox" id="bkTerms" style="width:auto;margin:0.2rem 0 0" /> <span>I accept the <a href="/terms.html" target="_blank">Terms</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>.</span></label>
+      <button type="button" class="bk-cta" id="bkSubmit" onclick="bkSubmit()">Send booking request →</button>
+      <button type="button" class="bk-cancel" onclick="bkCloseSheet()">Back</button>
+    </div>
+    <div id="bkDoneWrap" class="bk-done" hidden>
+      <h3 id="bkDoneTitle">Request received ✓</h3>
+      <p class="bk-summary" id="bkDoneBody" style="margin:0.4rem 0 1rem"></p>
+      <button type="button" class="bk-cta" id="bkDoneAgain" onclick="bkBookAnother()" hidden>Pick another date</button>
+      <button type="button" class="bk-cancel" onclick="bkCloseSheet(true)">Close</button>
+    </div>
+  </div>
+</div>
+<span id="enquiry-confirmed"></span>
+
 <!-- ============================ STICKY MOBILE BOOK BAR ============================ -->
-<div class="bookbar" aria-label="Quick enquiry">
+<div class="bookbar" aria-label="Quick booking">
   <div class="price"><b>Catamaran</b><span>Private charter</span></div>
-  <a href="#enquire" class="bar-cta">Request a quote →</a>
+  <a href="#enquire" class="bar-cta">Book now →</a>
 </div>
 
 <script>
 /* =========================================================
-   Catamaran Malta — page-level interactivity
+   Catamaran Malta — LIVE booking (V3 card)
    =========================================================
-   Quote-only private charter. There's no fixed seat price and
-   no booking math — the page captures an enquiry server-side
-   via the same /api/enquiry pattern Adventure Cruises uses
-   (kind=private_charter), then falls back to WhatsApp.
+   Availability is read from the operator's fleet calendar via the
+   BIM proxy (/api/enquiry?tenant=catamaran&mode=availability).
+   Submitting posts a real enquiry: saved on BookItMalta with a
+   20% deposit snapshot, relayed (anonymised) to the fleet system.
+   Every decision point emits a Clarity event so drop-off points
+   are visible in the funnel.
 ========================================================= */
 
-// Catamaran Malta WhatsApp number (BookItMalta-managed line).
 const WA_NUMBER = '35679205055';
 
-// -----------------------------------------------------------------
-// Validation helper (mirrors AC's showQuoteError pattern)
-// -----------------------------------------------------------------
-function showQuoteError(m) {
-  const el = document.getElementById('quoteError');
-  if (el) { el.textContent = m; el.hidden = false; }
-  return false;
-}
-
-// Build the message field, folding experience + boat into it.
-function composeMessage(experience, boat, userMsg) {
-  let m = 'Experience: ' + experience + '. Boat: ' + boat + '.';
-  if (userMsg) m += ' ' + userMsg;
-  return m;
-}
-
-// -----------------------------------------------------------------
-// "Request a quote" — POST to /api/enquiry?tenant=catamaran
-// (kind=private_charter). On success, fire the conversion and
-// replace the form with a confirmation. On failure, point the
-// customer at the WhatsApp button.
-// -----------------------------------------------------------------
-async function submitQuote(e) {
-  e.preventDefault();
-  const errEl = document.getElementById('quoteError');
-  if (errEl) errEl.hidden = true;
-  const btn = document.getElementById('qSubmit');
-  const experience = document.getElementById('qExperience').value;
-  const boat       = document.getElementById('qBoat').value;
-  const dates       = document.getElementById('qDates').value.trim();
-  const group       = document.getElementById('qGroup').value.trim();
-  const name        = document.getElementById('qName').value.trim();
-  const email       = document.getElementById('qEmail').value.trim();
-  const msg         = document.getElementById('qMsg').value.trim();
-
-  if (!name)  return showQuoteError('Please enter your name.');
-  if (!email) return showQuoteError('Please enter your email.');
-
-  btn.disabled = true;
-  const orig = btn.textContent;
-  btn.textContent = 'Sending…';
-
+// ---- Clarity helper: event + tag, silent if consent declined ----
+function track(ev, tagKey, tagVal) {
   try {
-    const res = await fetch('/api/enquiry?tenant=catamaran', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tenant: 'catamaran',
-        kind: 'private_charter',
-        customer_name: name,
-        customer_email: email,
-        preferred_dates: dates || null,
-        party_size: group || null,
-        message: composeMessage(experience, boat, msg),
-      }),
-    });
-    if (!res.ok) {
-      let m; try { m = (await res.json()).error; } catch { /* ignore */ }
-      throw new Error(m || ('HTTP ' + res.status));
+    if (typeof window.clarity === 'function') {
+      if (ev) window.clarity('event', ev);
+      if (tagKey) window.clarity('set', tagKey, String(tagVal));
     }
-    if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
-    const form = document.getElementById('quoteForm');
-    if (form) {
-      form.innerHTML =
-        '<div class="quote-ok"><strong>Request sent.</strong> ' +
-        'We\'ll reply with a tailored quote, usually the same day — keep an eye on your inbox.</div>';
-    }
-  } catch (err) {
-    console.error('[quote] submit failed:', err);
-    showQuoteError('Couldn\'t send just now — tap “Ask on WhatsApp” below and we\'ll sort it.');
-    btn.disabled = false;
-    btn.textContent = orig;
+  } catch (_) {}
+}
+
+// ---- state ----
+var FEED = null;                 // {boats, experiences, availability}
+var S = { exp: null, boat: null, date: '', guests: 0 };
+
+function feedExp(id)  { return ((FEED && FEED.experiences) || []).find(function(x){ return x.id === id; }); }
+function boatCap(slug){ var b = ((FEED && FEED.boats) || []).find(function(x){ return (x.slug||x.id) === slug; }); return b ? (b.capacity || b.maxGuests || 28) : 28; }
+function boatName(slug){ var b = ((FEED && FEED.boats) || []).find(function(x){ return (x.slug||x.id) === slug; }); return b ? b.name : slug; }
+
+function euros(cents) { return '€' + (cents/100).toLocaleString('en-MT', {minimumFractionDigits: (cents%100? 2:0), maximumFractionDigits: 2}); }
+
+// price for the selected exp+date (mirrors the server: shoulder months)
+function priceCentsFor(expId, iso) {
+  var e = feedExp(expId);
+  if (!e || !iso) return null;
+  var m = Number(iso.slice(5,7));
+  var sh = Array.isArray(e.priceShoulderMonths) && e.priceShoulderMonths.indexOf(m) >= 0;
+  var eur = (sh && e.priceShoulder) ? e.priceShoulder : e.priceRegular;
+  return eur ? Math.round(eur * 100) : null;
+}
+
+function isTaken(boatSlug, iso, expId) {
+  if (!FEED || !iso) return false;
+  var be = (FEED.availability || []).find(function(b){ return b.boatId === boatSlug; });
+  if (!be) return false;
+  var day = (be.dates || []).find(function(d){ return d.date === iso; });
+  if (!day) return false;
+  var dayConf = (day.reservations || []).some(function(r){ return r.status === 'confirmed'; });
+  var ex = (day.experiences || []).find(function(e){ return e.experienceId === expId; });
+  var exConf = ex ? (ex.reservations || []).some(function(r){ return r.status === 'confirmed'; }) : false;
+  return exConf || (dayConf && !(day.experiences || []).length);
+}
+
+// ---- render the two toggle rows from the live feed ----
+function renderRows() {
+  var expRow = document.getElementById('bkExpRow');
+  var boatRow = document.getElementById('bkBoatRow');
+  expRow.innerHTML = ''; boatRow.innerHTML = '';
+  ((FEED && FEED.experiences) || []).forEach(function(e) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'bk-opt' + (S.exp === e.id ? ' sel' : '');
+    var pc = priceCentsFor(e.id, S.date) || Math.round((e.priceFrom || e.priceRegular) * 100);
+    b.innerHTML = '<span class="t">' + e.name + '</span><span class="p">' + euros(pc) + '</span>'
+      + '<span class="s">' + ((e.durations && e.durations[0]) || '') + '</span>';
+    b.onclick = function(){ S.exp = e.id; track('cat_exp_selected', 'cat_exp', e.id); recompute(); };
+    expRow.appendChild(b);
+  });
+  Object.keys(BOATS).forEach(function(slug) {
+    var cap = boatCap(slug);
+    var offered = !S.exp || !feedExp(S.exp) || !Array.isArray(feedExp(S.exp).boats) || feedExp(S.exp).boats.indexOf(slug) >= 0;
+    var taken = S.date && S.exp ? isTaken(slug, S.date, S.exp) : false;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'bk-opt' + (S.boat === slug ? ' sel' : '');
+    b.disabled = !offered || taken;
+    b.innerHTML = '<span class="t">' + BOATS[slug] + '</span>'
+      + '<span class="s">Up to ' + cap + ' guests' + (taken ? ' · taken this date' : '') + '</span>';
+    b.onclick = function(){ S.boat = slug; track('cat_boat_selected', 'cat_boat', slug); recompute(); };
+    boatRow.appendChild(b);
+  });
+}
+
+var BOATS = { 'la-zingara': 'La Zingara', 'chardonnay': 'Chardonnay' };
+
+function renderGuests() {
+  var sel = document.getElementById('bkGuests');
+  var cap = S.boat ? boatCap(S.boat) : 28;
+  var cur = S.guests;
+  sel.innerHTML = '<option value="">Guests…</option>';
+  for (var i = 1; i <= cap; i++) {
+    var o = document.createElement('option');
+    o.value = i; o.textContent = i + ' guest' + (i>1?'s':'');
+    if (i === cur) o.selected = true;
+    sel.appendChild(o);
   }
 }
 
+function recompute() {
+  renderRows(); renderGuests();
+  var st = document.getElementById('bkStatus');
+  var dep = document.getElementById('bkDeposit');
+  var cta = document.getElementById('bkCta');
+  st.className = 'bk-status'; dep.hidden = true;
+
+  var ready = S.exp && S.boat && S.date && S.guests > 0;
+  if (S.date && S.exp && S.boat) {
+    if (isTaken(S.boat, S.date, S.exp)) {
+      st.classList.add('no');
+      st.textContent = BOATS[S.boat] + ' is already booked on that date — try the other boat or another date.';
+      track('cat_combo_taken', 'cat_taken_date', S.date);
+      cta.disabled = true; cta.textContent = 'Date unavailable';
+      return;
+    }
+    st.classList.add('ok');
+    st.textContent = '✓ ' + BOATS[S.boat] + ' looks free on that date — we confirm within hours.';
+    var pc = priceCentsFor(S.exp, S.date);
+    if (pc) {
+      document.getElementById('bkPrice').textContent = euros(pc);
+      document.getElementById('bkDep').textContent = euros(Math.round(pc * 0.20));
+      dep.hidden = false;
+      track('cat_price_shown', 'cat_price', pc/100);
+    }
+  }
+  cta.disabled = !ready;
+  cta.textContent = ready ? 'Book this date →' : 'Pick a date to continue';
+}
+
+// ---- availability load ----
+async function loadFeed() {
+  try {
+    var r = await fetch('/api/enquiry?tenant=catamaran&mode=availability', { headers: { accept: 'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    FEED = await r.json();
+    track('cat_avail_loaded');
+  } catch (e) {
+    console.error('[booking] availability failed:', e);
+    FEED = { boats: [], experiences: [
+      { id:'full-day-charter', name:'Full Day Charter', priceRegular:1100, priceShoulder:862, priceShoulderMonths:[1,2,3,4,5,10,11,12], durations:['8 hrs'], boats:['la-zingara','chardonnay'] },
+      { id:'sunset-cruise', name:'Sunset Cruise', priceRegular:864, durations:['5 hrs'], boats:['la-zingara','chardonnay'] }
+    ], availability: [] };
+    track('cat_avail_failed');
+  }
+  if (!S.exp) S.exp = 'full-day-charter';
+  if (!S.boat) S.boat = 'la-zingara';
+  recompute();
+}
+
+// ---- details sheet ----
+function bkOpenSheet() {
+  var pc = priceCentsFor(S.exp, S.date) || 0;
+  document.getElementById('bkSummary').textContent =
+    feedExp(S.exp).name + ' · ' + BOATS[S.boat] + ' · ' + S.date + ' · ' + S.guests +
+    ' guests — ' + euros(pc) + ' (deposit ' + euros(Math.round(pc*0.2)) + ')';
+  document.getElementById('bkErr').style.display = 'none';
+  document.getElementById('bkFormWrap').hidden = false;
+  document.getElementById('bkDoneWrap').hidden = true;
+  document.getElementById('bkModal').classList.add('open');
+  track('cat_booking_open', 'cat_funnel', 'details_open');
+}
+function bkCloseSheet(reload) {
+  document.getElementById('bkModal').classList.remove('open');
+  if (reload) loadFeed();
+}
+function bkShowErr(m) {
+  var el = document.getElementById('bkErr');
+  el.textContent = m; el.style.display = 'block';
+}
+
+async function bkSubmit() {
+  var name  = document.getElementById('bkName').value.trim();
+  var email = document.getElementById('bkEmail').value.trim();
+  var phone = document.getElementById('bkPhone').value.trim();
+  var msg   = document.getElementById('bkMsg').value.trim();
+  var terms = document.getElementById('bkTerms').checked;
+  if (!name)  return bkShowErr('Please enter your name.');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return bkShowErr('Please enter a valid email.');
+  if (!terms) return bkShowErr('Please accept the Terms and Privacy Policy.');
+
+  var btn = document.getElementById('bkSubmit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  track('cat_booking_submit_attempt');
+
+  try {
+    var res = await fetch('/api/enquiry?tenant=catamaran', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        tenant: 'catamaran',
+        boat_slug: S.boat,
+        tour_option: S.exp,
+        preferred_date: S.date,
+        party_size: S.guests,
+        customer_name: name,
+        customer_email: email,
+        customer_phone: phone || null,
+        message: msg || null,
+        terms_accepted: true,
+      }),
+    });
+    var j = {}; try { j = await res.json(); } catch (_){}
+    if (res.ok && j.status === 'received') {
+      track('cat_booking_submitted', 'cat_funnel', 'submitted');
+      if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
+      document.getElementById('bkFormWrap').hidden = true;
+      document.getElementById('bkDoneTitle').textContent = 'Request received ✓';
+      document.getElementById('bkDoneBody').textContent =
+        'We\'re checking the fleet calendar now. You\'ll get an email confirmation, then a secure Stripe link for the ' +
+        euros(j.deposit_cents || Math.round((priceCentsFor(S.exp,S.date)||0)*0.2)) + ' deposit to lock your date.';
+      document.getElementById('bkDoneAgain').hidden = true;
+      document.getElementById('bkDoneWrap').hidden = false;
+    } else if (res.ok && j.status === 'date_taken') {
+      track('cat_booking_date_taken', 'cat_funnel', 'date_taken');
+      document.getElementById('bkFormWrap').hidden = true;
+      document.getElementById('bkDoneTitle').textContent = 'That date just went';
+      document.getElementById('bkDoneBody').textContent = j.message || 'Pick another date and we\'ll get you on the water.';
+      document.getElementById('bkDoneAgain').hidden = false;
+      document.getElementById('bkDoneWrap').hidden = false;
+    } else {
+      throw new Error(j.error || ('HTTP ' + res.status));
+    }
+  } catch (err) {
+    console.error('[booking] submit failed:', err);
+    track('cat_booking_error');
+    bkShowErr((err && err.message) || 'Couldn\'t send just now — try again or tap "Ask on WhatsApp".');
+    btn.disabled = false; btn.textContent = 'Send booking request →';
+  }
+}
+
+function bkBookAnother() {
+  bkCloseSheet(true);
+  S.date = '';
+  document.getElementById('bkDate').value = '';
+  recompute();
+  document.getElementById('bkDate').focus();
+  track('cat_pick_another_date');
+}
+
 // -----------------------------------------------------------------
-// "Ask on WhatsApp" — capture the lead server-side FIRST (so
-// BookItMalta is emailed regardless of channel), THEN open WhatsApp
-// pre-filled. Requires name + email so there's a lead to send.
+// "Ask on WhatsApp" — capture a lead server-side (quote path kept),
+// then open WhatsApp pre-filled with whatever's selected so far.
 // -----------------------------------------------------------------
 async function quoteViaWhatsApp() {
-  const errEl = document.getElementById('quoteError');
-  if (errEl) errEl.hidden = true;
-  const experience = document.getElementById('qExperience').value;
-  const boat       = document.getElementById('qBoat').value;
-  const dates       = document.getElementById('qDates').value.trim();
-  const group       = document.getElementById('qGroup').value.trim();
-  const name        = document.getElementById('qName').value.trim();
-  const email       = document.getElementById('qEmail').value.trim();
-  const msg         = document.getElementById('qMsg').value.trim();
-
-  if (!name)  return showQuoteError('Add your name first so we can follow up.');
-  if (!email) return showQuoteError('Add your email first so we can follow up.');
-
-  const waBtn = document.getElementById('qWa');
-  if (waBtn) waBtn.disabled = true;
-
-  // 1) Notify BookItMalta server-side (best-effort — never block the handoff).
-  try {
-    await fetch('/api/enquiry?tenant=catamaran', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tenant: 'catamaran',
-        kind: 'private_charter',
-        customer_name: name,
-        customer_email: email,
-        preferred_dates: dates || null,
-        party_size: group || null,
-        message: composeMessage(experience, boat, msg) +
-          '\n\n[Customer is also messaging the crew on WhatsApp]',
-      }),
-    });
-    if (window.bimTrackConversion) window.bimTrackConversion('enquiry');
-  } catch (err) {
-    console.error('[quote/wa] notify failed:', err);
-  }
-
-  // 2) Open WhatsApp pre-filled with their details.
-  const lines = [
-    'Hi BookItMalta!',
-    '',
-    'I\'d like a private charter quote.',
-    '',
-    'Experience: ' + experience,
-    'Boat: ' + boat,
-    'Preferred date: ' + (dates || '—'),
-    'Guests: ' + (group || '—'),
-    'Name: ' + name,
+  track('cat_whatsapp_click', 'cat_funnel', 'whatsapp');
+  var expName = S.exp && feedExp(S.exp) ? feedExp(S.exp).name : 'Charter';
+  var lines = [
+    'Hi BookItMalta!', '',
+    'I\'d like to book a private charter.', '',
+    'Experience: ' + expName,
+    'Boat: ' + (S.boat ? BOATS[S.boat] : 'Either'),
+    'Preferred date: ' + (S.date || '—'),
+    'Guests: ' + (S.guests || '—'),
+    '', 'Please confirm availability — thanks!', '', '(via bookitmalta.com/catamaran)',
   ];
-  if (msg) lines.push('Notes: ' + msg);
-  lines.push('', 'Please share availability & pricing — thanks!', '', '(via bookitmalta.com/catamaran)');
   window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
-
-  // 3) Confirm in-page.
-  const form = document.getElementById('quoteForm');
-  if (form) {
-    form.innerHTML =
-      '<div class="quote-ok"><strong>Sent to us — opening WhatsApp…</strong> ' +
-      'We\'ll also reply by email, usually the same day.</div>';
-  }
 }
 
 // -----------------------------------------------------------------
-// Init on load — set the date picker's min to today.
+// Init
 // -----------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
-  var qd = document.getElementById('qDates');
-  if (qd) qd.min = new Date().toISOString().slice(0, 10);
+  var d = document.getElementById('bkDate');
+  d.min = new Date().toISOString().slice(0, 10);
+  d.addEventListener('change', function(){ S.date = this.value; track('cat_date_selected', 'cat_date', S.date); recompute(); });
+  document.getElementById('bkGuests').addEventListener('change', function(){ S.guests = parseInt(this.value, 10) || 0; track(null, 'cat_guests', S.guests); recompute(); });
+  document.getElementById('bkModal').addEventListener('click', function(e){ if (e.target === this) bkCloseSheet(); });
+  loadFeed();
+  // refresh availability when the tab regains focus (mirrors the fleet site)
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) loadFeed(); });
 });
 
 // -----------------------------------------------------------------
