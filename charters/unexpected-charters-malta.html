@@ -185,7 +185,8 @@ body{padding-bottom:5rem}
 .modal-x{background:none;border:1px solid var(--bm-rule-strong);border-radius:999px;width:32px;height:32px;cursor:pointer;color:var(--bm-ink);font-size:1rem;flex:0 0 auto}
 .field{margin-bottom:.9rem}
 .field label{display:block;font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--bm-mute);margin-bottom:.35rem}
-.field input{width:100%;font-family:var(--sans);font-size:1rem;color:var(--bm-ink);background:#fff;border:1px solid var(--bm-rule-strong);border-radius:var(--radius-md);padding:.75rem .85rem}
+.field input{width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;font-family:var(--sans);font-size:1rem;color:var(--bm-ink);background:#fff;border:1px solid var(--bm-rule-strong);border-radius:var(--radius-md);padding:.75rem .85rem;text-align:left}
+.field input[type="date"]::-webkit-date-and-time-value{text-align:left}
 .field input:focus{outline:none;border-color:var(--bm-terracotta);box-shadow:0 0 0 3px rgba(200,92,46,.15)}
 .terms{display:flex;gap:.6rem;align-items:flex-start;font-size:.82rem;color:var(--bm-ink-soft);margin:.4rem 0 1rem;line-height:1.45}
 .terms input{margin-top:.2rem;flex:0 0 auto}
