@@ -711,7 +711,7 @@ footer .wordmark span { color: var(--terracotta); }
       <div>
         <span class="ec-kicker">Enquiry received</span>
         <h2 class="ec-headline">Thank you — your enquiry is on its way to the captain.</h2>
-        <p class="ec-body">Bandama Yacht Charters will be in touch within <strong>24 hours</strong> via email or WhatsApp to confirm availability. Once confirmed, you'll receive a secure payment link by email for the €300 booking fee. The charter price of €1,550 is settled directly with the captain on the day of the charter.</p>
+        <p class="ec-body">Bandama Yacht Charters will be in touch within <strong>24 hours</strong> via email or WhatsApp to confirm availability. Once confirmed, you'll receive a secure payment link by email for the €300 deposit — it secures your date and counts toward the €1,850 total. The €1,550 balance is settled directly with the captain on the day of the charter.</p>
       </div>
       <a href="#" class="ec-close" aria-label="Dismiss confirmation">×</a>
     </div>
@@ -899,17 +899,17 @@ footer .wordmark span { color: var(--terracotta); }
 <section id="pricing" class="pricing">
   <div class="wrap-narrow">
     <span class="kicker">Pricing</span>
-    <h2 style="margin: 1rem 0 0.8rem; max-width: 22ch;">€1,850 total. €300 booking fee secures your date; €1,550 paid to operator on the day.</h2>
-    <p class="lead" style="margin-bottom: 2rem; max-width: 56ch;">Lower commitment upfront, no surprises. Pay the BookItMalta booking fee when you confirm the date; the charter price is settled directly with the operator at the dock.</p>
+    <h2 style="margin: 1rem 0 0.8rem; max-width: 22ch;">€1,850 all-in. €300 deposit secures your date — the €1,550 balance is paid on the day.</h2>
+    <p class="lead" style="margin-bottom: 2rem; max-width: 56ch;">Lower commitment upfront, no surprises. Pay the €300 deposit when you confirm the date; the balance is settled directly with the operator at the dock.</p>
 
     <div class="pricing-card">
       <div class="pricing-row">
-        <span class="pr-label">Charter price — paid to operator on the day</span>
-        <span class="pr-value">€1,550</span>
+        <span class="pr-label">Deposit — paid now to secure your date</span>
+        <span class="pr-value">€300</span>
       </div>
       <div class="pricing-row">
-        <span class="pr-label">BookItMalta booking fee — paid now to lock the date</span>
-        <span class="pr-value">€300</span>
+        <span class="pr-label">Balance — paid to the operator on the day</span>
+        <span class="pr-value">€1,550</span>
       </div>
       <div class="pricing-row total">
         <span class="pr-label">Total charter cost</span>
@@ -917,11 +917,11 @@ footer .wordmark span { color: var(--terracotta); }
       </div>
 
       <p class="pricing-note">
-        <strong style="color: var(--ink); font-weight: 500;">How it splits:</strong> the €300 BookItMalta booking fee is paid by secure payment link the moment the captain confirms — it locks the date. The €1,550 charter price is settled directly with Bandama Yacht Charters on the day — cash, bank transfer, or operator's own payment link, your choice. Bandama issues the charter receipt; BookItMalta issues the booking-fee receipt.
+        <strong style="color: var(--ink); font-weight: 500;">How payment works:</strong> the €300 deposit is paid by secure payment link the moment the captain confirms — it secures your date and counts toward the €1,850 total. The €1,550 balance is settled directly with Bandama Yacht Charters on the day — cash, bank transfer, or operator's own payment link, your choice. You'll receive two receipts: the deposit receipt from BookItMalta, and the charter receipt from Bandama.
       </p>
 
       <p class="pricing-note" style="margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--rule);">
-        <strong style="color: var(--ink); font-weight: 500;">Cancellation policy:</strong> cancel <strong style="color: var(--ink); font-weight: 500;">7 or more days before</strong> the charter date and the €300 booking fee is refunded <strong style="color: var(--ink); font-weight: 500;">less a ~2% payment processing fee</strong> (around €5.95) retained by our payment provider. Cancellations within 7 days of the charter forfeit the booking fee. <a href="/terms.html" style="color: var(--terracotta); text-decoration: underline;">Full terms</a>.
+        <strong style="color: var(--ink); font-weight: 500;">Cancellation policy:</strong> cancel <strong style="color: var(--ink); font-weight: 500;">7 or more days before</strong> the charter date and the €300 deposit is refunded <strong style="color: var(--ink); font-weight: 500;">less a ~2% payment processing fee</strong> (around €5.95) retained by our payment provider. Cancellations within 7 days of the charter forfeit the deposit. <a href="/terms.html" style="color: var(--terracotta); text-decoration: underline;">Full terms</a>.
       </p>
     </div>
   </div>
@@ -933,7 +933,7 @@ footer .wordmark span { color: var(--terracotta); }
     <div class="enquiry-grid">
       <div class="enquiry-form">
         <h3>Enquire about a date</h3>
-        <p class="form-intro">Tell us when, how many guests, and how to reach you. The operator confirms availability within 24 hours and sends you a booking-fee payment link.</p>
+        <p class="form-intro">Tell us when, how many guests, and how to reach you. The operator confirms availability within 24 hours and sends you a secure deposit link.</p>
 
         <form id="enquiry-form" action="/api/enquiry" method="POST" novalidate>
           <input type="hidden" name="tenant" value="bandama">
@@ -995,7 +995,7 @@ footer .wordmark span { color: var(--terracotta); }
             <input type="checkbox" id="terms_accepted" name="terms_accepted" required>
             <span class="consent-text">
               I accept the <a href="/terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.
-              <span class="consent-summary">Cancellation: refund of the €300 booking fee less a ~2% payment processing fee if cancelled 7 or more days before the charter. Within 7 days, the booking fee is forfeit.</span>
+              <span class="consent-summary">Cancellation: refund of the €300 deposit less a ~2% payment processing fee if cancelled 7 or more days before the charter. Within 7 days, the deposit is forfeit.</span>
             </span>
           </label>
 
@@ -1069,7 +1069,7 @@ footer .wordmark span { color: var(--terracotta); }
 
         <div class="enquiry-flow-note">
           <h4>What happens next</h4>
-          <p>Your enquiry goes straight to the captain — no payment taken at this stage. The captain reviews each booking personally and confirms availability within 24 hours via email or WhatsApp. Once confirmed, you'll receive a secure payment link by email for the <strong style="color: var(--ink); font-weight: 500;">€300 booking fee</strong> and lock in your date. The charter price of €1,550 is settled directly with the captain on the day of the charter.</p>
+          <p>Your enquiry goes straight to the captain — no payment taken at this stage. The captain reviews each booking personally and confirms availability within 24 hours via email or WhatsApp. Once confirmed, you'll receive a secure payment link by email for the <strong style="color: var(--ink); font-weight: 500;">€300 deposit</strong> — it secures your date and counts toward the €1,850 total. The €1,550 balance is settled directly with the captain on the day of the charter.</p>
         </div>
       </div>
 
@@ -1079,11 +1079,11 @@ footer .wordmark span { color: var(--terracotta); }
         <p class="lead">You're booking directly with Bandama Yacht Charters — Malta-based operator, on their own terms.</p>
         <ul class="enquiry-checks">
           <li>No payment taken at enquiry — captain reviews each booking personally first</li>
-          <li>Booking-fee payment link only sent after the captain confirms availability</li>
-          <li>Two separate transactions: BookItMalta charges the €300 booking fee (Article 11 exempt small undertaking); Bandama charges the €1,550 charter price separately and issues their own VAT receipt for it</li>
+          <li>Deposit payment link only sent after the captain confirms availability</li>
+          <li>Two separate transactions: BookItMalta charges the €300 deposit (Article 11 exempt small undertaking); Bandama charges the €1,550 balance separately and issues their own VAT receipt for it</li>
           <li>WhatsApp + email goes directly to the captain running your charter</li>
           <li>Charter price paid directly to the operator on the day of the charter</li>
-          <li>Cancel 7 or more days before for a booking-fee refund less a ~2% payment processing fee · within 7 days, booking fee is forfeit</li>
+          <li>Cancel 7 or more days before for a deposit refund less a ~2% payment processing fee · within 7 days, the deposit is forfeit</li>
         </ul>
       </div>
     </div>
