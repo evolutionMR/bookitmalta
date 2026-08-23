@@ -637,10 +637,10 @@ body.cm-locked { overflow: hidden; }
       <div class="book-left">
         <div class="eyebrow">§ How booking works</div>
         <h2>Lock your seats in <em>under a minute.</em></h2>
-        <p class="lead">A booking fee holds your seats. The balance is paid to the crew on the day, in cash. No platform middleman, no third-party markups.</p>
+        <p class="lead">A small deposit holds your seats. The balance is paid to the crew on the day, in cash. No platform middleman, no third-party markups.</p>
         <ul class="points">
           <li><div><strong>Pick any departure</strong> in the next 30 days — we confirm your seats within the hour.</div></li>
-          <li><div><strong>€10 booking fee per seat</strong> charged now, secures your spot.</div></li>
+          <li><div><strong>€10 deposit per seat</strong> paid now — counts toward your seat price.</div></li>
           <li><div><strong>€30 per seat to the crew on the day</strong> when you board — in cash.</div></li>
           <li><div><strong>Free cancellation up to 24 hours</strong> before departure. Bad weather → automatic refund.</div></li>
         </ul>
@@ -677,7 +677,7 @@ body.cm-locked { overflow: hidden; }
 
         <div class="book-math">
           <div class="line"><span>€40 × <span id="mSeats">2</span> seats</span><span>€<span id="mTotal">80</span>.00</span></div>
-          <div class="line fee"><span>Pay now (booking fee)</span><span>€<span id="mFee">20</span>.00</span></div>
+          <div class="line fee"><span>Pay now (deposit)</span><span>€<span id="mFee">20</span>.00</span></div>
           <div class="line balance"><span>To crew on the day</span><span>€<span id="mBalance">60</span>.00</span></div>
           <div class="line total"><span>Total</span><span>€<span id="mTotal2">80</span>.00</span></div>
         </div>
@@ -711,7 +711,7 @@ body.cm-locked { overflow: hidden; }
         </button>
 
         <div class="book-fineprint">
-          We'll confirm availability and send a secure payment link for the €<span id="fpFee">20</span> booking fee within 1 hour. Balance settled with crew at boarding.
+          We'll confirm availability and send a secure payment link for the €<span id="fpFee">20</span> deposit within 1 hour. Balance settled with crew at boarding.
         </div>
       </div>
     </div>
@@ -918,7 +918,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>What happens in bad weather?</h4>
-        <p>If the captain calls it (high winds, rough sea), we cancel and process a full refund of the booking fee within 24 hours. You'll get email + WhatsApp notification the morning of the tour.</p>
+        <p>If the captain calls it (high winds, rough sea), we cancel and process a full refund of the deposit within 24 hours. You'll get email + WhatsApp notification the morning of the tour.</p>
       </div>
       <div class="faq-item">
         <h4>Can I bring my own food &amp; drink?</h4>
@@ -934,7 +934,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>What if I need to cancel?</h4>
-        <p>Cancel up to 24 hours before departure for a full refund of the booking fee. Inside 24 hours, the fee is non-refundable but we'll happily move you to another day if seats are available.</p>
+        <p>Cancel up to 24 hours before departure for a full refund of the deposit. Inside 24 hours, the deposit is non-refundable but we'll happily move you to another day if seats are available.</p>
       </div>
     </div>
   </div>
@@ -990,7 +990,7 @@ body.cm-locked { overflow: hidden; }
    • Wires the booking widget (date / slot / seats counter)
    • Constructs a WhatsApp deep link with the booking details
      pre-typed so Anthony gets a clean message and confirms
-     availability + sends the Stripe payment link manually.
+     availability + sends the payment link manually.
    • Once the live booking engine ships, this whole script
      is replaced with the real per-tenant API integration.
 ========================================================= */
@@ -1087,10 +1087,10 @@ function confirmViaWhatsApp() {
     'I’d like to book ' + seats + ' seat' + (seats > 1 ? 's' : '') + ' for the ' + slot + ' departure on ' + dateLabel + '.',
     '',
     '• ' + seats + ' × €' + PRICE_PER_SEAT + ' = €' + total + ' total',
-    '• €' + fee + ' booking fee',
+    '• €' + fee + ' deposit',
     '• €' + balance + ' balance settled in cash with crew on the day',
     '',
-    'Please confirm availability and send the booking-fee payment link — thank you!',
+    'Please confirm availability and send the secure deposit link — thank you!',
     '',
     '(via bookitmalta.com/adventure-cruises)'
   ];
@@ -1260,7 +1260,7 @@ function showSuccess(code, customerEmail) {
   if (codeEl) codeEl.textContent = shortCode;
   if (bodyEl) {
     bodyEl.innerHTML =
-      'Anthony will confirm availability and send a secure payment link for the €10/seat booking fee <strong>within 1 hour</strong>. ' +
+      'Anthony will confirm availability and send a secure payment link for the €10/seat deposit <strong>within 1 hour</strong>. ' +
       'Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.';
   }
   const modal = document.getElementById('confirmModal');
