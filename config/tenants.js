@@ -55,7 +55,7 @@ const TENANTS = {
     meetingPointAddress: "Ta' Xbiex Creek Marina, Ta' Xbiex, Malta",
     calendarEventTitle: 'Bandama — Private Day Charter',
     captainAllowlist: [
-      'catamaranmaltacharters@gmail.com',          // Simon (operator)
+      'simonborgcardona001@gmail.com',             // Simon Borg Cardona (Bandama operator)
       'true-northdigital@outlook.com',             // Julian (owner)
     ],
   },
@@ -119,7 +119,7 @@ const TENANTS = {
   },
 
   // Quote-only listing — no Supabase schema, no Stripe, no DB writes. Catamaran
-  // (La Zingara + Chardonnay) is operated by Simon (same operator as Bandama).
+  // (La Zingara + Chardonnay) is a SEPARATE operator from Bandama — NOT Simon.
   // Enquiries are captured via the /api/enquiry quote path (kind:'private_charter')
   // which only emails — it never touches the booking tables. Set the optional
   // env var CATAMARAN_OPERATOR_EMAIL to route quote emails to the operator
@@ -128,7 +128,7 @@ const TENANTS = {
   catamaran: {
     slug: 'catamaran',
     name: 'Catamaran Malta — La Zingara & Chardonnay',
-    operatorFirstName: 'Simon',
+    operatorFirstName: 'The captain',
     boat: 'La Zingara (Lagoon 450) + Chardonnay (Lagoon 440)',
     pricingModel: 'quote',          // quote-only: never hits stripe/supabase math
     currency: 'EUR',
