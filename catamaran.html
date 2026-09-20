@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Catamaran Malta — Private charters · Blue Lagoon, Comino &amp; Gozo · up to 28 guests</title>
+<title>La Zingara &amp; Chardonnay — Private catamaran charters Malta · Blue Lagoon, Comino &amp; Gozo · up to 28 guests</title>
 <meta name="description" content="Private catamaran charters in Malta aboard La Zingara &amp; Chardonnay. Blue Lagoon day charters, sunset cruises, and full-day Gozo &amp; Comino adventures from Sliema. Up to 28 guests. Request a quote." />
 <meta name="keywords" content="catamaran charter Malta, Blue Lagoon catamaran, Comino catamaran, sunset cruise Malta, private boat charter Sliema, La Zingara, Chardonnay, Gozo catamaran" />
 <link rel="canonical" href="https://bookitmalta.com/catamaran" />
 
 <!-- Open Graph / social -->
-<meta property="og:title" content="Catamaran Malta — Private charters · up to 28 guests" />
+<meta property="og:title" content="La Zingara &amp; Chardonnay — Private catamaran charters Malta · up to 28 guests" />
 <meta property="og:description" content="Private catamaran charters in Malta — Blue Lagoon, Comino &amp; Gozo aboard La Zingara &amp; Chardonnay. Sailing from Sliema. Request a quote." />
 <meta property="og:url" content="https://bookitmalta.com/catamaran" />
 <meta property="og:type" content="website" />
@@ -27,8 +27,8 @@
   "description": "Private catamaran charters from Sliema aboard La Zingara and Chardonnay — Blue Lagoon day charters, sunset cruises, and full-day Gozo & Comino adventures for up to 28 guests. Pricing on request.",
   "provider": {
     "@type": "TravelAgency",
-    "name": "Catamaran Malta",
-    "url": "https://bookitmalta.com/catamaran"
+    "name": "BookItMalta",
+    "url": "https://bookitmalta.com/"
   },
   "areaServed": [
     { "@type": "Place", "name": "Malta" },
@@ -43,734 +43,460 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "BookItMalta", "item": "https://bookitmalta.com/" },
-    { "@type": "ListItem", "position": 2, "name": "Catamaran Malta", "item": "https://bookitmalta.com/catamaran" }
+    { "@type": "ListItem", "position": 2, "name": "La Zingara & Chardonnay", "item": "https://bookitmalta.com/catamaran" }
   ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,30,0..1&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
-   Catamaran Malta — MOBILE-FIRST stylesheet.
-   BookItMalta house style (same tokens as Adventure Cruises).
-   Quote-only private charter — no price chips, no booking math.
+   La Zingara &amp; Chardonnay — 2027 partner-page system (approved 26 Jul).
+   Type B · request a date · QUOTE-FIRST: no fixed public price.
+   Brand tokens baked in — terracotta accent, sea-green secondary.
 ============================================================ */
-:root {
-  --ink: #0B2545;
-  --ink-soft: #1C3558;
-  --paper: #F4EBD9;
-  --paper-deep: #EBDFC6;
-  --terracotta: #C85C2E;
-  --terracotta-deep: #A64620;
-  --sea: #3D6B6F;
-  --sea-light: #7AAFB3;
-  --char: #1C1E26;
-  --mute: rgba(11, 37, 69, 0.55);
-  --rule: rgba(11, 37, 69, 0.15);
-  --rule-strong: rgba(11, 37, 69, 0.35);
-  --ok: #2D6A4F;
-  --ok-soft: #D8F3DC;
-  --warn: #D97706;
-  --warn-soft: #FEF3C7;
-  --serif: "Fraunces", Georgia, serif;
-  --sans:  "Manrope", -apple-system, sans-serif;
-  --mono:  "JetBrains Mono", ui-monospace, monospace;
-  --maxw: 1180px;
-  --gut: clamp(1.15rem, 5vw, 3rem);
-  --bookbar-h: 68px;
+:root{
+  --ink:#0B2545; --sand:#F4EBD9; --surface:#fff; --line:#EBDFC6;
+  --sea:#C85C2E; --sea-dk:#A64620; --sea-tint:#FBEEE6; --sea-lt:#E08A5C;
+  --sun:#3D6B6F; --sun-tint:#EAF1F1; --sun-line:#C7DAD9; --sun-dark:#2E5457; --sun-body:#3A5D60;
+  --text:#152430; --muted:#5D6B77;
+  --r:14px; --r-sm:10px;
+  --sh:0 1px 2px rgba(11,37,69,.06),0 8px 24px rgba(11,37,69,.06);
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
-body { font-size: 16px; line-height: 1.6; overflow-x: hidden; }
-img { max-width: 100%; }
-.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
-.skip-link {
-  position: absolute; left: -999px; top: 0; z-index: 200;
-  background: var(--ink); color: var(--paper); padding: 0.6rem 1rem;
-  border-radius: 0 0 8px 0; font-size: 0.85rem;
-}
-.skip-link:focus { left: 0; }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--surface);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
 
-h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; line-height: 1.12; letter-spacing: -0.01em; color: var(--ink); }
-em { font-style: italic; color: var(--terracotta); }
-.eyebrow {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--terracotta);
-  display: inline-block; margin-bottom: 0.8rem;
-}
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:11px 16px}
+.logo{font-family:var(--serif);font-size:17px;color:var(--ink);text-decoration:none;white-space:nowrap}
+.logo i{font-style:italic;color:var(--sea)}
+.nav .grow{flex:1}
+.navlinks{display:none;gap:20px}
+.navlinks a{font-size:13.5px;color:var(--text);text-decoration:none;opacity:.8}
+.navcta{display:none;background:var(--sea);color:#fff;font-size:13px;font-weight:600;padding:9px 15px;border-radius:999px;text-decoration:none}
+.crumb{padding:10px 16px 0;font-size:12px;color:var(--muted)}
+.crumb a{color:var(--muted);text-decoration:none}
+.crumb b{color:var(--text);font-weight:600}
 
-/* ============================ NAV ============================ */
-.nav {
-  border-bottom: 1px solid var(--rule);
-  padding: 0.8rem 0;
-  background: rgba(244, 235, 217, 0.92);
-  backdrop-filter: blur(8px);
-  position: sticky; top: 0; z-index: 50;
-}
-.nav .wrap { display: flex; justify-content: space-between; align-items: center; }
-.nav .brand {
-  font-family: var(--serif); font-size: 1.1rem; font-weight: 600;
-  text-decoration: none; color: var(--ink); letter-spacing: -0.01em;
-}
-.nav .brand em { color: var(--terracotta); font-style: italic; }
-.nav .meta {
-  font-family: var(--mono); font-size: 0.66rem;
-  color: var(--mute); letter-spacing: 0.05em; text-transform: uppercase;
-}
-.nav a.metalink {
-  color: var(--ink); text-decoration: none; display: inline-flex; align-items: center;
-  min-height: 44px; border-bottom: 1px solid var(--rule-strong); transition: color .15s, border-color .15s;
-}
-.nav a.metalink:hover { color: var(--terracotta); border-color: var(--terracotta); }
+/* ---------- hero ---------- */
+.hero{padding:12px 16px 0}
+.heroimg{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;background:#DCE7E8}
+.heroimg img{width:100%;height:100%;object-fit:cover}
+.badge{position:absolute;top:12px;left:12px;background:rgba(11,37,69,.72);color:#fff;font-size:11px;font-weight:600;
+  padding:6px 10px;border-radius:999px;backdrop-filter:blur(4px)}
+h1.h{font-family:var(--serif);font-size:30px;line-height:1.12;letter-spacing:-.5px;margin:18px 0 8px;color:var(--ink)}
+h1.h em{font-style:italic;color:var(--sea)}
+.lede{font-size:15px;line-height:1.55;color:#3A4855;margin:0 0 14px}
+.pricebox{background:var(--sun-tint);border:1px solid var(--sun-line);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:12px}
+.pricebox .from{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sun-dark);font-weight:700;display:block;margin-bottom:3px}
+.pricebox .amt{font-family:var(--serif);font-size:20px;line-height:1.25;color:var(--ink)}
+.pricebox .split{display:block;font-size:12.5px;color:var(--sun-body);margin-top:4px;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#2F3E4A;background:#F7F3EA;
+  border:1px solid var(--line);border-radius:999px;padding:6px 11px}
 
-/* shared buttons */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 0.95rem 1.6rem; min-height: 48px;
-  font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
-  text-decoration: none; border-radius: 9px;
-  transition: all 0.2s ease; cursor: pointer; border: 0;
-}
-.btn-primary { background: var(--terracotta); color: white; }
-.btn-primary:hover { background: var(--terracotta-deep); }
-.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--rule-strong); }
-.btn-ghost:hover { border-color: var(--ink); }
-.btn .arrow { display: inline-block; margin-left: 0.4rem; transition: transform 0.2s; }
-.btn:hover .arrow { transform: translateX(3px); }
+/* ---------- sections ---------- */
+.sec{padding:26px 16px;border-top:1px solid var(--line)}
+.sec.tint{background:var(--sand)}
+.kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sea);font-weight:700;margin:0 0 6px}
+h2.s{font-family:var(--serif);font-size:22px;line-height:1.18;margin:0 0 10px;letter-spacing:-.3px;color:var(--ink)}
+h2.s em{font-style:italic;color:var(--sea)}
+.body{font-size:14.5px;line-height:1.62;color:#3A4855;margin:0 0 12px}
 
-/* ============================================================
-   HERO — full-bleed cruising shot, headline + chip overlaid
-============================================================ */
-.hero {
-  position: relative;
-  min-height: 78vh;
-  display: flex; align-items: flex-end;
-  color: var(--paper);
-  overflow: hidden;
-}
-.hero-media { position: absolute; inset: 0; z-index: 0; }
-.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 60% center; display: block; }
-.hero-scrim {
-  position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(180deg, rgba(11,37,69,0.55) 0%, rgba(11,37,69,0.40) 42%, rgba(11,37,69,0.86) 100%);
-}
-.hero-inner { position: relative; z-index: 2; width: 100%; padding-top: 4rem; padding-bottom: 1.8rem; }
-.hero .eyebrow { color: #FFD8A8; }
-.hero h1 {
-  color: var(--paper);
-  font-size: clamp(2.1rem, 9vw, 3.3rem);
-  margin-bottom: 0.9rem; max-width: 15ch;
-  text-shadow: 0 2px 18px rgba(11,37,69,0.35);
-}
-.hero h1 em { color: #FFD8A8; }
-.hero .lead {
-  font-size: 1.02rem; color: rgba(244,235,217,0.92);
-  max-width: 46ch; margin-bottom: 1.4rem;
-  text-shadow: 0 1px 10px rgba(11,37,69,0.4);
-}
-.hero-chip {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  background: rgba(244, 235, 217, 0.95); color: var(--ink);
-  padding: 0.45rem 0.9rem; border-radius: 30px;
-  font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
-  margin-bottom: 1.3rem; letter-spacing: 0.02em;
-}
-.hero .cta-row { display: flex; flex-direction: column; gap: 0.7rem; }
-.hero .btn-primary { width: 100%; }
-.hero .btn-ghost { width: 100%; color: var(--paper); border-color: rgba(244,235,217,0.5); }
-.hero .btn-ghost:hover { border-color: var(--paper); background: rgba(244,235,217,0.08); }
+/* ---------- request-a-date panel ---------- */
+.book{background:var(--ink);color:#fff;border-radius:var(--r);padding:18px 16px}
+.book h3{font-family:var(--serif);font-size:20px;margin:0 0 4px;color:#fff}
+.book p.hint{font-size:12.5px;color:#A9BDC9;margin:0 0 14px}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#9CB3C1;margin-bottom:5px;font-weight:600}
+.inp{width:100%;background:#12293b;border:1px solid #27455c;color:#fff;border-radius:var(--r-sm);padding:12px 13px;font:inherit;font-size:16px;
+  appearance:none;-webkit-appearance:none;min-width:0}
+.inp::placeholder{color:#6E8797}
+select.inp{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239CB3C1' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+input[type="date"].inp{text-align:left;-webkit-text-fill-color:#fff}
+textarea.inp{resize:vertical;min-height:64px}
+.two{display:flex;gap:9px}.two>*{flex:1;min-width:0}
+.slots{display:flex;gap:8px}
+.slot{flex:1;text-align:center;border:1px solid #27455c;border-radius:var(--r-sm);padding:10px 5px;font-size:13.5px;cursor:pointer;background:#12293b;color:#fff;font-family:inherit}
+.slot.sel{background:var(--sea);border-color:var(--sea);font-weight:600}
+.slot small{display:block;font-size:10.5px;color:#9CB3C1;margin-top:2px}
+.slot.sel small{color:#F6DFD2}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid #27455c;margin-top:13px;padding-top:12px;font-size:13.5px;color:#C3D4DE}
+.total b{font-family:var(--serif);font-size:17px;color:#fff;font-weight:400;white-space:nowrap}
+.cta{display:block;width:100%;text-align:center;background:var(--sea);color:#fff;border:0;border-radius:var(--r-sm);
+  padding:15px;font:inherit;font-size:15.5px;font-weight:600;margin-top:13px;cursor:pointer}
+.cta.ghost{background:transparent;border:1px solid #37596f;color:#DCE8EE;font-weight:500;margin-top:9px;font-size:14px}
+.cta:disabled{opacity:.6;cursor:default}
+.fine{font-size:11.5px;line-height:1.55;color:#8FA6B4;margin:11px 0 0;text-align:center}
+.fine a{color:#C3D4DE}
+.quote-error{background:#5C2B22;border:1px solid #8C4436;color:#FBD9CE;border-radius:var(--r-sm);padding:10px 12px;font-size:13px;margin-top:11px}
+.quote-ok{background:#12382F;border:1px solid #1F5C4C;color:#CFEFE2;border-radius:var(--r-sm);padding:14px;font-size:14px;line-height:1.6}
 
-/* ============================ KEY FACTS STRIP ============================ */
-.trust {
-  padding: 1.1rem var(--gut);
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper-deep);
-}
-.trust-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1rem;
-  max-width: var(--maxw); margin: 0 auto;
-  font-family: var(--mono); font-size: 0.74rem;
-  color: var(--ink-soft); letter-spacing: 0.02em;
-}
-.trust-grid span { display: flex; align-items: center; gap: 0.4rem; line-height: 1.3; }
-.trust-grid b { color: var(--ink); font-weight: 600; }
+/* ---------- timeline ---------- */
+.tl{position:relative;padding-left:22px}
+.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:16px;width:2px;background:var(--line)}
+.tl .stop{position:relative;padding-bottom:18px}
+.tl .stop:before{content:"";position:absolute;left:-22px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--sea)}
+.tl .t{font-size:11.5px;letter-spacing:.08em;color:var(--sea);font-weight:700;text-transform:uppercase}
+.tl .p{font-family:var(--serif);font-size:16.5px;margin:1px 0 2px;color:var(--ink)}
+.tl .d{font-size:13.5px;color:#4A5866;line-height:1.55}
 
-/* ============================ FLEET / BOATS ============================ */
-.boats { padding: 3rem 0; }
-.boats .head { max-width: 56rem; margin-bottom: 1.6rem; }
-.boats h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
-.boats .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
-.boats-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-.boat-card { background: var(--paper-deep); border-radius: 12px; border: 1px solid var(--rule); overflow: hidden; }
-.boat-photo { aspect-ratio: 4/3; background: var(--paper-deep); position: relative; overflow: hidden; }
-.boat-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.boat-card .body { padding: 1.2rem 1.4rem 1.4rem; }
-.boat-card h4 { font-size: 1.25rem; margin-bottom: 0.4rem; }
-.boat-card .specs { font-family: var(--mono); font-size: 0.74rem; color: var(--mute); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.7rem; }
-.boat-card p { font-size: 0.9rem; color: var(--ink-soft); }
+/* ---------- cards / lists ---------- */
+.lists{display:grid;gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:15px 16px}
+.card.on{background:var(--sun-tint);border-color:var(--sun-line)}
+.card h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 9px;color:var(--ink)}
+.card ul{list-style:none;margin:0;padding:0}
+.card li{font-size:13.8px;line-height:1.5;padding:5px 0 5px 22px;position:relative;color:#37454F}
+.card li:before{content:"";position:absolute;left:2px;top:11px;width:9px;height:9px;border-radius:3px;background:var(--sun);opacity:.55}
+.card.byo li:before{background:var(--sea);opacity:.6}
 
-/* ============================================================
-   EXPERIENCES — stacked cards with a portrait photo each
-============================================================ */
-.exp { padding: 3rem 0; background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.exp .head { max-width: 56rem; margin-bottom: 1.6rem; }
-.exp h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
-.exp .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
-.exp-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-.exp-card { background: #FFFAF1; border-radius: 12px; border: 1px solid var(--rule); overflow: hidden; display: flex; flex-direction: column; }
-.exp-photo { aspect-ratio: 3/4; background: var(--sea); overflow: hidden; }
-.exp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.exp-card .body { padding: 1.2rem 1.4rem 1.4rem; }
-.exp-card .tag { font-family: var(--mono); font-size: 0.66rem; background: var(--terracotta); color: white; padding: 0.16rem 0.5rem; border-radius: 3px; display: inline-block; margin-bottom: 0.6rem; letter-spacing: 0.05em; }
-.exp-card h4 { font-size: 1.2rem; margin-bottom: 0.35rem; }
-.exp-card p { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; }
+/* ---------- specs ---------- */
+.specs{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
+.specs .row{display:flex;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);font-size:13.8px}
+.specs .row:last-child{border-bottom:0}
+.specs .row span{color:var(--muted)}
+.specs .row b{font-weight:600;text-align:right}
 
-/* ============================================================
-   GALLERY — photo band
-============================================================ */
-.gallery { padding: 3rem 0; }
-.gallery .head { max-width: 56rem; margin-bottom: 1.5rem; }
-.gallery h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
-.gallery .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
-.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-.gallery-grid figure { margin: 0; border-radius: 10px; overflow: hidden; background: var(--paper-deep); aspect-ratio: 1 / 1; }
-.gallery-grid figure.wide { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
-.gallery-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-.gallery-grid figure:hover img { transform: scale(1.04); }
+/* ---------- gallery ---------- */
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gal .g{aspect-ratio:1/1;border-radius:var(--r-sm);overflow:hidden;background:#DCE7E8}
+.gal .g img{width:100%;height:100%;object-fit:cover}
+.gal .g.tall{grid-column:span 2;aspect-ratio:16/9}
 
-/* ============================================================
-   WHAT MAKES IT SIMPLE — trust points
-============================================================ */
-.incl { padding: 2.8rem 0; background: var(--paper-deep); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.incl .head { max-width: 56rem; margin-bottom: 1.4rem; }
-.incl h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
-.incl .lead { font-size: 0.98rem; color: var(--ink-soft); max-width: 56ch; }
-.incl-grid { display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
-.simple-card { background: #FFFAF1; border: 1px solid var(--rule); border-radius: 12px; padding: 1.3rem 1.4rem; }
-.simple-card .ico { font-size: 1.5rem; line-height: 1; margin-bottom: 0.6rem; display: block; }
-.simple-card h3 { font-size: 1.1rem; margin-bottom: 0.35rem; }
-.simple-card p { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; }
+/* ---------- paying ---------- */
+.money{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.money .line{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.money .line:last-child{border-bottom:0}
+.money .num{width:26px;height:26px;flex:none;border-radius:50%;background:var(--sea-tint);color:var(--sea-dk);font-size:12.5px;font-weight:700;display:grid;place-items:center}
+.money .line b{display:block;font-size:14.5px;margin-bottom:2px;color:var(--ink)}
+.money .line p{margin:0;font-size:13.2px;line-height:1.55;color:#4A5866}
+.cancel{font-size:13px;line-height:1.62;color:#4A5866;margin:12px 2px 0}
+.cancel b{color:var(--ink)}
 
-/* ============================================================
-   BOOKING ASSISTANT — quote form (#enquire)
-============================================================ */
-.private { padding: 3rem 0; background: var(--ink); color: var(--paper); }
-.private-grid { display: grid; grid-template-columns: 1fr; gap: 1.8rem; align-items: center; }
-.private h2 { color: var(--paper); font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.9rem; max-width: 18ch; }
-.private h2 em { color: #FFD8A8; }
-.private p { color: rgba(244, 235, 217, 0.8); margin-bottom: 1.2rem; max-width: 50ch; font-size: 0.96rem; }
-.private .eyebrow { color: #FFD8A8; }
-.private-cta { display: flex; flex-direction: column; gap: 0.7rem; }
-.private .btn-light, .private .btn-wa {
-  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  min-height: 48px; padding: 0.9rem 1.5rem; border-radius: 9px;
-  font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
-  text-decoration: none; cursor: pointer; width: 100%; transition: all 0.2s ease;
-}
-.private .btn-light { background: var(--paper); color: var(--ink); border: 0; }
-.private .btn-light:hover { background: #FFD8A8; }
-.private .btn-light:disabled { opacity: 0.6; cursor: not-allowed; }
-.private .btn-wa { background: transparent; color: var(--paper); border: 1.5px solid rgba(244, 235, 217, 0.5); }
-.private .btn-wa:hover { border-color: var(--paper); background: rgba(244, 235, 217, 0.08); }
-.private .btn-wa:disabled { opacity: 0.6; cursor: not-allowed; }
-.private-note { color: rgba(244, 235, 217, 0.6); font-size: 0.82rem; margin-top: 0.9rem; }
-.private-note a { color: #FFD8A8; text-decoration: underline; }
-.quote-form { display: flex; flex-direction: column; gap: 0.6rem; }
-.qf-row { display: flex; flex-direction: column; gap: 0.6rem; }
-.qf-field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 0; }
-.qf-field > span { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(244, 235, 217, 0.7); }
-.quote-form input, .quote-form textarea, .quote-form select {
-  width: 100%; min-height: 46px; padding: 0.7rem 0.9rem;
-  background: var(--paper); border: 1px solid rgba(244, 235, 217, 0.4); border-radius: 9px;
-  font-family: var(--sans); font-size: 0.95rem; color: var(--ink);
-}
-.quote-form textarea { min-height: 80px; resize: vertical; }
-.quote-form input::placeholder, .quote-form textarea::placeholder { color: rgba(11, 37, 69, 0.5); }
-.quote-form input:focus, .quote-form textarea:focus, .quote-form select:focus { outline: 2px solid var(--terracotta); outline-offset: -1px; border-color: var(--terracotta); }
-.quote-form .private-cta { margin-top: 0.2rem; }
-.quote-error { background: #FEF3C7; color: #7C2D12; border: 1px solid #FCD34D; border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.85rem; }
-.quote-ok { color: var(--paper); font-size: 1rem; line-height: 1.5; }
-.quote-ok strong { color: #FFD8A8; }
-.private-image { aspect-ratio: 4/3; border-radius: 12px; background: var(--paper-deep); position: relative; overflow: hidden; border: 1px solid rgba(255, 216, 168, 0.2); order: -1; }
-.private-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* ---------- faq ---------- */
+details.q{border-bottom:1px solid var(--line)}
+details.q summary{list-style:none;cursor:pointer;padding:14px 26px 14px 0;font-size:14.8px;font-weight:600;position:relative;color:var(--ink)}
+details.q summary::-webkit-details-marker{display:none}
+details.q summary:after{content:"+";position:absolute;right:2px;top:12px;font-size:19px;color:var(--sea);font-weight:400}
+details.q[open] summary:after{content:"–"}
+details.q p{margin:0 0 15px;font-size:13.8px;line-height:1.62;color:#4A5866}
 
-/* ============================================================
-   FAQ
-============================================================ */
-.faq { padding: 3rem 0; }
-.faq .head { max-width: 56rem; margin-bottom: 1.4rem; }
-.faq h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); margin-bottom: 0.6rem; }
-.faq-list { max-width: 56rem; }
-.faq-item { padding: 1.2rem 0; border-bottom: 1px solid var(--rule); }
-.faq-item:last-child { border-bottom: 0; }
-.faq-item h4 { font-family: var(--sans); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.005em; }
-.faq-item p { color: var(--ink-soft); font-size: 0.93rem; }
+/* ---------- footer ---------- */
+.ft{background:var(--ink);color:#C7D6DE;padding:26px 16px 22px}
+.ft .fl{font-family:var(--serif);font-size:18px;color:#fff;margin-bottom:6px}
+.ft .fl em{font-style:italic;color:var(--sea-lt)}
+.ft p.d{font-size:13px;line-height:1.6;color:#9DB2BF;margin:0 0 18px}
+.ft .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.ft h5{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7E97A6;margin:0 0 8px}
+.ft a{display:block;font-size:13.2px;color:#C7D6DE;text-decoration:none;padding:3px 0}
+.ft .plain{font-size:13.2px;color:#9DB2BF;padding:3px 0;line-height:1.6}
+.ft .base{border-top:1px solid #22404f;padding-top:14px;font-size:11.8px;color:#7E97A6;line-height:1.7}
+.ft .base a{display:inline;padding:0;text-decoration:underline}
 
-/* ============================================================
-   FOOTER
-============================================================ */
-.foot { padding: 2.5rem 0 calc(2rem + var(--bookbar-h)); background: var(--paper-deep); border-top: 1px solid var(--rule); }
-.foot-grid { display: grid; grid-template-columns: 1fr; gap: 1.8rem; margin-bottom: 2rem; }
-.foot-brand .name { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
-.foot-brand .name em { color: var(--terracotta); font-style: italic; }
-.foot-brand p { font-size: 0.86rem; color: var(--ink-soft); max-width: 42ch; }
-.foot-col h5 { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mute); margin-bottom: 0.7rem; font-weight: 600; }
-.foot-col ul { list-style: none; padding: 0; }
-.foot-col li { padding: 0.3rem 0; font-size: 0.92rem; }
-.foot-col a { color: var(--ink-soft); text-decoration: none; }
-.foot-col a:hover { color: var(--terracotta); }
-.foot-bottom { padding-top: 1.4rem; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.76rem; color: var(--mute); }
-.foot-bottom .powered { font-family: var(--mono); }
-.foot-bottom .powered strong { color: var(--ink); font-weight: 600; }
+/* ---------- sticky mobile bar ---------- */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 14px;
+  transform:translateY(110%);transition:transform .25s ease}
+.sticky.show{transform:none}
+.sticky .p{flex:1;min-width:0}
+.sticky .p b{display:block;font-family:var(--serif);font-size:16px;line-height:1.15;color:var(--ink)}
+.sticky .p b small{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted)}
+.sticky .p em{font-style:normal;font-size:11.5px;color:var(--muted)}
+.sticky a{background:var(--sea);color:#fff;font-size:14.5px;font-weight:600;padding:12px 18px;border-radius:999px;text-decoration:none;white-space:nowrap}
 
-/* ============================================================
-   STICKY MOBILE BOOK BAR
-============================================================ */
-.bookbar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
-  height: var(--bookbar-h);
-  display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.6rem var(--gut);
-  background: rgba(244, 235, 217, 0.97);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid var(--rule-strong);
-  box-shadow: 0 -4px 20px rgba(11, 37, 69, 0.1);
-}
-.bookbar .price { line-height: 1.1; flex-shrink: 0; }
-.bookbar .price b { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--ink); display: block; }
-.bookbar .price span { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mute); }
-.bookbar a.bar-cta {
-  flex: 1; display: inline-flex; align-items: center; justify-content: center;
-  min-height: 46px; background: var(--terracotta); color: #fff;
-  border-radius: 9px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
-}
-.bookbar a.bar-cta:hover { background: var(--terracotta-deep); }
+/* ---------- back to top ---------- */
+.to-top{position:fixed;right:14px;bottom:74px;z-index:34;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+  background:rgba(255,255,255,.95);color:var(--ink);font-size:17px;cursor:pointer;box-shadow:var(--sh);
+  opacity:0;pointer-events:none;transition:opacity .25s ease}
+.to-top.show{opacity:1;pointer-events:auto}
 
-/* Floating back-to-top — fades in on scroll, sits above the book bar on mobile */
-.to-top {
-  position: fixed; right: 16px; bottom: calc(var(--bookbar-h) + 14px); z-index: 70;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--ink); color: var(--paper); border: 0; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; font-size: 1.25rem; line-height: 1;
-  box-shadow: 0 6px 18px rgba(11, 37, 69, 0.28);
-  opacity: 0; visibility: hidden; transform: translateY(8px);
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s, background 0.2s ease;
-}
-.to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
-.to-top:hover { background: var(--terracotta); }
-.to-top:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 3px; }
-
-/* ============================================================
-   >= 760px  — tablet / small desktop
-============================================================ */
-@media (min-width: 760px) {
-  .nav { padding: 0.85rem 0; }
-  .nav .brand { font-size: 1.15rem; }
-  .nav .meta { font-size: 0.72rem; }
-
-  .hero { min-height: 86vh; }
-  .hero-inner { padding-top: 5rem; padding-bottom: 3rem; }
-  .hero h1 { font-size: clamp(3rem, 6vw, 4.2rem); }
-  .hero .lead { font-size: 1.15rem; }
-  .hero .cta-row { flex-direction: row; align-items: center; }
-  .hero .btn-primary, .hero .btn-ghost { width: auto; }
-
-  .trust-grid { display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 0.82rem; }
-
-  .boats { padding: 5rem 0; }
-  .boats-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
-
-  .exp { padding: 5rem 0; }
-  .exp-grid { grid-template-columns: repeat(2, 1fr); gap: 1.6rem; }
-
-  .gallery { padding: 4.5rem 0; }
-  .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
-  .gallery-grid figure.wide { grid-column: span 2; aspect-ratio: 1 / 1; }
-  .gallery-grid figure.tall { grid-row: span 2; aspect-ratio: 1 / 2; }
-
-  .incl { padding: 4rem 0; }
-  .incl-grid { grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
-
-  .private { padding: 4.5rem 0; }
-  .private-grid { grid-template-columns: 1.2fr 1fr; gap: 3rem; }
-  .private-image { order: 0; }
-  .qf-row { flex-direction: row; }
-  .qf-row > * { flex: 1; min-width: 0; }
-
-  .faq { padding: 5rem 0; }
-
-  .foot { padding: 3rem 0 2rem; }
-  .foot-grid { grid-template-columns: 1.4fr 1fr 1fr; gap: 2.5rem; }
-  .foot-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
-
-  /* sticky bar is mobile-only */
-  .bookbar { display: none; }
-  .to-top { bottom: 24px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.01ms !important; transition: none !important; }
+/* ---------- desktop ---------- */
+@media (min-width:820px){
+  .navlinks{display:flex}.navcta{display:inline-block}
+  .nav{padding:14px 40px}.crumb{padding:14px 40px 0}
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center;padding:22px 40px 6px;max-width:1180px;margin:0 auto}
+  .heroimg{aspect-ratio:5/6}
+  h1.h{font-size:44px;margin-top:0}.lede{font-size:16.5px}
+  .sec{padding:44px 40px}
+  .sec>.in{max-width:1100px;margin:0 auto}
+  .secgrid{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+  .secgrid3{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+  h2.s{font-size:29px}
+  .lists{grid-template-columns:1fr 1fr}
+  .gal{grid-template-columns:repeat(3,1fr)}.gal .g.tall{grid-column:span 1;aspect-ratio:1/1}
+  .book{max-width:520px;margin:0 auto}
+  .sticky{display:none}
+  .to-top{bottom:20px}
+  .ft{padding:40px 40px 26px}.ft .in{max-width:1100px;margin:0 auto}.ft .cols{grid-template-columns:repeat(4,1fr)}
+  .money{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .money .line{border-bottom:0;border-right:1px solid var(--line)}
+  .money .line:last-child{border-right:0}
+  .faqgrid{display:grid;grid-template-columns:.8fr 1.2fr;gap:34px}
 }
 </style>
-
-<!-- Cookie consent + analytics/advertising gate (Clarity · Meta pixel · Google Ads). -->
 <script defer src="/consent.js"></script>
 </head>
 <body>
-<a href="#enquire" class="skip-link">Skip to enquiry</a>
 
 <!-- ============================ NAV ============================ -->
 <nav class="nav">
-  <div class="wrap">
-    <a href="/" class="brand">Book<em>It</em>Malta</a>
-    <a class="meta metalink" href="/#charters">All charters</a>
-  </div>
+  <a class="logo" href="/">BookIt<i>Malta</i></a>
+  <span class="grow"></span>
+  <span class="navlinks">
+    <a href="/">All charters</a>
+    <a href="#experiences">The experiences</a>
+    <a href="#fleet">The boats</a>
+    <a href="#faq">Good to know</a>
+  </span>
+  <a class="navcta" href="#enquire">Request a date</a>
 </nav>
 
+<div class="crumb"><a href="/">All charters</a> › <b>La Zingara &amp; Chardonnay</b></div>
+
 <!-- ============================ HERO ============================ -->
-<section class="hero">
-  <div class="hero-media">
+<header class="hero">
+  <div class="heroimg">
+    <span class="badge">Private catamaran · day or sunset</span>
     <img src="https://cdn.sanity.io/images/xy4l8931/production/4b63cc71fccb1f89537a98eab6ab69a826e9719c-1440x942.jpg?w=1280&q=80&auto=format"
-         alt="The Blue Lagoon at Comino — a natural rock arch over crystal-clear turquoise water, a Catamaran Malta charter destination."
-         width="1440" height="942" fetchpriority="high" decoding="async" />
+         alt="Sailing catamaran at anchor in clear turquoise water off Comino, Malta" width="1440" height="942" fetchpriority="high" />
   </div>
-  <div class="hero-scrim"></div>
-  <div class="hero-inner">
-    <div class="wrap">
-      <div class="eyebrow">Catamaran Malta · Private charter</div>
-      <h1>Your own catamaran. <em>Blue Lagoon &amp; beyond.</em></h1>
-      <p class="lead">Private charters from Sliema aboard La Zingara &amp; Chardonnay — Comino's turquoise water, Gozo's caves, and golden-hour sunsets, at your own pace.</p>
-      <div class="hero-chip">⛵ Private charter · up to 28 guests</div>
-      <div class="cta-row">
-        <a href="#enquire" class="btn btn-primary">Request a quote <span class="arrow">→</span></a>
-        <a href="#fleet" class="btn btn-ghost">Meet the boats</a>
+  <div>
+    <h1 class="h">Your own sailing catamaran, <em>Blue Lagoon and beyond</em>.</h1>
+    <p class="lede">Two catamarans out of Sliema, up to 28 guests. Take the whole boat for a full day to Comino and Gozo, or for a sunset run along the coast.</p>
+    <div class="pricebox">
+      <span class="from">Pricing — tailored to your day</span>
+      <span class="amt">Request today, quote usually the same day.</span>
+      <span class="split">Every charter is private, so the price depends on the boat, the season and your group. Once your date is confirmed, a 10% deposit plus card processing holds the boat — the balance goes to the operator on the day.</span>
+    </div>
+    <div class="chips">
+      <span class="chip">Sliema</span>
+      <span class="chip">Day 10:00–18:00</span>
+      <span class="chip">Sunset 19:00–00:00</span>
+      <span class="chip">Up to 28 guests</span>
+      <span class="chip">Private only — never shared</span>
+      <span class="chip">Same-day reply</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ REQUEST A DATE ============================ -->
+<section class="sec" id="enquire">
+  <div class="in">
+  <div class="book">
+    <h3>Request your date</h3>
+    <p class="hint">No payment now. Tell us your day — we check both boats and come back with a tailored quote, usually the same day.</p>
+    <form id="quoteForm" onsubmit="submitQuote(event)">
+      <input type="hidden" id="qExperience" value="Day charter" />
+      <div class="field"><label>Experience</label>
+        <div class="slots">
+          <button type="button" class="slot sel" data-exp="Day charter">Full day<small>10:00–18:00</small></button>
+          <button type="button" class="slot" data-exp="Sunset cruise">Sunset<small>19:00–00:00</small></button>
+        </div>
       </div>
+      <div class="two">
+        <div class="field"><label>Preferred date</label><input class="inp" type="date" id="qDates" /></div>
+        <div class="field"><label>Guests</label>
+          <select class="inp" id="qGroup">
+            <option value="">Select…</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+            <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
+            <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+            <option>21</option><option>22</option><option>23</option><option>24</option><option>25</option>
+            <option>26</option><option>27</option><option>28</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Boat preference</label>
+        <select class="inp" id="qBoat">
+          <option value="Either">Either — recommend one for us</option>
+          <option value="La Zingara">La Zingara (up to 28)</option>
+          <option value="Chardonnay">Chardonnay (up to 24)</option>
+        </select>
+      </div>
+      <div class="two">
+        <div class="field"><label>Name</label><input class="inp" type="text" id="qName" placeholder="Your name" autocomplete="name" required /></div>
+        <div class="field"><label>Email</label><input class="inp" type="email" id="qEmail" placeholder="you@email.com" autocomplete="email" required /></div>
+      </div>
+      <div class="field"><label>Anything we should know</label><textarea class="inp" id="qMsg" placeholder="Occasion, ages, timings… (optional)"></textarea></div>
+      <div id="quoteError" class="quote-error" hidden></div>
+      <div class="total"><span>Deposit if confirmed<br><span style="font-size:11.5px;color:#8FA6B4">Nothing charged until you accept · card processing is never refundable</span></span><b>10% + card processing</b></div>
+      <button type="submit" class="cta" id="qSubmit">Send my request →</button>
+      <button type="button" class="cta ghost" id="qWa" onclick="quoteViaWhatsApp()">Ask on WhatsApp instead</button>
+      <p class="fine">Your request goes straight to BookItMalta — we handle the quote and reply, usually the same day. By sending, you agree to our <a href="/privacy.html" target="_blank">privacy policy</a>.</p>
+    </form>
+  </div>
+  </div>
+</section>
+
+<!-- ============================ THE TWO EXPERIENCES ============================ -->
+<section class="sec tint" id="experiences">
+  <div class="in secgrid3">
+    <div>
+      <p class="kicker">The two experiences</p>
+      <h2 class="s">A full day, or an evening.</h2>
+      <div class="tl">
+        <div class="stop"><div class="t">Full day · 10:00</div><div class="p">Out of Sliema</div><div class="d">Sails up, north past St Julian’s and across to Comino.</div></div>
+        <div class="stop"><div class="t">Midday</div><div class="p">Blue Lagoon and the caves</div><div class="d">Anchored for the long swim, with the paddleboards and snorkel gear off the back.</div></div>
+        <div class="stop"><div class="t">Afternoon</div><div class="p">Gozo coast, then home</div><div class="d">Lunch on deck, one more swim stop, alongside in Sliema by 18:00.</div></div>
+        <div class="stop"><div class="t">Sunset · 19:00</div><div class="p">Evening run</div><div class="d">Along the coast for the light, anchored somewhere quiet, back by midnight.</div></div>
+        <div class="stop"><div class="t">Either way</div><div class="p">The boat is yours</div><div class="d">Private charter only — no shared departures on these boats.</div></div>
+      </div>
+    </div>
+    <div class="gal">
+      <div class="g tall"><img loading="lazy" src="https://cdn.sanity.io/images/xy4l8931/production/2f2d4067f8eb5b936981c6527ce21bcb4026aa3b-1440x960.jpg?w=900&q=80&auto=format" alt="Catamaran under sail off the Maltese coast" /></div>
+      <div class="g"><img loading="lazy" src="https://cdn.sanity.io/images/xy4l8931/production/26d5b17a542fc2b8ace91867420a3828adab9d3a-1440x1080.jpg?w=700&q=80&auto=format" alt="Guests swimming in the Blue Lagoon beside the catamaran" /></div>
+      <div class="g"><img loading="lazy" src="https://cdn.sanity.io/images/xy4l8931/production/039a58fee17ffe63d56d0c2d025b30e74daa4479-810x1440.jpg?w=700&q=80&auto=format" alt="Sunset from the deck of the catamaran" /></div>
     </div>
   </div>
 </section>
 
-<!-- ============================ KEY FACTS STRIP ============================ -->
-<section class="trust">
-  <div class="trust-grid">
-    <span>⛵ <b>2 catamarans</b></span>
-    <span>📍 <b>Sliema</b></span>
-    <span>👤 <b>Up to 28 guests</b></span>
-    <span>🌅 <b>Day &amp; sunset</b></span>
-  </div>
-</section>
-
-<!-- ============================ FLEET ============================ -->
-<section class="boats" id="fleet">
-  <div class="wrap">
-    <div class="head">
-      <div class="eyebrow">§ The fleet</div>
-      <h2>Two catamarans. <em>One crew. Same berth in Sliema.</em></h2>
-      <p class="lead">Both sail from Sliema with the same crew standards. Tell us your group and occasion and we'll match you to the right boat — or hold both for a larger party.</p>
-    </div>
-    <div class="boats-grid">
-      <div class="boat-card">
-        <div class="boat-photo">
-          <img src="https://cdn.sanity.io/images/xy4l8931/production/2f2d4067f8eb5b936981c6527ce21bcb4026aa3b-1440x960.jpg?w=1280&q=80&auto=format"
-               alt="La Zingara, a Lagoon 450 sailing catamaran, anchored in clear Maltese water with trampoline nets forward."
-               loading="lazy" decoding="async" width="1440" height="960" />
-        </div>
-        <div class="body">
-          <h4>La Zingara · Lagoon 450</h4>
-          <div class="specs">Up to 28 guests · Shaded cockpit · Trampoline nets · Sliema</div>
-          <p>Shaded cockpit and big forward trampoline nets make this the easy choice for families, relaxed swim days, and on-the-water proposals.</p>
-        </div>
-      </div>
-      <div class="boat-card">
-        <div class="boat-photo">
-          <img src="https://cdn.sanity.io/images/xy4l8931/production/26d5b17a542fc2b8ace91867420a3828adab9d3a-1440x1080.jpg?w=1280&q=80&auto=format"
-               alt="Chardonnay, a Lagoon 440 sailing catamaran, under way off Malta with sun loungers on deck."
-               loading="lazy" decoding="async" width="1440" height="1080" />
-        </div>
-        <div class="body">
-          <h4>Chardonnay · Lagoon 440</h4>
-          <div class="specs">Up to 24 guests · Premium sound · Sun loungers · Tender</div>
-          <p>Premium sound system, sun loungers, and her own tender — built for big celebrations and corporate days out. Sails from Sliema with the same crew.</p>
-        </div>
-      </div>
+<!-- ============================ ON BOARD ============================ -->
+<section class="sec" id="onboard">
+  <div class="in">
+    <p class="kicker">On board</p>
+    <h2 class="s">What’s on the boat, what to bring.</h2>
+    <div class="lists">
+      <div class="card on"><h4>On the boat</h4><ul>
+        <li>Your skipper and crew</li>
+        <li>Fridge, ice and coolers</li>
+        <li>Snorkel gear and paddleboards</li>
+        <li>Shaded cockpit and trampoline nets</li>
+        <li>Bluetooth sound system</li>
+      </ul></div>
+      <div class="card byo"><h4>Bring, or ask us to arrange</h4><ul>
+        <li>Food and drink for your group</li>
+        <li>Towels and swimwear</li>
+        <li>Sun cream and a hat</li>
+        <li>Anything for a special occasion — tell us in your request and we’ll price it with your quote</li>
+      </ul></div>
     </div>
   </div>
 </section>
 
-<!-- ============================ EXPERIENCES ============================ -->
-<section class="exp" id="experiences">
-  <div class="wrap">
-    <div class="head">
-      <div class="eyebrow">§ The experiences</div>
-      <h2>Two ways out on the water.</h2>
-      <p class="lead">A full day or golden hour — every charter is private, so we tailor the route, the stops and the catering to your group.</p>
+<!-- ============================ THE BOATS ============================ -->
+<section class="sec tint" id="fleet">
+  <div class="in secgrid">
+    <div>
+      <p class="kicker">The boats</p>
+      <h2 class="s">La Zingara &amp; Chardonnay — one Sliema berth.</h2>
+      <p class="body">Two sailing catamarans, same crew standards, same home berth. La Zingara is the party boat — big celebrations, corporate days and groups up to 28; Chardonnay is the calmer of the two, suited to families, relaxed swim days and proposals. Pick “Either” in the form and we’ll recommend the best fit for your date.</p>
+      <div class="specs">
+        <div class="row"><span>La Zingara</span><b>Up to 28 guests</b></div>
+        <div class="row"><span>Chardonnay</span><b>Up to 24 guests</b></div>
+        <div class="row"><span>Departs</span><b>Sliema</b></div>
+        <div class="row"><span>Full day</span><b>10:00–18:00</b></div>
+        <div class="row"><span>Sunset</span><b>19:00–00:00</b></div>
+        <div class="row"><span>Larger parties</span><b>Both boats, same day — ask us</b></div>
+      </div>
     </div>
-    <div class="exp-grid">
-      <div class="exp-card">
-        <div class="exp-photo">
-          <img src="https://cdn.sanity.io/images/xy4l8931/production/039a58fee17ffe63d56d0c2d025b30e74daa4479-810x1440.jpg?w=810&q=80&auto=format"
-               alt="Turquoise water of the Blue Lagoon at Comino, seen from a catamaran with snorkel gear on deck."
-               loading="lazy" decoding="async" width="810" height="1440" />
-        </div>
-        <div class="body">
-          <span class="tag">10:00 – 18:00</span>
-          <h4>Day charter</h4>
-          <p>A full day around Comino and Gozo — swim the Blue Lagoon's turquoise water, explore caves and cliff-jumping spots, with snorkel gear, paddleboards and onboard catering through the afternoon.</p>
-        </div>
-      </div>
-      <div class="exp-card">
-        <div class="exp-photo">
-          <img src="https://cdn.sanity.io/images/xy4l8931/production/77e9d2efabe47283f5cbdae11b3e1c62fe882087-1092x1366.jpg?w=1092&q=80&auto=format"
-               alt="Golden-hour sunset over the sea from the deck of a catamaran off Malta."
-               loading="lazy" decoding="async" width="1092" height="1366" />
-        </div>
-        <div class="body">
-          <span class="tag">19:00 – 00:00</span>
-          <h4>Sunset cruise</h4>
-          <p>Cast off into the golden light for an evening on the water. A favourite for proposals and after-work get-togethers.</p>
-        </div>
-      </div>
+    <div class="gal">
+      <div class="g tall"><img loading="lazy" src="https://cdn.sanity.io/images/xy4l8931/production/7a1029da54eee9b90f91b2f3010d2b2b10f43991-971x693.jpg?w=900&q=80&auto=format" alt="Catamaran La Zingara at anchor" /></div>
+      <div class="g"><img loading="lazy" src="https://cdn.sanity.io/images/xy4l8931/production/77e9d2efabe47283f5cbdae11b3e1c62fe882087-1092x1366.jpg?w=700&q=80&auto=format" alt="Guests on the trampoline nets of the catamaran" /></div>
+      <div class="g"><img loading="lazy" src="https://cdn.sanity.io/images/xy4l8931/production/ffb73c330fd345a33cfb1124bb5631bc5c6a2625-768x960.jpg?w=700&q=80&auto=format" alt="Catamaran cockpit and seating area" /></div>
     </div>
   </div>
 </section>
 
-<!-- ============================ GALLERY ============================ -->
-<section class="gallery" id="gallery">
-  <div class="wrap">
-    <div class="head">
-      <div class="eyebrow">§ On the water</div>
-      <h2>Where the day takes you.</h2>
-      <p class="lead">Comino's caves, the Blue Lagoon, and golden-hour light — aboard La Zingara &amp; Chardonnay.</p>
+<!-- ============================ PAYING ============================ -->
+<section class="sec" id="paying">
+  <div class="in">
+    <p class="kicker">Paying</p>
+    <h2 class="s">A quote first. A deposit only when you’re ready.</h2>
+    <div class="money">
+      <div class="line"><span class="num">1</span><div><b>Request — nothing to pay</b><p>Send your date, group size and boat preference. We reply with a tailored quote for the whole boat, usually the same day.</p></div></div>
+      <div class="line"><span class="num">2</span><div><b>Confirm — 10% deposit + card processing</b><p>Happy with the quote? We confirm your date and boat, and you pay a 10% deposit plus a small card-processing cost online via a secure payment link. The card-processing part is never refundable.</p></div></div>
+      <div class="line"><span class="num">3</span><div><b>On the day — the balance</b><p>The remaining balance is settled directly with the operator at the boat. We never keep your card details.</p></div></div>
     </div>
-    <div class="gallery-grid">
-      <figure class="wide">
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/7a1029da54eee9b90f91b2f3010d2b2b10f43991-971x693.jpg?w=1024&q=80&auto=format"
-             alt="Guests dancing and celebrating on the deck of a catamaran in a Malta marina." loading="lazy" decoding="async" width="971" height="693" />
-      </figure>
-      <figure class="tall">
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/77e9d2efabe47283f5cbdae11b3e1c62fe882087-1092x1366.jpg?w=900&q=80&auto=format"
-             alt="Sunset over the sea from the deck of a Catamaran Malta charter." loading="lazy" decoding="async" width="1092" height="1366" />
-      </figure>
-      <figure>
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/039a58fee17ffe63d56d0c2d025b30e74daa4479-810x1440.jpg?w=640&q=80&auto=format"
-             alt="Turquoise Blue Lagoon water at Comino." loading="lazy" decoding="async" width="810" height="1440" />
-      </figure>
-      <figure>
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/2f2d4067f8eb5b936981c6527ce21bcb4026aa3b-1440x960.jpg?w=640&q=80&auto=format"
-             alt="La Zingara catamaran at anchor in clear water." loading="lazy" decoding="async" width="1440" height="960" />
-      </figure>
-      <figure>
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/26d5b17a542fc2b8ace91867420a3828adab9d3a-1440x1080.jpg?w=640&q=80&auto=format"
-             alt="Chardonnay catamaran under way off Malta." loading="lazy" decoding="async" width="1440" height="1080" />
-      </figure>
-      <figure>
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/ffb73c330fd345a33cfb1124bb5631bc5c6a2625-768x960.jpg?w=640&q=80&auto=format"
-             alt="Limestone caves and cliffs around Comino and Gozo." loading="lazy" decoding="async" width="768" height="960" />
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ WHAT MAKES IT SIMPLE ============================ -->
-<section class="incl">
-  <div class="wrap">
-    <div class="head">
-      <div class="eyebrow">§ What makes it simple</div>
-      <h2>Quote-only, but never complicated.</h2>
-      <p class="lead">A private charter means pricing varies with the boat, the season, and the day — so we keep the rest straightforward.</p>
-    </div>
-    <div class="incl-grid">
-      <div class="simple-card">
-        <span class="ico" aria-hidden="true">⚡</span>
-        <h3>Instant availability</h3>
-        <p>We hold dates across both La Zingara and Chardonnay, so you usually hear back the same day on whether your date is open.</p>
-      </div>
-      <div class="simple-card">
-        <span class="ico" aria-hidden="true">€</span>
-        <h3>Transparent pricing ranges</h3>
-        <p>Your quote spells out the range for your boat, date, and group — no hidden extras bolted on at the dock.</p>
-      </div>
-      <div class="simple-card">
-        <span class="ico" aria-hidden="true">🗒️</span>
-        <h3>A dedicated planner</h3>
-        <p>One planner handles food, transfers, and decor for your day, so you're not chasing five different suppliers.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ BOOKING ASSISTANT / ENQUIRY ============================ -->
-<section class="private" id="enquire">
-  <div class="wrap">
-    <div class="private-grid">
-      <div>
-        <div class="eyebrow">§ Request a quote</div>
-        <h2>Tell us your day. <em>We'll send a quote.</em></h2>
-        <p>Pricing varies with the boat, the season, and your group — share a few details and we'll come back with a tailored quote, usually the same day.</p>
-        <form id="quoteForm" class="quote-form" onsubmit="submitQuote(event)">
-          <div class="qf-row">
-            <label class="qf-field"><span>Experience</span>
-              <select id="qExperience">
-                <option value="Day charter">Day charter (10:00–18:00)</option>
-                <option value="Sunset cruise">Sunset cruise (19:00–00:00)</option>
-              </select>
-            </label>
-            <label class="qf-field"><span>Preferred date</span><input type="date" id="qDates" /></label>
-          </div>
-          <div class="qf-row">
-            <label class="qf-field"><span>Number of guests</span>
-              <select id="qGroup">
-                <option value="">Select…</option>
-                <option value="1">1 guest</option>
-                <option value="2">2 guests</option>
-                <option value="3">3 guests</option>
-                <option value="4">4 guests</option>
-                <option value="5">5 guests</option>
-                <option value="6">6 guests</option>
-                <option value="7">7 guests</option>
-                <option value="8">8 guests</option>
-                <option value="9">9 guests</option>
-                <option value="10">10 guests</option>
-                <option value="11">11 guests</option>
-                <option value="12">12 guests</option>
-                <option value="13">13 guests</option>
-                <option value="14">14 guests</option>
-                <option value="15">15 guests</option>
-                <option value="16">16 guests</option>
-                <option value="17">17 guests</option>
-                <option value="18">18 guests</option>
-                <option value="19">19 guests</option>
-                <option value="20">20 guests</option>
-                <option value="21">21 guests</option>
-                <option value="22">22 guests</option>
-                <option value="23">23 guests</option>
-                <option value="24">24 guests</option>
-                <option value="25">25 guests</option>
-                <option value="26">26 guests</option>
-                <option value="27">27 guests</option>
-                <option value="28">28 guests</option>
-              </select>
-            </label>
-            <label class="qf-field"><span>Boat preference</span>
-              <select id="qBoat">
-                <option value="Either">Either</option>
-                <option value="La Zingara">La Zingara</option>
-                <option value="Chardonnay">Chardonnay</option>
-              </select>
-            </label>
-          </div>
-          <div class="qf-row">
-            <input type="text" id="qName" placeholder="Your name" autocomplete="name" required />
-            <input type="email" id="qEmail" placeholder="Email" autocomplete="email" required />
-          </div>
-          <textarea id="qMsg" placeholder="Occasion &amp; anything else (optional)"></textarea>
-          <div id="quoteError" class="quote-error" hidden></div>
-          <div class="private-cta">
-            <button type="submit" class="btn-light" id="qSubmit">Request a quote →</button>
-            <button type="button" class="btn-wa" id="qWa" onclick="quoteViaWhatsApp()">Ask on WhatsApp</button>
-          </div>
-        </form>
-        <p class="private-note">Your request goes straight to BookItMalta — we handle the quote and reply, usually the same day. By sending, you agree to our <a href="/privacy.html" target="_blank">privacy policy</a>.</p>
-      </div>
-      <div class="private-image">
-        <img src="https://cdn.sanity.io/images/xy4l8931/production/4cfa873c713f5aa4c0e2571c2a4a22b31dbfdc79-1440x1309.jpg?w=1280&q=80&auto=format"
-             alt="Guests dining and relaxing on the trampoline deck of a catamaran off Malta — La Zingara and Chardonnay sail private charters from Sliema."
-             loading="lazy" decoding="async" width="1440" height="1309" />
-      </div>
-    </div>
+    <p class="cancel"><b>Cancelling.</b> Cancel 7 or more days before your date and your deposit comes back — the card-processing cost is not refundable. Inside 7 days the whole deposit is forfeit. <b>Bad weather.</b> The captain decides on the morning — we move you to another date at no cost, and if no date works for you, the deposit is refunded less the card-processing cost.</p>
   </div>
 </section>
 
 <!-- ============================ FAQ ============================ -->
-<section class="faq">
-  <div class="wrap">
-    <div class="head">
-      <div class="eyebrow">§ Frequently asked</div>
-      <h2>The practical stuff.</h2>
+<section class="sec tint" id="faq">
+  <div class="in faqgrid">
+    <div>
+      <p class="kicker">Good to know</p>
+      <h2 class="s">The practical stuff.</h2>
     </div>
-    <div class="faq-list">
-      <div class="faq-item">
-        <h4>Where do we set sail from?</h4>
-        <p>Both La Zingara and Chardonnay sail from Sliema. You'll get the exact pontoon and crew contact in your booking confirmation once your date and boat are set.</p>
-      </div>
-      <div class="faq-item">
-        <h4>How many guests can come aboard?</h4>
-        <p>La Zingara takes up to 28 guests and Chardonnay up to 24. For larger parties we can hold both catamarans for the same day — mention it in your enquiry.</p>
-      </div>
-      <div class="faq-item">
-        <h4>How does pricing work?</h4>
-        <p>Every charter is private, so pricing varies with the boat, the season, and your group size and date. Send an enquiry and we'll reply with a transparent pricing range — no fixed seat price.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Can you arrange food, transfers, and decor?</h4>
-        <p>Yes. A dedicated planner can sort onboard catering, transfers to Sliema, and decor for proposals, birthdays, or corporate days — just tell us what you have in mind.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Which boat should we choose?</h4>
-        <p>La Zingara suits families, relaxed swim days, and proposals; Chardonnay suits bigger celebrations and corporate groups. Pick "Either" in the form and we'll recommend the best fit for your day.</p>
-      </div>
+    <div>
+      <details class="q" open><summary>Where exactly do we set sail from?</summary><p>Both La Zingara and Chardonnay sail from Sliema. You’ll get the exact pontoon and the crew’s contact by email once your date and boat are confirmed.</p></details>
+      <details class="q"><summary>Is the boat shared with anyone else?</summary><p>No. Both catamarans are private charter only — the whole boat is yours for the day or the evening, and you never share the deck with another group.</p></details>
+      <details class="q"><summary>Can we choose where we go?</summary><p>Within reason, yes. Comino, the Blue Lagoon and Gozo are the usual full-day run; the sunset trip stays closer to the coast. The captain decides on the day what the sea allows.</p></details>
+      <details class="q"><summary>How does pricing work?</summary><p>Every charter is private, so pricing depends on the boat, the season, and your group size and date. Send an enquiry and we’ll reply with a transparent quote — no fixed seat price, and nothing to pay until your date is confirmed. Once you accept, a 10% deposit plus card processing holds the boat, and the balance goes to the operator on the day.</p></details>
+      <details class="q"><summary>What about food and drink?</summary><p>Bring your own — there’s a fridge, ice and coolers on board to keep everything cold. If you’d like anything arranged for a special occasion, mention it in your request and we’ll price it with your quote.</p></details>
+      <details class="q"><summary>Which boat should we choose?</summary><p>La Zingara is the party boat — birthdays, big celebrations and corporate groups up to 28. Chardonnay is the calmer of the two, better for families, relaxed swim days and proposals. Pick “Either” in the form and we’ll recommend the best fit for your day.</p></details>
+      <details class="q"><summary>What happens if the weather is bad?</summary><p>The captain decides on the morning. We move you to another date at no cost, and if no date works for you, the deposit is refunded less the card-processing cost.</p></details>
     </div>
   </div>
 </section>
 
 <!-- ============================ FOOTER ============================ -->
-<footer class="foot">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div class="foot-brand">
-        <div class="name">Catamaran <em>Malta</em></div>
-        <p>Private catamaran charters from Sliema aboard La Zingara &amp; Chardonnay — Blue Lagoon day charters, sunset cruises, and full-day Gozo &amp; Comino adventures for up to 28 guests. Enquiries and quotes handled by BookItMalta.</p>
+<footer class="ft">
+  <div class="in">
+    <div class="fl">BookIt<em>Malta</em></div>
+    <p class="d">Private sailing-catamaran charters from Sliema aboard La Zingara &amp; Chardonnay — full days to Comino and Gozo, and sunset runs along the coast, for up to 28 guests.</p>
+    <div class="cols">
+      <div><h5>This charter</h5>
+        <a href="#enquire">Request a date</a>
+        <a href="#experiences">The two experiences</a>
+        <a href="#fleet">The boats</a>
+        <a href="#faq">Good to know</a>
       </div>
-      <div class="foot-col">
-        <h5>Charter</h5>
-        <ul>
-          <li><a href="#enquire">Request a quote</a></li>
-          <li><a href="#fleet">The fleet</a></li>
-          <li><a href="#experiences">Experiences</a></li>
-          <li><a href="#gallery">Gallery</a></li>
-        </ul>
+      <div><h5>More charters</h5>
+        <a href="/">All charters</a>
       </div>
-      <div class="foot-col">
-        <h5>Contact</h5>
-        <ul>
-          <li><a href="#enquire">Request a quote</a></li>
-          <li>Daily 8am – 8pm</li>
-          <li>Sliema · Malta</li>
-        </ul>
+      <div><h5>Legal</h5>
+        <a href="/terms.html">Terms</a>
+        <a href="/privacy.html">Privacy</a>
+      </div>
+      <div><h5>Reach us</h5>
+        <a href="https://wa.me/35679205055" rel="noopener">WhatsApp</a>
+        <span class="plain">Daily 8am–8pm<br>Sliema · Malta</span>
       </div>
     </div>
-    <div class="foot-bottom">
-      <span>© 2026 Catamaran Malta. All rights reserved.</span>
-      <span class="powered">Powered by <strong>BookItMalta</strong></span>
-    </div>
+    <div class="base">© 2026 BookItMalta · Malta</div>
   </div>
 </footer>
 
 <!-- ============================ BACK TO TOP ============================ -->
 <button id="toTop" class="to-top" type="button" aria-label="Back to top" onclick="scrollToTop()">↑</button>
 
-<!-- ============================ STICKY MOBILE BOOK BAR ============================ -->
-<div class="bookbar" aria-label="Quick enquiry">
-  <div class="price"><b>Catamaran</b><span>Private charter</span></div>
-  <a href="#enquire" class="bar-cta">Request a quote →</a>
+<!-- ============================ STICKY MOBILE BAR ============================ -->
+<div class="sticky" id="stickyBar" aria-label="Quick enquiry">
+  <div class="p"><b>Private charter <small>· whole boat</small></b><em>Tailored quote, usually the same day</em></div>
+  <a href="#enquire">Request a date</a>
 </div>
 
 <script>
 /* =========================================================
-   Catamaran Malta — page-level interactivity
-   =========================================================
-   Quote-only private charter. There's no fixed seat price and
-   no booking math — the page captures an enquiry server-side
-   via the same /api/enquiry pattern Adventure Cruises uses
-   (kind=private_charter), then falls back to WhatsApp.
+   La Zingara & Chardonnay — page-level interactivity (2027 system).
+   Quote-only private charter: no fixed price, no booking math.
+   Captures the enquiry server-side via /api/enquiry
+   (tenant=catamaran, kind=private_charter), then falls back
+   to WhatsApp. Functional flow unchanged from the live page.
 ========================================================= */
 
-// Catamaran Malta WhatsApp number (BookItMalta-managed line).
+// WhatsApp number for this listing (BookItMalta-managed line).
 const WA_NUMBER = '35679205055';
 
-// -----------------------------------------------------------------
-// Validation helper (mirrors AC's showQuoteError pattern)
-// -----------------------------------------------------------------
+// Experience slots — buttons drive the hidden qExperience field.
+document.querySelectorAll('.slot[data-exp]').forEach(function (s) {
+  s.addEventListener('click', function () {
+    document.querySelectorAll('.slot[data-exp]').forEach(function (x) { x.classList.remove('sel'); });
+    s.classList.add('sel');
+    document.getElementById('qExperience').value = s.dataset.exp;
+  });
+});
+
 function showQuoteError(m) {
   const el = document.getElementById('quoteError');
   if (el) { el.textContent = m; el.hidden = false; }
@@ -784,12 +510,7 @@ function composeMessage(experience, boat, userMsg) {
   return m;
 }
 
-// -----------------------------------------------------------------
-// "Request a quote" — POST to /api/enquiry?tenant=catamaran
-// (kind=private_charter). On success, fire the conversion and
-// replace the form with a confirmation. On failure, point the
-// customer at the WhatsApp button.
-// -----------------------------------------------------------------
+// "Send my request" — POST to /api/enquiry?tenant=catamaran.
 async function submitQuote(e) {
   e.preventDefault();
   const errEl = document.getElementById('quoteError');
@@ -797,11 +518,11 @@ async function submitQuote(e) {
   const btn = document.getElementById('qSubmit');
   const experience = document.getElementById('qExperience').value;
   const boat       = document.getElementById('qBoat').value;
-  const dates       = document.getElementById('qDates').value.trim();
-  const group       = document.getElementById('qGroup').value.trim();
-  const name        = document.getElementById('qName').value.trim();
-  const email       = document.getElementById('qEmail').value.trim();
-  const msg         = document.getElementById('qMsg').value.trim();
+  const dates      = document.getElementById('qDates').value.trim();
+  const group      = document.getElementById('qGroup').value.trim();
+  const name       = document.getElementById('qName').value.trim();
+  const email      = document.getElementById('qEmail').value.trim();
+  const msg        = document.getElementById('qMsg').value.trim();
 
   if (!name)  return showQuoteError('Please enter your name.');
   if (!email) return showQuoteError('Please enter your email.');
@@ -843,21 +564,17 @@ async function submitQuote(e) {
   }
 }
 
-// -----------------------------------------------------------------
-// "Ask on WhatsApp" — capture the lead server-side FIRST (so
-// BookItMalta is emailed regardless of channel), THEN open WhatsApp
-// pre-filled. Requires name + email so there's a lead to send.
-// -----------------------------------------------------------------
+// "Ask on WhatsApp" — capture the lead server-side FIRST, then open WhatsApp.
 async function quoteViaWhatsApp() {
   const errEl = document.getElementById('quoteError');
   if (errEl) errEl.hidden = true;
   const experience = document.getElementById('qExperience').value;
   const boat       = document.getElementById('qBoat').value;
-  const dates       = document.getElementById('qDates').value.trim();
-  const group       = document.getElementById('qGroup').value.trim();
-  const name        = document.getElementById('qName').value.trim();
-  const email       = document.getElementById('qEmail').value.trim();
-  const msg         = document.getElementById('qMsg').value.trim();
+  const dates      = document.getElementById('qDates').value.trim();
+  const group      = document.getElementById('qGroup').value.trim();
+  const name       = document.getElementById('qName').value.trim();
+  const email      = document.getElementById('qEmail').value.trim();
+  const msg        = document.getElementById('qMsg').value.trim();
 
   if (!name)  return showQuoteError('Add your name first so we can follow up.');
   if (!email) return showQuoteError('Add your email first so we can follow up.');
@@ -865,7 +582,6 @@ async function quoteViaWhatsApp() {
   const waBtn = document.getElementById('qWa');
   if (waBtn) waBtn.disabled = true;
 
-  // 1) Notify BookItMalta server-side (best-effort — never block the handoff).
   try {
     await fetch('/api/enquiry?tenant=catamaran', {
       method: 'POST',
@@ -886,7 +602,6 @@ async function quoteViaWhatsApp() {
     console.error('[quote/wa] notify failed:', err);
   }
 
-  // 2) Open WhatsApp pre-filled with their details.
   const lines = [
     'Hi BookItMalta!',
     '',
@@ -902,7 +617,6 @@ async function quoteViaWhatsApp() {
   lines.push('', 'Please share availability & pricing — thanks!', '', '(via bookitmalta.com/catamaran)');
   window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
 
-  // 3) Confirm in-page.
   const form = document.getElementById('quoteForm');
   if (form) {
     form.innerHTML =
@@ -911,26 +625,26 @@ async function quoteViaWhatsApp() {
   }
 }
 
-// -----------------------------------------------------------------
-// Init on load — set the date picker's min to today.
-// -----------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', function() {
+// Init — date picker min = today.
+document.addEventListener('DOMContentLoaded', function () {
   var qd = document.getElementById('qDates');
   if (qd) qd.min = new Date().toISOString().slice(0, 10);
 });
 
-// -----------------------------------------------------------------
-// Floating back-to-top — show after the reader scrolls past the hero
-// -----------------------------------------------------------------
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+// Back to top + sticky bar visibility.
+function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 (function () {
   var btn = document.getElementById('toTop');
-  if (!btn) return;
+  var bar = document.getElementById('stickyBar');
+  var enq = document.getElementById('enquire');
   var onScroll = function () {
-    if (window.scrollY > 600) btn.classList.add('show');
-    else btn.classList.remove('show');
+    var y = window.scrollY;
+    if (btn) btn.classList.toggle('show', y > 600);
+    if (bar && enq) {
+      var r = enq.getBoundingClientRect();
+      var formVisible = r.top < window.innerHeight && r.bottom > 0;
+      bar.classList.toggle('show', y > 500 && !formVisible);
+    }
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
