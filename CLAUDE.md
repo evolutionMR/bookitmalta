@@ -49,8 +49,8 @@ outside this repo (in his Claude project). If you cannot see them, ask the owner
 - Never ship a placeholder operator email. Prove the inbox receives mail first.
 - Resend does not throw on failure. Always check `result.error`.
 - Magic links and email URLs should take their base URL from the request host (with an
-  allowlist), not from a hard-coded env var. Known gap: `api/captain.js` still reads
-  `PUBLIC_BASE_URL`. Do not copy that pattern into new code.
+  allowlist), not from a hard-coded env var. Known gap: `api/captain.js` and `api/enquiry.js`
+  still read `PUBLIC_BASE_URL`. Do not copy that pattern into new code.
 - External webhooks to a preview URL need the Vercel protection-bypass token.
 - BookItMalta never holds an operator's money. The deposit is BookItMalta's commission;
   the balance is paid to the operator on the day.

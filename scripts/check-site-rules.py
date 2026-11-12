@@ -202,8 +202,6 @@ def must_not_grow(label, rx, files):
         total_head += h
         if h > b:
             worse.append((f, b, h))
-    # matches in files this change deleted still count toward the "before" total
-    gone = [f for f in base_files if f not in set(head_files)]
     if worse:
         bad("%s: this change adds a rule break." % label)
         for f, b, h in worse:
@@ -213,7 +211,6 @@ def must_not_grow(label, rx, files):
         ok("%s: %d before, %d now (improved)" % (label, total_base, total_head))
     else:
         ok("%s: %d, unchanged (old breaks still to fix: %d)" % (label, total_head, total_head))
-    return gone
 
 
 print("Site rules: working tree against %s" % BASE)
