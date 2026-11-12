@@ -57,7 +57,23 @@ def head_text(path):
         return ""
 
 
+# A file that was only moved or renamed keeps its old count, so a move is not a new break.
+_renamed = {}
+_raw = run("diff", "-M", "--name-status", "-z", BASE).stdout.split(b"\0")
+_i = 0
+while _i < len(_raw):
+    _st = _raw[_i].decode("utf-8", "replace")
+    if _st.startswith("R") and _i + 2 < len(_raw):
+        _renamed[_raw[_i + 2].decode("utf-8", "surrogateescape")] = _raw[_i + 1].decode("utf-8", "surrogateescape")
+        _i += 3
+    elif _st:
+        _i += 2
+    else:
+        _i += 1
+
+
 def base_text(path):
+    path = _renamed.get(path, path)
     if path not in base_files:
         return ""
     if path not in _cache:
