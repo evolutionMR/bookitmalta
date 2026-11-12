@@ -6,7 +6,7 @@
 //   - Multiple tenants may share a single Supabase PROJECT (cheap during
 //     pre-revenue launch ramp), but each tenant has its own Postgres
 //     SCHEMA inside that project. The schema name is declared in
-//     config/tenants.js as `tenant.schema`.
+//     api/_lib/tenants.config.js as `tenant.schema`.
 //   - Once any tenant on a shared project hits 20 bookings/month, that
 //     tenant gets split to its own Supabase project. At that point we
 //     just point that tenant's env vars at the new project — no code
@@ -22,7 +22,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { getTenantEnv } = require('./tenant.js');
-const { getTenant } = require('../../config/tenants.js');
+const { getTenant } = require('./tenants.config.js');
 
 // Cache clients by tenant to avoid re-instantiating on every request.
 // Two tenants sharing one Supabase project still get DIFFERENT cache

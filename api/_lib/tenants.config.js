@@ -1,4 +1,4 @@
-// config/tenants.js
+// api/_lib/tenants.config.js
 //
 // Tenant config lives in the repo (not env vars) so it's reviewable in PRs.
 // Secrets (Supabase URL/key, Stripe keys, Resend key) live in tenant-namespaced

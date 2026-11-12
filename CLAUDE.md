@@ -40,7 +40,7 @@ outside this repo (in his Claude project). If you cannot see them, ask the owner
 - Vercel Hobby allows 12 serverless functions. Never add a new file directly under `/api`.
   Add a `mode` or `action` to an existing endpoint. Helpers go in `api/_lib/`.
 - Tenants: the request may name the tenant, but the schema, prices and secrets always come
-  from `config/tenants.js`, never from the request. Each tenant names its own Postgres
+  from `api/_lib/tenants.config.js`, never from the request. Each tenant names its own Postgres
   schema there (the first tenant uses `public`; a quote-only listing has none).
 - Every new Supabase table gets row level security switched on at once, with no policies
   unless public read is truly needed.

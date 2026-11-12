@@ -42,7 +42,7 @@ function computeBookingFee(tenantConfig, partySize, chosenOption) {
   if (!model) {
     throw new Error(
       `Tenant "${tenantConfig.slug}" is missing pricingModel. ` +
-      `Add 'flat_charter' or 'per_seat' to config/tenants.js.`
+      `Add 'flat_charter' or 'per_seat' to api/_lib/tenants.config.js.`
     );
   }
 
@@ -131,7 +131,7 @@ function formatMoney(cents, currency) {
  *
  * @param {Object} args
  * @param {string} args.tenantSlug
- * @param {Object} args.tenantConfig — from config/tenants.js
+ * @param {Object} args.tenantConfig — from api/_lib/tenants.config.js
  * @param {Object} args.enquiry — row from `enquiries` table
  * @param {string} args.successUrl — where Stripe redirects after payment
  * @returns {Promise<{id: string, url: string, expiresAt: Date, totalCents: number}>}

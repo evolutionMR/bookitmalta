@@ -11,7 +11,7 @@
 // Inputs:
 //   booking       — row from <schema>.bookings (charter_date, party_size,
 //                   tour_option, customer_name, etc.)
-//   tenantConfig  — entry from config/tenants.js (calendarEventTitle,
+//   tenantConfig  — entry from api/_lib/tenants.config.js (calendarEventTitle,
 //                   experienceDurationHours, meetingPointAddress, etc.)
 //
 // Time resolution:

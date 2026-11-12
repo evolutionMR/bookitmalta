@@ -1,7 +1,7 @@
 -- captain_pins — PIN auth for the operator (captain) dashboard.
 --
 -- Run ONCE per tenant, inside that tenant's Postgres schema (the schema named
--- in config/tenants.js → tenant.schema: 'public' for Bandama,
+-- in api/_lib/tenants.config.js → tenant.schema: 'public' for Bandama,
 -- 'adventure_cruises' for Adventure Cruises). Either set the search_path to the
 -- tenant schema before running, or schema-qualify the table name.
 --

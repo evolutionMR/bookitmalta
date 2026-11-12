@@ -472,7 +472,7 @@ async function handleLogin(req, res) {
 
   let config;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     config = getTenant(tenant);
   } catch (e) {
     return res.status(200).json({ ok: true });
@@ -554,7 +554,7 @@ async function handleAuth(req, res) {
   // allowlist changed between link-issuance and click.
   let config;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     config = getTenant(payload.tenant);
   } catch {
     return redirectToLogin(res, 'unknown_tenant');
@@ -595,7 +595,7 @@ function resolveTenantByEmail(email) {
   const e = String(email || '').trim().toLowerCase();
   if (!e) return null;
   try {
-    const { TENANTS } = require('../config/tenants.js');
+    const { TENANTS } = require('./_lib/tenants.config.js');
     for (const slug of Object.keys(TENANTS)) {
       const al = TENANTS[slug].captainAllowlist;
       if (Array.isArray(al) && al.some((x) => String(x).trim().toLowerCase() === e)) return slug;
@@ -610,7 +610,7 @@ function resolvePinTenant(body, req) {
   if (!tenant) tenant = resolveTenantByEmail(body && body.email);
   if (!tenant || typeof tenant !== 'string') return { error: 'We could not find an operator for that email.' };
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     return { tenant, config: getTenant(tenant) };
   } catch {
     return { error: 'Unknown tenant' };
@@ -786,7 +786,7 @@ async function handleDashboardData(req, res) {
 
   let config;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     config = getTenant(session.tenant);
   } catch {
     return jsonError(res, 401, 'Unknown tenant in session');
@@ -945,7 +945,7 @@ async function handleMe(req, res) {
   // (returns 401-ish so the dashboard bounces back to /captain/login).
   let tenantName = null;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     tenantName = getTenant(session.tenant).name;
   } catch {
     return jsonError(res, 401, 'Unknown tenant in session');
@@ -976,7 +976,7 @@ async function handleOpsData(req, res) {
 
   let config;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     config = getTenant(cap.tenant);
   } catch {
     return jsonError(res, 401, 'Unknown tenant in session');
@@ -1107,7 +1107,7 @@ async function handleEnquiryAction(req, res) {
 
   let config;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     config = getTenant(cap.tenant);
   } catch {
     return jsonError(res, 401, 'Unknown tenant in session');
@@ -1220,7 +1220,7 @@ async function handleArchiveAction(req, res) {
 
   let config;
   try {
-    const { getTenant } = require('../config/tenants.js');
+    const { getTenant } = require('./_lib/tenants.config.js');
     config = getTenant(cap.tenant);
   } catch {
     return jsonError(res, 401, 'Unknown tenant in session');
