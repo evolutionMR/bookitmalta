@@ -14,7 +14,19 @@
     { "source": "/charters", "destination": "/", "permanent": true },
     { "source": "/charters/", "destination": "/", "permanent": true },
     { "source": "/charters/adventure-cruises", "destination": "/adventure-cruises", "permanent": true },
-    { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true }
+    { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true },
+    { "source": "/config/:path*", "destination": "/", "permanent": false },
+    { "source": "/db/:path*", "destination": "/", "permanent": false },
+    { "source": "/docs/:path*", "destination": "/", "permanent": false },
+    { "source": "/scripts/:path*", "destination": "/", "permanent": false },
+    { "source": "/README.md", "destination": "/", "permanent": false },
+    { "source": "/HANDOFF.md", "destination": "/", "permanent": false },
+    { "source": "/ENGINE-SETUP.md", "destination": "/", "permanent": false },
+    { "source": "/BUILD_INSTRUCTIONS.md", "destination": "/", "permanent": false },
+    { "source": "/CHANGELOG.md", "destination": "/", "permanent": false },
+    { "source": "/CLAUDE.md", "destination": "/", "permanent": false },
+    { "source": "/.env.example", "destination": "/", "permanent": false },
+    { "source": "/package.json", "destination": "/", "permanent": false }
   ],
   "rewrites": [
     { "source": "/captain/login",     "destination": "/captain/login.html" },
