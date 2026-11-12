@@ -1,4 +1,4 @@
 # Files that are for people and agents working on the code, not for the public site.
 CLAUDE.md
 .github
-scripts/check-site-rules.sh
+scripts/check-site-rules.py

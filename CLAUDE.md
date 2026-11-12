@@ -3,14 +3,16 @@
 BookItMalta (bookitmalta.com) is a marketing service for Malta boat operators with a
 booking platform underneath. `main` is the live site. Vercel deploys every push to `main`.
 
-The full process is in the Claude project doc `claude/release-process.md`.
-Facts about prices and operators live in the project doc `business-facts.md`, not here.
+The full release process and the facts about prices and operators are kept by the owner
+outside this repo (in his Claude project). If you cannot see them, ask the owner. Do not guess.
 
 ## How a change ships
-1. Never push to `main`. Work on a short-lived side branch (`feat/<topic>`, `fix/<topic>` or `auto/<topic>`).
-2. Open a pull request. The "Site rules" check must pass (`scripts/check-site-rules.sh`).
-3. Test on the Vercel preview at 390px wide. For booking changes, send a real test request
-   using the test operator only. Never email a real captain or customer from a test.
+1. Never push to `main`. Work on a short-lived side branch (`feat/<topic>` or `fix/<topic>`).
+2. Open a pull request. The "Site rules" check must pass
+   (`python3 scripts/check-site-rules.py origin/main`).
+3. Test on the Vercel preview at 390px wide. Never email a real captain or customer from a
+   test. There is no test operator yet, so until one exists a booking change cannot be
+   tested end to end by an agent: stop and tell the owner.
 4. Two independent reviews before merge: one reads the code, one checks the preview against what was agreed.
 5. Changes to prices, deposits, payments, the database, who sees customer details, logins,
    settings, secrets, or anything sent to real people need the owner's yes before merge.
@@ -38,15 +40,17 @@ Facts about prices and operators live in the project doc `business-facts.md`, no
 - Vercel Hobby allows 12 serverless functions. Never add a new file directly under `/api`.
   Add a `mode` or `action` to an existing endpoint. Helpers go in `api/_lib/`.
 - Tenants: the request may name the tenant, but the schema, prices and secrets always come
-  from `config/tenants.js`, never from the request. One Postgres schema per tenant.
+  from `config/tenants.js`, never from the request. Each tenant names its own Postgres
+  schema there (the first tenant uses `public`; a quote-only listing has none).
 - Every new Supabase table gets row level security switched on at once, with no policies
   unless public read is truly needed.
 - Secrets live only in Vercel env vars, namespaced by tenant (`BANDAMA_*`,
   `ADVENTURE_CRUISES_*`). Never commit, print or log a secret. After changing an env var, redeploy.
 - Never ship a placeholder operator email. Prove the inbox receives mail first.
 - Resend does not throw on failure. Always check `result.error`.
-- Magic links and email URLs take their base URL from the request host (with an allowlist),
-  never from a hard-coded env var.
+- Magic links and email URLs should take their base URL from the request host (with an
+  allowlist), not from a hard-coded env var. Known gap: `api/captain.js` still reads
+  `PUBLIC_BASE_URL`. Do not copy that pattern into new code.
 - External webhooks to a preview URL need the Vercel protection-bypass token.
 - BookItMalta never holds an operator's money. The deposit is BookItMalta's commission;
   the balance is paid to the operator on the day.
@@ -58,4 +62,9 @@ Facts about prices and operators live in the project doc `business-facts.md`, no
 
 ## Testing
 There is no local build step and no Node on the owner's Mac. Verification happens on
-Vercel previews and in the "Site rules" check.
+Vercel previews and in the "Site rules" check. The check counts old rule breaks per file
+and fails only when a change adds one, so fix old ones a file at a time.
+
+## Not public
+This file, the notes, the database scripts and the tooling are kept off the public site by
+`.vercelignore`. Anything new that is not a page, an asset or server code goes in there too.

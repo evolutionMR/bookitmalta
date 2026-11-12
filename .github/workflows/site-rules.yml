@@ -1,14 +1,12 @@
 name: Site rules
-
 on:
   pull_request:
     branches: [main]
-
 permissions:
   contents: read
-
 jobs:
-  check:
+  site-rules:
+    name: Site rules
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,4 +15,4 @@ jobs:
       - name: Check site rules against the base branch
         env:
           BASE_REF: ${{ github.base_ref }}
-        run: bash scripts/check-site-rules.sh "origin/${BASE_REF}"
+        run: python3 scripts/check-site-rules.py "origin/${BASE_REF}"
