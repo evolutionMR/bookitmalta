@@ -1,4 +1,10 @@
 # Files that are for people and agents working on the code, not for the public site.
-CLAUDE.md
-.github
-scripts/check-site-rules.py
+# Vercel does not upload anything listed here, so these paths answer "not found".
+# Folder names start with "/" so they only match at the top of the repo.
+# Do NOT list package.json, vercel.json or anything under /api: the site needs them.
+*.md
+/.github
+/.env.example
+/db
+/docs
+/scripts

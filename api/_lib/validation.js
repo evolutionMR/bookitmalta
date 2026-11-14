@@ -28,7 +28,7 @@ class ValidationError extends Error {
  * Validate enquiry form body against tenant rules.
  *
  * @param {object} body
- * @param {object} [tenantConfig] — from config/tenants.js. Optional for
+ * @param {object} [tenantConfig] — from api/_lib/tenants.config.js. Optional for
  *   backward compatibility: when omitted, falls back to legacy Bandama
  *   limits (party_size 1..20, tour_option optional + free-text).
  */

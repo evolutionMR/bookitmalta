@@ -1,14 +1,14 @@
 // api/_lib/tenant.js
 //
 // Resolves a tenant slug from request body/query, validates it against
-// config/tenants.js, and exposes a `getTenantEnv(slug, key)` helper that
+// api/_lib/tenants.config.js, and exposes a `getTenantEnv(slug, key)` helper that
 // reads tenant-namespaced env vars like BANDAMA_SUPABASE_URL.
 //
 // Rationale: multiple tenants share this Vercel project. Each tenant has
 // its own Supabase project + own Stripe account. Namespacing env vars by
 // tenant slug makes it impossible to cross the wires.
 
-const { getTenant } = require('../../config/tenants.js');
+const { getTenant } = require('./tenants.config.js');
 
 function envKey(slug, key) {
   // bandama, supabase_url → BANDAMA_SUPABASE_URL

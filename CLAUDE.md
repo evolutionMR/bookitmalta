@@ -40,7 +40,7 @@ outside this repo (in his Claude project). If you cannot see them, ask the owner
 - Vercel Hobby allows 12 serverless functions. Never add a new file directly under `/api`.
   Add a `mode` or `action` to an existing endpoint. Helpers go in `api/_lib/`.
 - Tenants: the request may name the tenant, but the schema, prices and secrets always come
-  from `config/tenants.js`, never from the request. Each tenant names its own Postgres
+  from `api/_lib/tenants.config.js`, never from the request. Each tenant names its own Postgres
   schema there (the first tenant uses `public`; a quote-only listing has none).
 - Every new Supabase table gets row level security switched on at once, with no policies
   unless public read is truly needed.
@@ -49,8 +49,8 @@ outside this repo (in his Claude project). If you cannot see them, ask the owner
 - Never ship a placeholder operator email. Prove the inbox receives mail first.
 - Resend does not throw on failure. Always check `result.error`.
 - Magic links and email URLs should take their base URL from the request host (with an
-  allowlist), not from a hard-coded env var. Known gap: `api/captain.js` still reads
-  `PUBLIC_BASE_URL`. Do not copy that pattern into new code.
+  allowlist), not from a hard-coded env var. Known gap: `api/captain.js` and `api/enquiry.js`
+  still read `PUBLIC_BASE_URL`. Do not copy that pattern into new code.
 - External webhooks to a preview URL need the Vercel protection-bypass token.
 - BookItMalta never holds an operator's money. The deposit is BookItMalta's commission;
   the balance is paid to the operator on the day.
