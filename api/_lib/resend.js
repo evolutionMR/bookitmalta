@@ -384,13 +384,14 @@ BookItMalta · bookitmalta.com
 async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo, attachments }) {
   // A test-only tenant may only ever email its own test inboxes — never a real
   // captain or customer. Checked before anything is sent.
-  // The config is looked up from the slug when a caller did not pass one, so
-  // the lock cannot be skipped by omission.
-  let lockConfig = tenantConfig;
-  if (!lockConfig) {
-    try { lockConfig = getTenant(tenantSlug); } catch { lockConfig = null; }
-  }
-  const isTestTenant = !!(lockConfig && lockConfig.testOnly);
+  // Both the passed config and the slug's own config are checked: if either
+  // says "test tenant", the lock applies.
+  let slugConfig = null;
+  try { slugConfig = getTenant(tenantSlug); } catch { slugConfig = null; }
+  const lockConfig =
+    (slugConfig && slugConfig.testOnly) ? slugConfig :
+    (tenantConfig && tenantConfig.testOnly) ? tenantConfig : null;
+  const isTestTenant = !!lockConfig;
   if (isTestTenant) {
     const recipients = Array.isArray(to) ? to : [to];
     if (!recipients.length || !recipients.every((addr) => isTestInbox(lockConfig, addr))) {

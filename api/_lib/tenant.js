@@ -30,21 +30,28 @@ function getTenantEnvOptional(slug, key, fallback = null) {
 }
 
 // Base URL for links in emails and redirects.
-// Real tenants: unchanged — their PUBLIC_BASE_URL env var, else production.
+// Real tenants: their PUBLIC_BASE_URL env var, else production. An env var
+// that exists but is empty counts as unset, so a link is never relative.
 // Test-only tenants exist only on previews, so their links must point back at
 // the deployment that received the request (a production link would dead-end,
-// because the tenant does not exist there). The host is only honoured when it
-// is a *.vercel.app preview or localhost; anything else falls back to
-// production, where the test tenant is unknown.
+// because the tenant does not exist there). The request host is honoured only
+// when it equals a host name Vercel itself set for this deployment
+// (VERCEL_URL / VERCEL_BRANCH_URL) — never an arbitrary header value.
 function getPublicBaseUrl(req, slug, config) {
   if (config && config.testOnly) {
     const h = (req && req.headers) || {};
     const host = String(h['x-forwarded-host'] || h.host || '').split(',')[0].trim().toLowerCase();
-    if (/^[a-z0-9-]+\.vercel\.app$/.test(host)) return `https://${host}`;
-    if (/^localhost(:\d{1,5})?$/.test(host)) return `http://${host}`;
+    const own = [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]
+      .filter(Boolean)
+      .map((x) => String(x).trim().toLowerCase());
+    if (host && own.includes(host)) return `https://${host}`;
+    if (process.env.VERCEL_ENV === 'development' && /^localhost(:\d{1,5})?$/.test(host)) {
+      return `http://${host}`;
+    }
+    if (own.length) return `https://${own[0]}`;
     return 'https://bookitmalta.com';
   }
-  return getTenantEnvOptional(slug, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+  return process.env[envKey(slug, 'PUBLIC_BASE_URL')] || 'https://bookitmalta.com';
 }
 
 function resolveTenant(req) {
