@@ -29,6 +29,24 @@ function getTenantEnvOptional(slug, key, fallback = null) {
   return process.env[k] ?? fallback;
 }
 
+// Base URL for links in emails and redirects.
+// Real tenants: unchanged — their PUBLIC_BASE_URL env var, else production.
+// Test-only tenants exist only on previews, so their links must point back at
+// the deployment that received the request (a production link would dead-end,
+// because the tenant does not exist there). The host is only honoured when it
+// is a *.vercel.app preview or localhost; anything else falls back to
+// production, where the test tenant is unknown.
+function getPublicBaseUrl(req, slug, config) {
+  if (config && config.testOnly) {
+    const h = (req && req.headers) || {};
+    const host = String(h['x-forwarded-host'] || h.host || '').split(',')[0].trim().toLowerCase();
+    if (/^[a-z0-9-]+\.vercel\.app$/.test(host)) return `https://${host}`;
+    if (/^localhost(:\d{1,5})?$/.test(host)) return `http://${host}`;
+    return 'https://bookitmalta.com';
+  }
+  return getTenantEnvOptional(slug, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+}
+
 function resolveTenant(req) {
   // Tenant can come from body (POST) or query (GET)
   const slug =
@@ -46,5 +64,6 @@ module.exports = {
   getTenantEnv,
   getTenantEnvOptional,
   resolveTenant,
+  getPublicBaseUrl,
   envKey,
 };

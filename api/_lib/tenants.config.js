@@ -287,10 +287,12 @@ function getTenant(slug) {
 function isTestInbox(tenantConfig, email) {
   if (!tenantConfig || !tenantConfig.testOnly || typeof email !== 'string') return false;
   const addr = email.trim().toLowerCase();
-  const at = addr.lastIndexOf('@');
-  if (at < 1) return false;
-  const local = addr.slice(0, at).split('+')[0];
-  const base = `${local}${addr.slice(at)}`;
+  // One plain mailbox only: exactly one "@", at most one "+tag", no spaces,
+  // commas, angle brackets, quotes or line breaks. Anything else is refused
+  // here, so the lock does not depend on validation elsewhere.
+  const m = /^([a-z0-9._-]+)(?:\+[a-z0-9._-]+)?(@[a-z0-9.-]+)$/.exec(addr);
+  if (!m) return false;
+  const base = `${m[1]}${m[2]}`;
   return (tenantConfig.testInboxes || []).some((x) => x.toLowerCase() === base);
 }
 
