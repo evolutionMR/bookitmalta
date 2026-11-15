@@ -7,6 +7,8 @@
 // `tour_option` semantics, and the allowed `tour_option` values all depend
 // on the tenant config. validateEnquiry now takes (body, tenantConfig).
 
+const { isTestInbox } = require('./tenants.config.js');
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -58,6 +60,12 @@ function validateEnquiry(body, tenantConfig) {
     x.length > 240 ? 'too long' :
     null
   );
+
+  // The test operator only accepts its own test inboxes as the "customer", so a
+  // test can never email a real person.
+  if (tenantConfig && tenantConfig.testOnly && !isTestInbox(tenantConfig, customer_email)) {
+    throw new ValidationError('customer_email: the test operator only accepts test inboxes');
+  }
 
   const customer_phone = trim(body.customer_phone) || null;
   if (customer_phone && customer_phone.length > 40) {

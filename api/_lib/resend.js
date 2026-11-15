@@ -9,6 +9,7 @@
 
 const { Resend } = require('resend');
 const { getTenantEnv, getTenantEnvOptional } = require('./tenant.js');
+const { isTestInbox } = require('./tenants.config.js');
 const {
   buildIcsContent,
   buildGoogleCalUrl,
@@ -381,6 +382,14 @@ BookItMalta · bookitmalta.com
 // SEND wrapper
 // =============================================================================
 async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo, attachments }) {
+  // A test-only tenant may only ever email its own test inboxes — never a real
+  // captain or customer. Checked before anything is sent.
+  if (tenantConfig && tenantConfig.testOnly) {
+    const recipients = Array.isArray(to) ? to : [to];
+    if (!recipients.length || !recipients.every((addr) => isTestInbox(tenantConfig, addr))) {
+      throw new Error('Test tenant: refusing to email an address that is not a test inbox');
+    }
+  }
   const resend = getResend();
   const from = getTenantEnvOptional(tenantSlug, 'RESEND_FROM', 'BookItMalta <noreply@bookitmalta.com>');
   const operatorEmail = getTenantEnvOptional(tenantSlug, 'OPERATOR_EMAIL', null);
