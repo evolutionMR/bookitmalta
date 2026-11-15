@@ -197,18 +197,107 @@ const TENANTS = {
       'true-northdigital@outlook.com',  // Julian (owner)
     ],
   },
+
+  // ---------------------------------------------------------------------------
+  // TEST OPERATOR — not a real business. Exists so a booking can be tested end
+  // to end (request -> captain yes -> deposit -> confirmed) without emailing a
+  // real captain or customer and without moving real money.
+  //
+  // Safety rules, all enforced in code (not just by convention):
+  //   1. `testOnly: true` tenants are REMOVED from TENANTS unless this
+  //      deployment is a Vercel preview or local dev (see below). On the live
+  //      site the slug behaves exactly like one that was never defined.
+  //   2. Payments: getStripe() refuses any key that is not a Stripe TEST key.
+  //   3. Email: sendEmail() refuses any recipient that is not in `testInboxes`,
+  //      and validateEnquiry() rejects any other customer address up front.
+  //   4. Data: its own Postgres schema, so test rows never mix with real ones.
+  // There is no public page, no directory card and no sitemap entry for it.
+  // ---------------------------------------------------------------------------
+  'test-charter': {
+    slug: 'test-charter',
+    testOnly: true,
+    name: 'Test Charter (not a real operator)',
+    operatorFirstName: 'Test captain',
+    boat: 'Test boat · up to 10 guests',
+    schema: 'test_charter',
+
+    // Inboxes a test may email. A plus-tag on the same mailbox is allowed
+    // (name+anything@...), so one real inbox can play captain and customer.
+    testInboxes: ['true-northdigital@outlook.com'],
+
+    pricingModel: 'flat_charter',
+    charterPriceCents: 100000,     // EUR 1,000.00 — made-up figure
+    depositAmountCents: 12000,     // EUR 120.00 — made-up figure, test mode only
+    currency: 'EUR',
+
+    defaultCapPerDeparture: 10,
+    schedulingModel: 'single_slot_per_day',
+
+    cancellationWindowDays: 7,
+    confirmationExpiryHours: 24,
+    waitlistOfferExpiryHours: 24,
+
+    // No page of its own; links in test emails land on the homepage.
+    publicPagePath: '/',
+    confirmationAnchor: '#enquiry-confirmed',
+
+    stripeProductName: 'BookItMalta deposit — TEST charter (not a real booking)',
+    stripeProductDescription: 'Test payment for the BookItMalta test operator. Not a real booking. No boat is reserved.',
+
+    emailFromName: 'Test Charter (BookItMalta test)',
+    emailReplyTo: null,            // resolved from TEST_CHARTER_OPERATOR_EMAIL
+
+    experienceDurationHours: 8,
+    defaultStartTime: '09:00',
+    meetingPointAddress: 'Test meeting point (not a real place)',
+    calendarEventTitle: 'TEST — not a real charter',
+
+    captainAllowlist: [
+      'true-northdigital@outlook.com',  // Julian (owner)
+    ],
+  },
 };
 
+// Test-only tenants exist ONLY on Vercel previews and local development.
+// VERCEL_ENV is set by Vercel itself ('production' | 'preview' | 'development')
+// and cannot be set by a request. Anything else — including production and an
+// unset value — removes them, so the safe state is the default.
+const TEST_TENANTS_ENABLED = ['preview', 'development'].includes(process.env.VERCEL_ENV);
+if (!TEST_TENANTS_ENABLED) {
+  for (const slug of Object.keys(TENANTS)) {
+    if (TENANTS[slug].testOnly) delete TENANTS[slug];
+  }
+}
+
 function getTenant(slug) {
-  const tenant = TENANTS[slug];
+  // Own-property lookup: a slug like "__proto__" or "constructor" must not
+  // resolve to something inherited from Object.prototype.
+  const tenant =
+    typeof slug === 'string' && Object.prototype.hasOwnProperty.call(TENANTS, slug)
+      ? TENANTS[slug]
+      : null;
   if (!tenant) {
     throw new Error(`Unknown tenant: ${slug}`);
   }
   return tenant;
 }
 
+// True when `email` is one of a test tenant's allowed inboxes (exact match, or
+// the same mailbox with a plus-tag). Always false for a non-test tenant config.
+function isTestInbox(tenantConfig, email) {
+  if (!tenantConfig || !tenantConfig.testOnly || typeof email !== 'string') return false;
+  const addr = email.trim().toLowerCase();
+  // One plain mailbox only: exactly one "@", at most one "+tag", no spaces,
+  // commas, angle brackets, quotes or line breaks. Anything else is refused
+  // here, so the lock does not depend on validation elsewhere.
+  const m = /^([a-z0-9._-]+)(?:\+[a-z0-9._-]+)?(@[a-z0-9.-]+)$/.exec(addr);
+  if (!m) return false;
+  const base = `${m[1]}${m[2]}`;
+  return (tenantConfig.testInboxes || []).some((x) => x.toLowerCase() === base);
+}
+
 function listTenants() {
   return Object.keys(TENANTS);
 }
 
-module.exports = { TENANTS, getTenant, listTenants };
+module.exports = { TENANTS, getTenant, listTenants, isTestInbox };

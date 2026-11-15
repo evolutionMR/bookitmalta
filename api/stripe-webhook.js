@@ -23,7 +23,7 @@
 // "fingerprint" — re-running the same event is a no-op (booking exists,
 // we just no-op the insert).
 
-const { resolveTenant, getTenantEnv } = require('./_lib/tenant.js');
+const { resolveTenant, getTenantEnv, getPublicBaseUrl } = require('./_lib/tenant.js');
 const { getSupabase } = require('./_lib/supabase.js');
 const { verifyWebhook, deactivatePaymentLink, getStripe } = require('./_lib/stripe.js');
 const {
@@ -71,6 +71,11 @@ async function handler(req, res) {
     return res.status(400).send(`Signature verification failed: ${e.message}`);
   }
 
+  // A test-only tenant only ever handles Stripe test-mode events.
+  if (config.testOnly && event.livemode) {
+    return res.status(400).send('Test tenant: live-mode event refused');
+  }
+
   // Dispatch
   try {
     switch (event.type) {
@@ -88,7 +93,7 @@ async function handler(req, res) {
         await handlePaymentSucceeded({ event, tenant, config });
         break;
       case 'charge.refunded':
-        await handleChargeRefunded({ event, tenant, config });
+        await handleChargeRefunded({ event, tenant, config, req });
         break;
       case 'payment_intent.payment_failed':
         console.log('[stripe-webhook] payment_intent.payment_failed', event.data.object.id);
@@ -350,7 +355,7 @@ async function markEnquiryPaid({ tenant, config, enquiryId, paymentIntentId, pay
 // =============================================================================
 // charge.refunded — capture refund + free up the date if booking cancelled
 // =============================================================================
-async function handleChargeRefunded({ event, tenant, config }) {
+async function handleChargeRefunded({ event, tenant, config, req }) {
   const charge = event.data.object;
   const paymentIntentId = charge.payment_intent;
   if (!paymentIntentId) return;
@@ -427,14 +432,14 @@ async function handleChargeRefunded({ event, tenant, config }) {
 
   // If the date is now free, check waitlist for that date and offer it
   if (treatAsCancelled) {
-    await offerSlotToTopOfWaitlist({ tenant, config, date: booking.charter_date });
+    await offerSlotToTopOfWaitlist({ tenant, config, date: booking.charter_date, req });
   }
 }
 
 // =============================================================================
 // Waitlist promotion — offer slot to position 1
 // =============================================================================
-async function offerSlotToTopOfWaitlist({ tenant, config, date }) {
+async function offerSlotToTopOfWaitlist({ tenant, config, date, req }) {
   const supabase = getSupabase(tenant);
 
   const { data: top } = await supabase
@@ -461,7 +466,7 @@ async function offerSlotToTopOfWaitlist({ tenant, config, date }) {
     })
     .eq('id', top.id);
 
-  const baseUrl = process.env[`${tenant.toUpperCase().replace(/-/g,'_')}_PUBLIC_BASE_URL`] || 'https://bookitmalta.com';
+  const baseUrl = getPublicBaseUrl(req, tenant, config);
   const claimUrl = `${baseUrl}/api/waitlist-claim?token=${top.notification_token}&tenant=${tenant}`;
 
   try {
