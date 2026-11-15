@@ -13,7 +13,7 @@
 // captain dashboard uses a 7-day HttpOnly session cookie issued after a
 // 15-min one-time-use login token from the dashboard sign-in flow.
 
-const { resolveTenant, getTenantEnv, getTenantEnvOptional } = require('./_lib/tenant.js');
+const { resolveTenant, getTenantEnv, getTenantEnvOptional, getPublicBaseUrl } = require('./_lib/tenant.js');
 const { getSupabase } = require('./_lib/supabase.js');
 const {
   createDepositPaymentLink,
@@ -101,7 +101,7 @@ module.exports = async function handler(req, res) {
 
   // ---- ACT ----
   if (action === 'confirm') {
-    return await doConfirm({ supabase, tenant, config, enquiry, note, res });
+    return await doConfirm({ supabase, tenant, config, enquiry, note, req, res });
   }
   if (action === 'decline') {
     return await doDecline({ supabase, tenant, config, enquiry, note, res });
@@ -114,8 +114,8 @@ module.exports = async function handler(req, res) {
 // =============================================================================
 // CONFIRM
 // =============================================================================
-async function doConfirm({ supabase, tenant, config, enquiry, note, res }) {
-  const baseUrl = getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+async function doConfirm({ supabase, tenant, config, enquiry, note, req, res }) {
+  const baseUrl = getPublicBaseUrl(req, tenant, config);
   // Point Stripe at the dedicated post-payment confirmation page so the
   // customer sees a celebratory "✓ Confirmed" screen with Add-to-Calendar
   // buttons immediately after paying, instead of landing back on the
@@ -1122,7 +1122,7 @@ async function handleEnquiryAction(req, res) {
   if (enquiry.status !== 'received') return jsonError(res, 409, 'This enquiry was already actioned.');
 
   if (action === 'confirm') {
-    const baseUrl = getTenantEnvOptional(cap.tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+    const baseUrl = getPublicBaseUrl(req, cap.tenant, config);
     const successParams = new URLSearchParams({
       tenant: cap.tenant,
       code:  String(enquiry.id || '').replace(/-/g, '').slice(0, 8).toUpperCase(),

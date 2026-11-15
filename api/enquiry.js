@@ -22,7 +22,7 @@ const {
   customerEnquiryAckEmail,
   customerWaitlistEmail,
 } = require('./_lib/resend.js');
-const { getTenantEnv, getTenantEnvOptional } = require('./_lib/tenant.js');
+const { getTenantEnv, getTenantEnvOptional, getPublicBaseUrl } = require('./_lib/tenant.js');
 
 module.exports = async function handler(req, res) {
   // CORS — the form is on bookitmalta.com hitting this same domain, so
@@ -75,7 +75,7 @@ module.exports = async function handler(req, res) {
   }
 
   const supabase = getSupabase(tenant);
-  const baseUrl = getTenantEnvOptional(tenant, 'PUBLIC_BASE_URL', 'https://bookitmalta.com');
+  const baseUrl = getPublicBaseUrl(req, tenant, config);
 
   // ---- Step 1: is the preferred date already booked? ----
   const { data: dateTaken, error: rpcErr } = await supabase

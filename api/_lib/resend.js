@@ -9,6 +9,7 @@
 
 const { Resend } = require('resend');
 const { getTenantEnv, getTenantEnvOptional } = require('./tenant.js');
+const { isTestInbox, getTenant } = require('./tenants.config.js');
 const {
   buildIcsContent,
   buildGoogleCalUrl,
@@ -381,6 +382,22 @@ BookItMalta · bookitmalta.com
 // SEND wrapper
 // =============================================================================
 async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo, attachments }) {
+  // A test-only tenant may only ever email its own test inboxes — never a real
+  // captain or customer. Checked before anything is sent.
+  // Both the passed config and the slug's own config are checked: if either
+  // says "test tenant", the lock applies.
+  let slugConfig = null;
+  try { slugConfig = getTenant(tenantSlug); } catch { slugConfig = null; }
+  const lockConfig =
+    (slugConfig && slugConfig.testOnly) ? slugConfig :
+    (tenantConfig && tenantConfig.testOnly) ? tenantConfig : null;
+  const isTestTenant = !!lockConfig;
+  if (isTestTenant) {
+    const recipients = Array.isArray(to) ? to : [to];
+    if (!recipients.length || !recipients.every((addr) => isTestInbox(lockConfig, addr))) {
+      throw new Error('Test tenant: refusing to email an address that is not a test inbox');
+    }
+  }
   const resend = getResend();
   const from = getTenantEnvOptional(tenantSlug, 'RESEND_FROM', 'BookItMalta <noreply@bookitmalta.com>');
   const operatorEmail = getTenantEnvOptional(tenantSlug, 'OPERATOR_EMAIL', null);
@@ -394,7 +411,9 @@ async function sendEmail({ tenantSlug, tenantConfig, to, subject, text, replyTo,
   const normalizedTo = (typeof to === 'string') ? to.toLowerCase().trim() : '';
   const normalizedOperator = (operatorEmail || '').toLowerCase().trim();
   const isOperatorBound = !!(normalizedOperator && normalizedTo === normalizedOperator);
-  const bccAddress = (isOperatorBound && adminBcc) ? adminBcc : undefined;
+  // No BCC for a test tenant: every recipient of a test email must be a test
+  // inbox, and the BCC address is not one we can check here.
+  const bccAddress = (isOperatorBound && adminBcc && !isTestTenant) ? adminBcc : undefined;
 
   // NOTE: Resend Node SDK expects camelCase 'replyTo' — snake_case 'reply_to'
   // is the REST API field name and is silently ignored by the SDK, which

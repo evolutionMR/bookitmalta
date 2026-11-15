@@ -42,6 +42,10 @@ function getSupabase(tenantSlug) {
   // existing tenants without an explicit schema field keep working.
   const tenantConfig = getTenant(tenantSlug);
   const schema = tenantConfig.schema || 'public';
+  // A test-only tenant must never read or write a real tenant's tables.
+  if (tenantConfig.testOnly && schema === 'public') {
+    throw new Error(`Test tenant ${tenantSlug} must have its own schema`);
+  }
 
   const client = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },

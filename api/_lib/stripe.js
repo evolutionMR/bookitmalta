@@ -12,6 +12,7 @@
 
 const Stripe = require('stripe');
 const { getTenantEnv } = require('./tenant.js');
+const { getTenant } = require('./tenants.config.js');
 
 const clientCache = new Map();
 
@@ -20,6 +21,11 @@ function getStripe(tenantSlug) {
     return clientCache.get(tenantSlug);
   }
   const key = getTenantEnv(tenantSlug, 'STRIPE_SECRET_KEY');
+  // A test-only tenant may never touch a live Stripe account: refuse anything
+  // that is not a Stripe test-mode secret key. (Never log the key itself.)
+  if (getTenant(tenantSlug).testOnly && !/^(sk|rk)_test_/.test(key)) {
+    throw new Error(`Test tenant ${tenantSlug} requires a Stripe test-mode key`);
+  }
   const client = new Stripe(key, { apiVersion: '2024-06-20' });
   clientCache.set(tenantSlug, client);
   return client;
