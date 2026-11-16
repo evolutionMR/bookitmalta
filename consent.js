@@ -7,6 +7,10 @@
  * localStorage. A "Cookie settings" link is added to the footer so the visitor
  * can change their mind (GDPR withdrawal). If the visitor declines, neither
  * tool runs and no analytics/advertising cookies are set.
+ *
+ * Not gated here: Vercel Web Analytics (cookieless page-view counts, added
+ * straight to each public page). It sets no cookies and stores nothing on the
+ * device, and is described on the Privacy page.
  */
 (function () {
   "use strict";
