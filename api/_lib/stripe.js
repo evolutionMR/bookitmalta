@@ -32,7 +32,7 @@ function getStripe(tenantSlug) {
 }
 
 /**
- * Compute the booking-fee math for an enquiry. Returns the Stripe line-item
+ * Compute the deposit math for an enquiry. Returns the Stripe line-item
  * shape (unit_amount + quantity) plus a human-readable amount summary for
  * the Payment Link product description.
  *
@@ -82,7 +82,7 @@ function computeBookingFee(tenantConfig, partySize, chosenOption) {
       quantity:        1,
       totalCents:      unitAmount,
       summary: formatMoney(unitAmount, tenantConfig.currency)
-        + ' booking fee' + optionLabel,
+        + ' deposit' + optionLabel,
     };
   }
 
@@ -108,7 +108,7 @@ function computeBookingFee(tenantConfig, partySize, chosenOption) {
       quantity:        seats,
       totalCents:      total,
       summary: `${seats} × ${formatMoney(perSeat, tenantConfig.currency)}`
-        + ` = ${formatMoney(total, tenantConfig.currency)} booking fee`,
+        + ` = ${formatMoney(total, tenantConfig.currency)} deposit`,
     };
   }
 
@@ -133,7 +133,7 @@ function formatMoney(cents, currency) {
 }
 
 /**
- * Create a Stripe Payment Link for an enquiry deposit / booking fee.
+ * Create a Stripe Payment Link for an enquiry deposit.
  *
  * @param {Object} args
  * @param {string} args.tenantSlug
@@ -151,7 +151,7 @@ async function createDepositPaymentLink({ tenantSlug, tenantConfig, enquiry, suc
   const fee = computeBookingFee(tenantConfig, enquiry.party_size, enquiry.tour_option);
 
   // 2. Build a product description that includes the seat-math for per_seat
-  //    tenants. Customers see "4 × €10 = €40 booking fee" in Stripe checkout.
+  //    tenants. Customers see "4 × €10 = €40 deposit" in Stripe checkout.
   const description = tenantConfig.pricingModel === 'per_seat'
     ? `${tenantConfig.stripeProductDescription} — ${fee.summary}`
     : tenantConfig.stripeProductDescription;

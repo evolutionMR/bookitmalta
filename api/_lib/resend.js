@@ -47,7 +47,7 @@ function fmtDate(isoDate) {
  * Two pricing models supported (mirrors api/_lib/stripe.js → computeBookingFee
  * but kept inline here so resend.js doesn't pull in the Stripe SDK):
  *
- *   • 'flat_charter' (Bandama)      — booking fee + balance read from config
+ *   • 'flat_charter' (Bandama)      — deposit + balance read from config
  *   • 'per_seat'     (Adv. Cruises) — multiply per-seat values by party_size
  *
  * Returns:
@@ -88,7 +88,7 @@ function getEnquiryPricing(tenantConfig, partySize) {
 /**
  * Build the standard cancellation-policy paragraph with dynamic processing-
  * fee figures. Previously hardcoded "€5.95 on a €300 fee" — fine for Bandama
- * but nonsense for AC's €20 booking fee.
+ * but nonsense for AC's €20 deposit.
  *
  * Returns a single text paragraph ready to drop into a template.
  */
@@ -96,13 +96,24 @@ function cancellationParagraph(tenantConfig, bookingFeeCents) {
   const processingFeeCents = Math.round(bookingFeeCents * 0.02);
   return (
     `Cancellation: if you cancel ${tenantConfig.cancellationWindowDays} or `
-    + `more days before the charter, we refund the booking fee less a ~2% `
+    + `more days before the charter, we refund the deposit less a ~2% `
     + `payment processing fee retained by our payment provider `
     + `(approximately ${fmtEUR(processingFeeCents)} on a `
-    + `${fmtEUR(bookingFeeCents)} fee). Within `
+    + `${fmtEUR(bookingFeeCents)} deposit). Within `
     + `${tenantConfig.cancellationWindowDays} days of the charter, the `
-    + `booking fee is forfeit. Full terms at bookitmalta.com/terms.html.`
+    + `deposit is forfeit. Full terms at bookitmalta.com/terms.html.`
   );
+}
+
+/**
+ * The operator's display name for use in the MIDDLE of a sentence.
+ * "The captain" becomes "the captain"; anything else is returned untouched.
+ * Falls back to the business name when no display name is set.
+ */
+function operatorMidSentence(tenantConfig) {
+  const who = tenantConfig.operatorFirstName;
+  if (!who) return tenantConfig.name;
+  return /^The /.test(who) ? 'the ' + who.slice(4) : who;
 }
 
 // =============================================================================
@@ -137,13 +148,13 @@ ${reviewUrl}
 
 The link takes you to a page where you can review the customer's details
 and choose Confirm (which sends the customer an automated payment link
-for the booking fee) or Decline. Both actions require a click on that page — clicking the URL
+for the deposit) or Decline. Both actions require a click on that page — clicking the URL
 above just shows you the details.
 
 ────────────────────────────────────────
 
 If you confirm, the customer receives an automated email with a secure
-payment link for the ${fmtEUR(pricing.bookingFeeCents)} BookItMalta booking fee. The booking is locked
+payment link for the ${fmtEUR(pricing.bookingFeeCents)} BookItMalta deposit. The booking is locked
 the moment they pay. The balance of ${fmtEUR(pricing.balanceCents)} is settled directly with you on
 the day.
 
@@ -171,7 +182,7 @@ Your enquiry:
 
 What happens next
   1. Captain reviews and confirms availability (within 24h).
-  2. You receive a secure payment link for the ${fmtEUR(pricing.bookingFeeCents)} BookItMalta booking fee.
+  2. You receive a secure payment link for the ${fmtEUR(pricing.bookingFeeCents)} BookItMalta deposit.
   3. The moment payment lands, the date is locked.
   4. The balance of ${fmtEUR(pricing.balanceCents)} is settled directly with the captain on the day.
 
@@ -189,14 +200,14 @@ via BookItMalta · bookitmalta.com
 // CUSTOMER: deposit link (after captain confirms)
 // =============================================================================
 function customerDepositLinkEmail({ tenantConfig, enquiry, paymentUrl }) {
-  const subject = `Confirmed — pay your booking fee to lock in ${fmtDate(enquiry.preferred_date)}`;
+  const subject = `Confirmed — pay your deposit to lock in ${fmtDate(enquiry.preferred_date)}`;
   const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
-Good news — ${tenantConfig.operatorFirstName || tenantConfig.name} has confirmed availability for ${fmtDate(enquiry.preferred_date)}.
+Good news — ${operatorMidSentence(tenantConfig)} has confirmed availability for ${fmtDate(enquiry.preferred_date)}.
 
-Pay your ${fmtEUR(pricing.bookingFeeCents)} BookItMalta booking fee here to lock the date:
+Pay your ${fmtEUR(pricing.bookingFeeCents)} BookItMalta deposit here to lock the date:
 
 ${paymentUrl}
 
@@ -204,7 +215,7 @@ The link is valid for ${tenantConfig.confirmationExpiryHours} hours. Once paymen
 
 The balance of ${fmtEUR(pricing.balanceCents)} is settled directly with the captain on the day of the charter, as a separate transaction.
 
-What you're paying for: the ${fmtEUR(pricing.bookingFeeCents)} is a booking fee charged by BookItMalta to secure your date. The charter itself is supplied by ${tenantConfig.name}. BookItMalta is registered as a small undertaking under Article 11 of the Malta VAT Act — no VAT chargeable on the booking fee.
+What you're paying for: the ${fmtEUR(pricing.bookingFeeCents)} is a deposit charged by BookItMalta to secure your date. The charter itself is supplied by ${tenantConfig.name}. BookItMalta is registered as a small undertaking under Article 11 of the Malta VAT Act — no VAT chargeable on the deposit.
 
 ${cancellationParagraph(tenantConfig, pricing.bookingFeeCents).replace(/^Cancellation:/, 'Cancellation policy:')}
 
@@ -238,7 +249,7 @@ Your booking is locked in.
 
   Date:             ${fmtDate(booking.charter_date)}
   Party size:       ${booking.party_size}
-  Booking fee paid: ${fmtEUR(booking.deposit_paid_cents)} (to BookItMalta)
+  Deposit paid:     ${fmtEUR(booking.deposit_paid_cents)} (to BookItMalta)
   Charter price:    ${fmtEUR(booking.balance_due_cents)} (paid directly to captain on the day)
 
 Add to your calendar
@@ -246,7 +257,7 @@ Add to your calendar
   Outlook:          ${outlookUrl}
   Apple / other:    open the attached booking.ics file
 
-Receipt — BookItMalta booking fee
+Receipt — BookItMalta deposit
   Amount:        ${fmtEUR(booking.deposit_paid_cents)}
   VAT (Art. 11): €0.00
 
@@ -284,14 +295,14 @@ via BookItMalta · bookitmalta.com
 function captainBookingConfirmedEmail({ tenantConfig, booking }) {
   const subject = `[${tenantConfig.name}] BOOKED — ${fmtDate(booking.charter_date)} — ${booking.customer_name}`;
   const text = `
-Booking fee paid — charter date is locked.
+Deposit paid — charter date is locked.
 
   Customer:     ${booking.customer_name}
   Email:        ${booking.customer_email}
   Phone:        ${booking.customer_phone || '—'}
   Date:         ${fmtDate(booking.charter_date)}
   Party size:   ${booking.party_size}
-  Booking fee:  ${fmtEUR(booking.deposit_paid_cents)} (BookItMalta booking-service fee — kept by us, separate from your charter)
+  Deposit:      ${fmtEUR(booking.deposit_paid_cents)} (BookItMalta deposit — kept by us, separate from your charter)
   Charter:      ${fmtEUR(booking.balance_due_cents)} — collect from customer directly on the day
 
 Get in touch with the customer to share meeting point + briefing.
@@ -370,7 +381,7 @@ function captainActionConfirmedEmail({ tenantConfig, enquiry, action }) {
 You ${action === 'confirm' ? 'confirmed' : 'declined'} the enquiry from ${enquiry.customer_name} for ${fmtDate(enquiry.preferred_date)}.
 
 ${action === 'confirm'
-  ? `An automated email with a secure payment link for the ${fmtEUR(pricing.bookingFeeCents)} booking fee has been sent to ${enquiry.customer_email}. You'll receive a "BOOKED" notification the moment they pay.`
+  ? `An automated email with a secure payment link for the ${fmtEUR(pricing.bookingFeeCents)} deposit has been sent to ${enquiry.customer_email}. You'll receive a "BOOKED" notification the moment they pay.`
   : `The customer has been notified that the date isn't available.`}
 
 BookItMalta · bookitmalta.com
