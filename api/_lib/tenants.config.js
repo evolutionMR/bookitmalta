@@ -11,7 +11,7 @@ const TENANTS = {
   bandama: {
     slug: 'bandama',
     name: 'Bandama Yacht Charters',
-    operatorFirstName: 'Simon',
+    operatorFirstName: 'The captain',
     boat: 'Beneteau Swift Trawler 47',
 
     // Postgres schema in the shared Supabase project (see
@@ -38,8 +38,8 @@ const TENANTS = {
     confirmationAnchor: '#enquiry-confirmed',
 
     // Stripe Payment Link config
-    stripeProductName: 'BookItMalta booking fee — Bandama charter',
-    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your date for a full-day charter aboard Beneteau Swift Trawler 47. The charter price is paid directly to Bandama Yacht Charters on the day, as a separate transaction.',
+    stripeProductName: 'BookItMalta deposit — Bandama charter',
+    stripeProductDescription: 'Deposit charged by BookItMalta to secure your date for a full-day charter aboard Beneteau Swift Trawler 47. The charter price is paid directly to Bandama Yacht Charters on the day, as a separate transaction.',
 
     // Email branding
     emailFromName: 'Bandama Yacht Charters (via BookItMalta)',
@@ -63,7 +63,7 @@ const TENANTS = {
   'adventure-cruises': {
     slug: 'adventure-cruises',
     name: 'Adventure Cruises',
-    operatorFirstName: 'Tony',                    // Anthony Farrugia
+    operatorFirstName: 'The captain',
     boat: 'Albert V + Adventure 1 (40 seats each)',
 
     // Lives in its own Postgres schema inside the shared Supabase project.
@@ -97,8 +97,8 @@ const TENANTS = {
     confirmationAnchor: '#enquiry-confirmed',
 
     // Stripe Payment Link config
-    stripeProductName: 'BookItMalta booking fee — Adventure Cruises day tour',
-    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your seats on a shared day tour to Comino, the Blue Lagoon and Gozo. The remaining balance (€30 per seat) is paid to the crew on the day, as a separate transaction.',
+    stripeProductName: 'BookItMalta deposit — Adventure Cruises day tour',
+    stripeProductDescription: 'Deposit charged by BookItMalta to secure your seats on a shared day tour to Comino, the Blue Lagoon and Gozo. The remaining balance (€30 per seat) is paid to the crew on the day, as a separate transaction.',
 
     emailFromName: 'Adventure Cruises (via BookItMalta)',
     emailReplyTo: null,                            // resolved from ADVENTURE_CRUISES_OPERATOR_EMAIL
@@ -148,7 +148,7 @@ const TENANTS = {
   'unexpected-charters-malta': {
     slug: 'unexpected-charters-malta',
     name: 'Unexpected Charters Malta',
-    operatorFirstName: 'Darren',
+    operatorFirstName: 'The captain',
     boat: 'Sagittarius Dart 436 (2000) · up to 10 guests',
     schema: 'unexpected_charters',
 
@@ -181,8 +181,8 @@ const TENANTS = {
     confirmationAnchor: '#enquiry-confirmed',
 
     // Stripe Payment Link config (platform Stripe)
-    stripeProductName: 'BookItMalta booking fee — Unexpected Charters Malta',
-    stripeProductDescription: 'Booking fee charged by BookItMalta to secure your private whole-boat charter around Comino, the Blue Lagoon and the south coast of Gozo. The balance is paid to the operator on the day.',
+    stripeProductName: 'BookItMalta deposit — Unexpected Charters Malta',
+    stripeProductDescription: 'Deposit charged by BookItMalta to secure your private whole-boat charter around Comino, the Blue Lagoon and the south coast of Gozo. The balance is paid to the operator on the day.',
 
     emailFromName: 'Unexpected Charters Malta (via BookItMalta)',
     emailReplyTo: null,               // resolved from UNEXPECTED_CHARTERS_MALTA_OPERATOR_EMAIL
