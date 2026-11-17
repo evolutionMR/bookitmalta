@@ -388,7 +388,7 @@ async function handleChargeRefunded({ event, tenant, config, req }) {
   // Fix: fetch the balance_transaction to read the exact Stripe fee, then
   // treat amount_refunded >= (charge.amount - stripe_fee) as a full
   // cancellation. Partial refunds below that threshold (e.g. captain-side
-  // operator goodwill refunds of part of the booking fee) still leave the
+  // operator goodwill refunds of part of the deposit) still leave the
   // date booked.
   let stripeFee = 0;
   try {

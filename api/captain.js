@@ -212,7 +212,7 @@ async function doConfirm({ supabase, tenant, config, enquiry, note, req, res }) 
 
   return htmlSuccess(res, {
     title: 'Confirmed',
-    body: `Payment link sent to <strong>${escapeHtml(enquiry.customer_email)}</strong>.<br><br>You'll receive a "BOOKED" notification the moment the booking fee lands.`,
+    body: `Payment link sent to <strong>${escapeHtml(enquiry.customer_email)}</strong>.<br><br>You'll receive a "BOOKED" notification the moment the deposit lands.`,
     config,
   });
 }
@@ -340,7 +340,7 @@ function htmlReviewPage(res, enquiry, config, tenant) {
   const body = `
     <span class="kicker">New enquiry</span>
     <h1>${escapeHtml(enquiry.customer_name)}</h1>
-    <p>Review the details below and choose an action. Confirming will send the customer a payment link for the BookItMalta booking fee. Declining will email an apology.</p>
+    <p>Review the details below and choose an action. Confirming will send the customer a payment link for the BookItMalta deposit. Declining will email an apology.</p>
 
     <dl class="meta">
       <dt>Email</dt>      <dd><a href="mailto:${escapeHtml(enquiry.customer_email)}" style="color:var(--terracotta);text-decoration:none">${escapeHtml(enquiry.customer_email)}</a></dd>
@@ -356,8 +356,8 @@ function htmlReviewPage(res, enquiry, config, tenant) {
       <input type="hidden" name="token" value="${escapeHtml(enquiry.captain_token)}" />
       <input type="hidden" name="tenant" value="${escapeHtml(tenant)}" />
 
-      <label for="note">Internal note (optional — visible to you only)</label>
-      <textarea id="note" name="note" placeholder="e.g. weather looks good, prefer Comino route…"></textarea>
+      <label for="note">Message to the customer (optional — if you decline, the customer will see this in their email)</label>
+      <textarea id="note" name="note" placeholder="e.g. sorry, we are fully booked that day, but the day after is free…"></textarea>
 
       <div class="actions">
         <button class="btn btn-confirm" type="submit" name="action" value="confirm">Confirm & send payment link</button>
