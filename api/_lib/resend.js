@@ -174,7 +174,7 @@ function customerEnquiryAckEmail({ tenantConfig, enquiry }) {
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
-Thanks for your request. The captain will check your date within 24 hours. As soon as it's confirmed, we'll email you a secure payment link for the deposit.
+Thanks for your enquiry. The captain will check your date within 24 hours. As soon as it's confirmed, we'll email you a secure payment link for the deposit.
 
 Your enquiry:
   Date:        ${fmtDate(enquiry.preferred_date)}
