@@ -918,7 +918,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>What happens in bad weather?</h4>
-        <p>If the captain calls it (high winds, rough sea), we cancel and process a full refund of the booking fee within 24 hours. You'll get email + WhatsApp notification the morning of the tour.</p>
+        <p>If the captain calls it (high winds, rough sea), we cancel and process a full refund of the deposit within 24 hours. You'll get email + WhatsApp notification the morning of the tour.</p>
       </div>
       <div class="faq-item">
         <h4>Can I bring my own food &amp; drink?</h4>
@@ -934,7 +934,7 @@ body.cm-locked { overflow: hidden; }
       </div>
       <div class="faq-item">
         <h4>What if I need to cancel?</h4>
-        <p>Cancel up to 24 hours before departure for a full refund of the booking fee. Inside 24 hours, the fee is non-refundable but we'll happily move you to another day if seats are available.</p>
+        <p>Cancel up to 24 hours before departure for a full refund of the deposit. Inside 24 hours, the deposit is non-refundable but we'll happily move you to another day if seats are available.</p>
       </div>
     </div>
   </div>
@@ -1260,7 +1260,7 @@ function showSuccess(code, customerEmail) {
   if (codeEl) codeEl.textContent = shortCode;
   if (bodyEl) {
     bodyEl.innerHTML =
-      'Anthony will confirm availability and send a secure payment link for the €10/seat deposit <strong>within 1 hour</strong>. ' +
+      'The captain will confirm availability and send a secure payment link for the €10/seat deposit <strong>within 1 hour</strong>. ' +
       'Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.';
   }
   const modal = document.getElementById('confirmModal');
@@ -1279,7 +1279,7 @@ function showSuccess(code, customerEmail) {
       '<div class="book-success" id="enquiry-confirmed">' +
         '<div style="font-family:var(--serif);font-size:1.4rem;color:var(--ink);margin-bottom:0.4rem;">Enquiry sent.</div>' +
         '<div>Booking code: <strong>' + escapeHtml(shortCode) + '</strong></div>' +
-        '<div style="margin-top:0.6rem;font-size:0.9rem;">Anthony will confirm within 1 hour. Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.</div>' +
+        '<div style="margin-top:0.6rem;font-size:0.9rem;">The captain will confirm within 1 hour. Check your inbox at <strong>' + escapeHtml(customerEmail) + '</strong>.</div>' +
       '</div>';
   }
 }
