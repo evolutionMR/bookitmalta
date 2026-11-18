@@ -13,6 +13,7 @@
 const Stripe = require('stripe');
 const { getTenantEnv } = require('./tenant.js');
 const { getTenant } = require('./tenants.config.js');
+const { resolveCharterOption } = require('./pricing.js');
 
 const clientCache = new Map();
 
@@ -59,10 +60,7 @@ function computeBookingFee(tenantConfig, partySize, chosenOption) {
     let unitAmount = tenantConfig.depositAmountCents;
     let optionLabel = '';
     if (tenantConfig.charterOptions) {
-      const key = (chosenOption && tenantConfig.charterOptions[chosenOption])
-        ? chosenOption
-        : tenantConfig.defaultCharterOption;
-      const opt = key ? tenantConfig.charterOptions[key] : null;
+      const { key, option: opt } = resolveCharterOption(tenantConfig, chosenOption);
       if (!opt || !opt.depositAmountCents) {
         throw new Error(
           `Tenant "${tenantConfig.slug}" charterOptions misconfigured for option "${key}"`
