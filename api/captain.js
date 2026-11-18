@@ -356,7 +356,7 @@ function htmlReviewPage(res, enquiry, config, tenant) {
       <input type="hidden" name="token" value="${escapeHtml(enquiry.captain_token)}" />
       <input type="hidden" name="tenant" value="${escapeHtml(tenant)}" />
 
-      <label for="note">Message to the customer (optional — if you decline, the customer will see this in their email)</label>
+      <label for="note">Note (optional). If you decline, the customer sees this in their email. If you confirm, it is not sent.</label>
       <textarea id="note" name="note" placeholder="e.g. sorry, we are fully booked that day, but the day after is free…"></textarea>
 
       <div class="actions">
