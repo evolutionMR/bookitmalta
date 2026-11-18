@@ -168,7 +168,7 @@ async function routeToEnquiry({ supabase, tenant, config, input, baseUrl, req, r
     status: 'received',
     enquiry_id: enquiry.id,
     redirect: `${baseUrl}${config.publicPagePath}${config.confirmationAnchor}`,
-    message: 'Enquiry received. Captain will be in touch within 24 hours.',
+    message: 'Enquiry received. The captain will check your date within 24 hours. Once confirmed, we email you a secure payment link for the deposit.',
   });
 }
 

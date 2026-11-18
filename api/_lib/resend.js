@@ -100,7 +100,8 @@ function cancellationParagraph(tenantConfig, bookingFeeCents) {
     + `payment processing fee retained by our payment provider `
     + `(approximately ${fmtEUR(processingFeeCents)} on a `
     + `${fmtEUR(bookingFeeCents)} deposit). Within `
-    + `${tenantConfig.cancellationWindowDays} days of the charter, the `
+    + `${tenantConfig.cancellationWindowDays} `
+    + `${Number(tenantConfig.cancellationWindowDays) === 1 ? 'day' : 'days'} of the charter, the `
     + `deposit is forfeit. Full terms at bookitmalta.com/terms.html.`
   );
 }
@@ -173,7 +174,7 @@ function customerEnquiryAckEmail({ tenantConfig, enquiry }) {
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
-Thanks for your enquiry. ${tenantConfig.operatorFirstName || tenantConfig.name} will review personally and come back to you within 24 hours via email or WhatsApp to confirm availability.
+Thanks for your enquiry. The captain will check your date within 24 hours. As soon as it's confirmed, we'll email you a secure payment link for the deposit.
 
 Your enquiry:
   Date:        ${fmtDate(enquiry.preferred_date)}
