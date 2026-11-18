@@ -10,6 +10,7 @@
 const { Resend } = require('resend');
 const { getTenantEnv, getTenantEnvOptional } = require('./tenant.js');
 const { isTestInbox, getTenant } = require('./tenants.config.js');
+const { resolveCharterOption } = require('./pricing.js');
 const {
   buildIcsContent,
   buildGoogleCalUrl,
@@ -50,6 +51,11 @@ function fmtDate(isoDate) {
  *   • 'flat_charter' (Bandama)      — deposit + balance read from config
  *   • 'per_seat'     (Adv. Cruises) — multiply per-seat values by party_size
  *
+ * Tenants with `charterOptions` (full day / half day) are priced on the option
+ * the customer picked (`enquiry.tour_option`). The option is resolved by the
+ * same helper the card payment link uses (api/_lib/pricing.js), so the email
+ * and the card page always show the same deposit.
+ *
  * Returns:
  *   bookingFeeCents  — what BookItMalta collects online (the "deposit")
  *   balanceCents     — what the captain collects on the day
@@ -58,7 +64,7 @@ function fmtDate(isoDate) {
  * Defaults to flat_charter math if pricingModel is missing, to preserve the
  * previous behaviour for any tenant that hasn't migrated.
  */
-function getEnquiryPricing(tenantConfig, partySize) {
+function getEnquiryPricing(tenantConfig, partySize, chosenOption) {
   const seats = Number.isInteger(partySize) && partySize > 0 ? partySize : 1;
 
   if (tenantConfig.pricingModel === 'per_seat') {
@@ -76,8 +82,12 @@ function getEnquiryPricing(tenantConfig, partySize) {
   // flat_charter — Bandama-style. charterPriceCents is the total customer
   // pays for the charter; depositAmountCents is BookItMalta's slice; balance
   // is the difference.
-  const bookingFee   = tenantConfig.depositAmountCents || 0;
-  const charterTotal = tenantConfig.charterPriceCents  || 0;
+  // A multi-option tenant takes both figures from the chosen option; anything
+  // the option does not set falls back to the tenant-level figure, as before.
+  const resolved = resolveCharterOption(tenantConfig, chosenOption);
+  const opt = (resolved && resolved.option) || {};
+  const bookingFee   = opt.depositAmountCents || tenantConfig.depositAmountCents || 0;
+  const charterTotal = opt.charterPriceCents  || tenantConfig.charterPriceCents  || 0;
   return {
     bookingFeeCents:   bookingFee,
     balanceCents:      Math.max(0, charterTotal - bookingFee),
@@ -121,7 +131,7 @@ function operatorMidSentence(tenantConfig) {
 // =============================================================================
 function captainEnquiryEmail({ tenantConfig, enquiry, baseUrl }) {
   const reviewUrl = `${baseUrl}/api/captain?token=${enquiry.captain_token}&tenant=${tenantConfig.slug}`;
-  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size, enquiry.tour_option);
 
   const subject = `[${tenantConfig.name}] New enquiry — ${fmtDate(enquiry.preferred_date)} — ${enquiry.party_size} guests`;
 
@@ -169,7 +179,7 @@ BookItMalta · bookitmalta.com
 // =============================================================================
 function customerEnquiryAckEmail({ tenantConfig, enquiry }) {
   const subject = `We've received your enquiry — ${tenantConfig.name}`;
-  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size, enquiry.tour_option);
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
@@ -201,7 +211,7 @@ via BookItMalta · bookitmalta.com
 // =============================================================================
 function customerDepositLinkEmail({ tenantConfig, enquiry, paymentUrl }) {
   const subject = `Confirmed — pay your deposit to lock in ${fmtDate(enquiry.preferred_date)}`;
-  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size, enquiry.tour_option);
   const text = `
 Hi ${enquiry.customer_name.split(' ')[0] || 'there'},
 
@@ -376,7 +386,7 @@ via BookItMalta · bookitmalta.com
 // =============================================================================
 function captainActionConfirmedEmail({ tenantConfig, enquiry, action }) {
   const subject = `[${tenantConfig.name}] ${action.toUpperCase()} recorded — ${enquiry.customer_name}`;
-  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size);
+  const pricing = getEnquiryPricing(tenantConfig, enquiry.party_size, enquiry.tour_option);
   const text = `
 You ${action === 'confirm' ? 'confirmed' : 'declined'} the enquiry from ${enquiry.customer_name} for ${fmtDate(enquiry.preferred_date)}.
 

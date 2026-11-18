@@ -16,6 +16,7 @@ const { resolveTenant } = require('./_lib/tenant.js');
 const { getSupabase } = require('./_lib/supabase.js');
 const { validateEnquiry, ValidationError } = require('./_lib/validation.js');
 const { computeBookingFee } = require('./_lib/stripe.js');
+const { resolveCharterOption } = require('./_lib/pricing.js');
 const {
   sendEmail,
   captainEnquiryEmail,
@@ -364,12 +365,9 @@ function charterTotalCentsFor(config, input) {
   if (config.pricingModel === 'per_seat') {
     return (config.pricePerSeatCents || 0) * input.party_size;
   }
-  if (config.charterOptions) {
-    const key = (input.tour_option && config.charterOptions[input.tour_option])
-      ? input.tour_option
-      : config.defaultCharterOption;
-    const opt = config.charterOptions[key];
-    if (opt && opt.charterPriceCents) return opt.charterPriceCents;
+  const resolved = resolveCharterOption(config, input.tour_option);
+  if (resolved && resolved.option && resolved.option.charterPriceCents) {
+    return resolved.option.charterPriceCents;
   }
   return config.charterPriceCents;
 }
