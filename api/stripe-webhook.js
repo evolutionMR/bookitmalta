@@ -44,7 +44,9 @@ async function handler(req, res) {
 
   let tenant, config;
   try {
-    ({ slug: tenant, config } = resolveTenant(req));
+    // includeClosed: a tenant that has closed can still have an old deposit
+    // link paid or an old booking refunded, and that must be recorded.
+    ({ slug: tenant, config } = resolveTenant(req, { includeClosed: true }));
   } catch (e) {
     return res.status(400).send('Missing tenant');
   }
@@ -431,7 +433,8 @@ async function handleChargeRefunded({ event, tenant, config, req }) {
     .eq('id', booking.id);
 
   // If the date is now free, check waitlist for that date and offer it
-  if (treatAsCancelled) {
+  // (Never for a closed tenant: nobody can book that date any more.)
+  if (treatAsCancelled && !config.closed) {
     await offerSlotToTopOfWaitlist({ tenant, config, date: booking.charter_date, req });
   }
 }

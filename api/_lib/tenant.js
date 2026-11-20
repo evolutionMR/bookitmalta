@@ -8,7 +8,7 @@
 // its own Supabase project + own Stripe account. Namespacing env vars by
 // tenant slug makes it impossible to cross the wires.
 
-const { getTenant } = require('./tenants.config.js');
+const { getTenant, getTenantIncludingClosed } = require('./tenants.config.js');
 
 function envKey(slug, key) {
   // bandama, supabase_url → BANDAMA_SUPABASE_URL
@@ -54,7 +54,10 @@ function getPublicBaseUrl(req, slug, config) {
   return process.env[envKey(slug, 'PUBLIC_BASE_URL')] || 'https://bookitmalta.com';
 }
 
-function resolveTenant(req) {
+// `includeClosed` is for the payment webhook only (old payments and refunds of
+// a tenant that has since closed). Everything else leaves it off, so a closed
+// tenant is refused like an unknown one.
+function resolveTenant(req, { includeClosed = false } = {}) {
   // Tenant can come from body (POST) or query (GET)
   const slug =
     (req.body && req.body.tenant) ||
@@ -63,7 +66,8 @@ function resolveTenant(req) {
   if (!slug) {
     throw new Error('Missing tenant identifier');
   }
-  const config = getTenant(slug);  // throws if unknown
+  // throws if unknown (or closed, unless includeClosed)
+  const config = includeClosed ? getTenantIncludingClosed(slug) : getTenant(slug);
   return { slug, config };
 }
 

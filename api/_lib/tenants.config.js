@@ -8,8 +8,17 @@
 // the SQL migration against the new Supabase project. No code changes.
 
 const TENANTS = {
+  // CLOSED (Nov 2026) — this operator has left BookItMalta. `closed: true`
+  // means: no new enquiries, no captain login, no captain links. getTenant()
+  // answers "Unknown tenant" for it, exactly as if the entry did not exist.
+  // The entry is kept (not deleted) for ONE reason: the payment webhook must
+  // still be able to finish old records — a deposit paid on a link that was
+  // already sent, or a refund — and those need the schema and the wording
+  // below. Delete the entry only once the owner has confirmed there are no
+  // open records and has removed the webhook and the BANDAMA_* settings.
   bandama: {
     slug: 'bandama',
+    closed: true,
     name: 'Bandama Yacht Charters',
     operatorFirstName: 'The captain',
     boat: 'Beneteau Swift Trawler 47',
@@ -269,13 +278,33 @@ if (!TEST_TENANTS_ENABLED) {
   }
 }
 
-function getTenant(slug) {
+function lookupTenant(slug) {
   // Own-property lookup: a slug like "__proto__" or "constructor" must not
   // resolve to something inherited from Object.prototype.
-  const tenant =
-    typeof slug === 'string' && Object.prototype.hasOwnProperty.call(TENANTS, slug)
-      ? TENANTS[slug]
-      : null;
+  return typeof slug === 'string' && Object.prototype.hasOwnProperty.call(TENANTS, slug)
+    ? TENANTS[slug]
+    : null;
+}
+
+// The normal lookup. A closed tenant (`closed: true`) is refused with the same
+// error as a slug that was never defined, so every caller — the enquiry form,
+// the captain login, the captain dashboard and the captain links — turns it
+// away without needing its own check.
+function getTenant(slug) {
+  const tenant = lookupTenant(slug);
+  if (!tenant || tenant.closed) {
+    throw new Error(`Unknown tenant: ${slug}`);
+  }
+  return tenant;
+}
+
+// Old records only. Also returns a closed tenant, so a payment or refund that
+// belongs to a booking made before the tenant closed can still be recorded.
+// Used by the payment webhook (which only acts on events signed by Stripe) and
+// by the database / payment / email helpers it calls. Never use this to accept
+// anything new from a visitor or a captain — use getTenant().
+function getTenantIncludingClosed(slug) {
+  const tenant = lookupTenant(slug);
   if (!tenant) {
     throw new Error(`Unknown tenant: ${slug}`);
   }
@@ -296,8 +325,9 @@ function isTestInbox(tenantConfig, email) {
   return (tenantConfig.testInboxes || []).some((x) => x.toLowerCase() === base);
 }
 
+// Open tenants only (closed ones are left out).
 function listTenants() {
-  return Object.keys(TENANTS);
+  return Object.keys(TENANTS).filter((slug) => !TENANTS[slug].closed);
 }
 
-module.exports = { TENANTS, getTenant, listTenants, isTestInbox };
+module.exports = { TENANTS, getTenant, getTenantIncludingClosed, listTenants, isTestInbox };
