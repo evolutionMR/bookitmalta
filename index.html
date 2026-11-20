@@ -6,7 +6,7 @@
 
 <title>Malta Boat Charter — Private Day Trips & Sunset Cruises | BookItMalta</title>
 <meta name="description" content="Book a Malta boat charter direct from the operator: private day charters to Comino & the Blue Lagoon, sunset cruises and shared boat trips from Sliema. Live availability, secure online booking." />
-<meta name="keywords" content="Malta boat charter, Malta yacht charter, Comino blue lagoon charter, Sliema charter, Ta Xbiex charter, day charter Malta, sunset cruise Malta" />
+<meta name="keywords" content="Malta boat charter, Malta yacht charter, Comino blue lagoon charter, Sliema charter, day charter Malta, sunset cruise Malta" />
 <link rel="canonical" href="https://bookitmalta.com/" />
 <meta name="robots" content="index, follow" />
 
@@ -349,6 +349,14 @@ footer .wordmark span { color: var(--terracotta); }
   font-family: var(--mono); font-size: 0.7rem; color: rgba(244,235,217,0.45); letter-spacing: 0.08em; text-transform: uppercase;
 }
 
+/* Three boat cards. On tablet widths the grid has two columns, so the third
+   card would sit alone next to an empty space. There it takes the full row
+   instead, with its photo on the left and its text on the right. */
+@media (min-width: 721px) and (max-width: 1120px) {
+  .charter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .charter-grid > .charter-card:nth-child(3):last-child { grid-column: 1 / -1; flex-direction: row; }
+  .charter-grid > .charter-card:nth-child(3):last-child .cc-image { flex: 0 0 50%; aspect-ratio: auto; }
+}
 @media (max-width: 720px) {
   .charter-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -380,9 +388,8 @@ footer .wordmark span { color: var(--terracotta); }
       "name": "Malta boat charters on BookItMalta",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Sailing catamaran — Sliema", "url": "https://bookitmalta.com/catamaran" },
-        { "@type": "ListItem", "position": 2, "name": "Private motor yacht — Ta' Xbiex", "url": "https://bookitmalta.com/charters/bandama" },
-        { "@type": "ListItem", "position": 3, "name": "Shared cruise — Sliema", "url": "https://bookitmalta.com/adventure-cruises" },
-        { "@type": "ListItem", "position": 4, "name": "Private boat — St Paul's Bay", "url": "https://bookitmalta.com/charters/unexpected-charters-malta" }
+        { "@type": "ListItem", "position": 2, "name": "Shared cruise — Sliema", "url": "https://bookitmalta.com/adventure-cruises" },
+        { "@type": "ListItem", "position": 3, "name": "Private boat — St Paul's Bay", "url": "https://bookitmalta.com/charters/unexpected-charters-malta" }
       ]
     }
   ]
@@ -457,36 +464,6 @@ footer .wordmark span { color: var(--terracotta); }
 
           <a href="/catamaran" class="btn btn-primary cc-cta">
             View charters <span class="arrow">→</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- Private motor yacht -->
-      <article class="charter-card">
-        <div class="cc-image">
-          <img src="/charters/motor-yacht-images/hero.jpg" alt="Beneteau Swift Trawler 47 motor yacht anchored at Comino, Malta" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy" />
-        </div>
-        <div class="cc-body">
-          <span class="cc-tag">Luxury Day Charter · Ta' Xbiex</span>
-          <h3>Private motor yacht — Ta' Xbiex</h3>
-          <p class="cc-summary">Luxury Beneteau Swift Trawler 47 motor yacht with professional skipper and crew. Day charters from Ta' Xbiex to Comino, Blue Lagoon, and the south Gozo coast.</p>
-
-          <ul class="cc-specs">
-            <li><span class="cs-label">Capacity</span><span class="cs-value">Up to 8 guests</span></li>
-            <li><span class="cs-label">Boat</span><span class="cs-value">Beneteau ST 47</span></li>
-            <li><span class="cs-label">Departure</span><span class="cs-value">Ta' Xbiex Creek</span></li>
-            <li><span class="cs-label">Type</span><span class="cs-value">Motor yacht</span></li>
-          </ul>
-
-          <div class="cc-price-row">
-            <div>
-              <div class="cc-price">€1,850<span style="font-size: 0.75rem; color: var(--ink-soft); font-weight: 400;"> / charter</span></div>
-            </div>
-            <div class="cc-price-note">total · crew + fuel</div>
-          </div>
-
-          <a href="/charters/bandama" class="btn btn-ghost cc-cta">
-            View charter <span class="arrow">→</span>
           </a>
         </div>
       </article>
@@ -607,7 +584,6 @@ footer .wordmark span { color: var(--terracotta); }
         <ul>
           <li><a href="/">All charters</a></li>
           <li><a href="/catamaran">Sailing catamaran</a></li>
-          <li><a href="/charters/bandama">Private motor yacht</a></li>
           <li><a href="/adventure-cruises">Shared cruise</a></li>
           <li><a href="/charters/unexpected-charters-malta">Private boat, St Paul's Bay</a></li>
           <li><a href="/guides/private-boat-charter-malta-cost">What a private charter costs</a></li>

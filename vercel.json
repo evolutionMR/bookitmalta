@@ -14,7 +14,10 @@
     { "source": "/charters", "destination": "/", "permanent": true },
     { "source": "/charters/", "destination": "/", "permanent": true },
     { "source": "/charters/adventure-cruises", "destination": "/adventure-cruises", "permanent": true },
-    { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true }
+    { "source": "/charters/adventure-cruises/", "destination": "/adventure-cruises", "permanent": true },
+    { "source": "/charters/bandama", "destination": "/", "permanent": true },
+    { "source": "/charters/bandama/", "destination": "/", "permanent": true },
+    { "source": "/charters/bandama/index.html", "destination": "/", "permanent": true }
   ],
   "rewrites": [
     { "source": "/captain/login",     "destination": "/captain/login.html" },

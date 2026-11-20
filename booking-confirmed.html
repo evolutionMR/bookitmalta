@@ -292,14 +292,6 @@ h1 em { font-style: italic; color: var(--terracotta); }
 // Source of truth lives in the server tenant settings — keep these in sync when adding
 // new tenants. (If this list ever exceeds ~5 tenants, switch to an API call.)
 const TENANTS = {
-  'bandama': {
-    name: 'Bandama Yacht Charters',
-    boat: 'Beneteau Swift Trawler 47',
-    calendarTitle: 'Bandama — Private Day Charter',
-    location: "Ta' Xbiex Creek Marina, Ta' Xbiex, Malta",
-    durationHours: 8,
-    defaultStartTime: '09:00',
-  },
   'adventure-cruises': {
     name: 'Adventure Cruises',
     boat: 'Albert V + Adventure 1',
@@ -312,13 +304,24 @@ const TENANTS = {
 
 // Parse URL params.
 const params = new URLSearchParams(window.location.search);
-const tenantSlug = params.get('tenant') || 'bandama';
+// Used when the link names no operator, or one that is not in the list above.
+// Deliberately neutral: it must never show another operator's name or meeting
+// point. The confirmation email always carries the real details.
+const FALLBACK_TENANT = {
+  name: 'Your charter operator',
+  boat: '',
+  calendarTitle: 'Your boat charter in Malta',
+  location: 'See your confirmation email',
+  durationHours: 8,
+  defaultStartTime: '09:00',
+};
+const tenantSlug = params.get('tenant') || '';
 const code   = (params.get('code')  || 'PENDING').toUpperCase();
 const dateIso = params.get('date')  || '';
 const slot   = params.get('slot')  || '';
 const party  = parseInt(params.get('party') || '1', 10) || 1;
 
-const tenant = TENANTS[tenantSlug] || TENANTS['bandama'];
+const tenant = (Object.prototype.hasOwnProperty.call(TENANTS, tenantSlug) && TENANTS[tenantSlug]) || FALLBACK_TENANT;
 
 // Resolve start time.
 function resolveStartTime() {
