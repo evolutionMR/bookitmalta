@@ -9,7 +9,7 @@
 // Run locally from the repo root with the tenant's env vars available
 // (the same SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY the app uses):
 //
-//   TENANT_SLUG=bandama node scripts/issue-captain-pin.js info@bandamacharters.com
+//   TENANT_SLUG=adventure-cruises node scripts/issue-captain-pin.js operator@example.com
 //
 // Re-running for the same email re-issues a fresh starter PIN (must_change=true).
 

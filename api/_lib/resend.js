@@ -9,7 +9,8 @@
 
 const { Resend } = require('resend');
 const { getTenantEnv, getTenantEnvOptional } = require('./tenant.js');
-const { isTestInbox, getTenant } = require('./tenants.config.js');
+// Including closed tenants — see the note in supabase.js.
+const { isTestInbox, getTenantIncludingClosed: getTenant } = require('./tenants.config.js');
 const { resolveCharterOption } = require('./pricing.js');
 const {
   buildIcsContent,

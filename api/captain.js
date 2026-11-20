@@ -597,6 +597,7 @@ function resolveTenantByEmail(email) {
   try {
     const { TENANTS } = require('./_lib/tenants.config.js');
     for (const slug of Object.keys(TENANTS)) {
+      if (TENANTS[slug].closed) continue; // a closed tenant has no captain login
       const al = TENANTS[slug].captainAllowlist;
       if (Array.isArray(al) && al.some((x) => String(x).trim().toLowerCase() === e)) return slug;
     }

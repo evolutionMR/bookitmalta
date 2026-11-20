@@ -12,7 +12,8 @@
 
 const Stripe = require('stripe');
 const { getTenantEnv } = require('./tenant.js');
-const { getTenant } = require('./tenants.config.js');
+// Including closed tenants — see the note in supabase.js.
+const { getTenantIncludingClosed: getTenant } = require('./tenants.config.js');
 const { resolveCharterOption } = require('./pricing.js');
 
 const clientCache = new Map();

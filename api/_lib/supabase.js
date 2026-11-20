@@ -22,7 +22,9 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { getTenantEnv } = require('./tenant.js');
-const { getTenant } = require('./tenants.config.js');
+// Including closed tenants: the entry points decide who may come in; this
+// helper must still reach a closed tenant's old records for the payment webhook.
+const { getTenantIncludingClosed: getTenant } = require('./tenants.config.js');
 
 // Cache clients by tenant to avoid re-instantiating on every request.
 // Two tenants sharing one Supabase project still get DIFFERENT cache
