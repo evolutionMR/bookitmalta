@@ -127,14 +127,14 @@ const TENANTS = {
   // admin / hello@bookitmalta.com so a lead is never dropped.
   catamaran: {
     slug: 'catamaran',
-    name: 'Catamaran Malta — La Zingara & Chardonnay',
+    name: 'Private catamaran charter',
     operatorFirstName: 'The captain',
     boat: 'La Zingara (Lagoon 450) + Chardonnay (Lagoon 440)',
     pricingModel: 'quote',          // quote-only: never hits stripe/supabase math
     currency: 'EUR',
     publicPagePath: '/catamaran',
     confirmationAnchor: '#enquiry-confirmed',
-    emailFromName: 'Catamaran Malta (via BookItMalta)',
+    emailFromName: 'BookItMalta',
     emailReplyTo: null,             // resolved from CATAMARAN_OPERATOR_EMAIL if set
     schedulingModel: 'quote',
   },
